@@ -1720,6 +1720,19 @@
     <div class="kawung-orb kawung-orb-left" aria-hidden="true"></div>
     <div class="kawung-orb kawung-orb-right" aria-hidden="true"></div>
 
+    <!-- ═══════════ SIGN-IN SECTION ═══════════ -->
+    <section class="auth-section" id="authSection" style="margin-top: 52px; margin-bottom: -16px; max-width: 380px;">
+        <div class="auth-card" style="padding: 18px 20px; border-radius: 16px;">
+            <h2 style="font-size: 1rem; margin-bottom: 4px;">🔐 Masuk untuk Belajar</h2>
+            <p style="font-size: 0.75rem; margin-bottom: 14px;">Sign in dengan Google untuk akses 6 sesi MOLESH.</p>
+            <div id="googleBtnContainer" style="display:inline-block;min-height:44px; margin-bottom: 4px;"></div>
+            <br>
+            <button class="g-btn-alt" onclick="handleGuestAccess()" style="margin-top: 6px; padding: 6px 12px; font-size: 0.72rem;">
+                👀 Pratinjau Tanpa Login
+            </button>
+        </div>
+    </section>
+
     <!-- ═══════════ PUBLIC HERO ═══════════ -->
     <section class="hero" id="heroSection">
         <div class="hero-icon">🎓</div>
@@ -1792,20 +1805,6 @@
         </div>
     </section>
 
-    <!-- ═══════════ SIGN-IN SECTION ═══════════ -->
-    <section class="auth-section" id="authSection">
-        <div class="divider"></div>
-        <div class="auth-card">
-            <h2>🔐 Masuk untuk Mulai Belajar</h2>
-            <p>Sign in dengan akun Google untuk mengakses 6 sesi pembelajaran MOLESH.</p>
-            <!-- Google rendered button will appear here -->
-            <div id="googleBtnContainer" style="display:inline-block;min-height:44px"></div>
-            <br>
-            <button class="g-btn-alt" onclick="handleGuestAccess()">
-                👀 Lihat Pratinjau Tanpa Login
-            </button>
-        </div>
-    </section>
 
     <!-- ═══════════ DASHBOARD (after login) ═══════════ -->
     <section class="dashboard hidden" id="dashboard">
