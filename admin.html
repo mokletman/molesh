@@ -234,6 +234,13 @@
             border-radius:12px;padding:10px 20px;transition:all .2s;
         }
         .auth-wall a:hover{background:rgba(124,58,237,.25)}
+        /* Pagination */
+        .pagination { display:flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+        .page-controls { display:flex; gap: 8px; }
+        .page-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; padding: 6px 12px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+        .page-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-info { align-self: center; }
 
         .footer{position:relative;z-index:1;margin-top:28px;font-size:.7rem;color:rgba(255,255,255,.25);text-align:center}
 
@@ -270,6 +277,10 @@
         var API_URL = (typeof MOLESH_CONFIG !== 'undefined') ? MOLESH_CONFIG.APPS_SCRIPT_URL : 'YOUR_APPS_SCRIPT_URL';
         var panel = document.getElementById('mainPanel');
         var allStudents = [];
+        var studentPage = 1;
+        var checkinLogPage = 1;
+        var refleksiPage = 1;
+        var ITEMS_PER_PAGE = 10;
 
         /* ── Auth check ── */
         function checkAdmin() {
@@ -388,8 +399,8 @@
             html += '<div id="tabStudents" class="tab-content active">';
 
             html += '<div class="toolbar">' +
-                '<input class="search-input" id="searchInput" type="text" placeholder="🔍 Cari nama atau email..." oninput="filterTable()">' +
-                '<select class="filter-select" id="filterKelas" onchange="filterTable()"><option value="">Semua Kelas</option>';
+                '<input class="search-input" id="searchInput" type="text" placeholder="🔍 Cari nama atau email..." oninput="filterTable(true)">' +
+                '<select class="filter-select" id="filterKelas" onchange="filterTable(true)"><option value="">Semua Kelas</option>';
             kelasList.forEach(function (k) { html += '<option value="' + k + '">' + k + ' (' + kelasCount[k] + ')</option>'; });
             html += '</select>' +
                 '<button class="refresh-btn" onclick="showLoading();fetchData()">🔄 Refresh</button>' +
@@ -401,13 +412,8 @@
                 '<th>Kelas</th><th>Absen</th><th>Login Terakhir</th><th>Profil</th></tr></thead>' +
                 '<tbody id="tableBody">';
 
-            if (total === 0) {
-                html += '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang login.</p></div></td></tr>';
-            } else {
-                allStudents.forEach(function (s, i) { html += buildRow(s, i); });
-            }
-
             html += '</tbody></table></div>';
+            html += '<div id="studentPagination"></div>';
             html += '</div>'; /* close tabStudents */
 
             /* ── Tab: Check-In ── */
@@ -423,8 +429,8 @@
             /* ── Tab: Refleksi ── */
             html += '<div id="tabRefleksi" class="tab-content">';
             html += '<div class="toolbar">' +
-                '<input class="search-input" id="refSearchInput" type="text" placeholder="🔍 Cari nama atau email..." oninput="filterReflections()">' +
-                '<select class="filter-select" id="filterSesi" onchange="filterReflections()">' +
+                '<input class="search-input" id="refSearchInput" type="text" placeholder="🔍 Cari nama atau email..." oninput="filterReflections(true)">' +
+                '<select class="filter-select" id="filterSesi" onchange="filterReflections(true)">' +
                 '<option value="">Semua Sesi</option>' +
                 '<option value="1">Sesi 1</option><option value="2">Sesi 2</option>' +
                 '<option value="3">Sesi 3</option><option value="4">Sesi 4</option>' +
@@ -437,6 +443,7 @@
 
             panel.innerHTML = html;
 
+            filterTable(true);
             /* Auto-load check-in data */
             loadCheckinData();
         }
@@ -474,15 +481,49 @@
         }
 
         /* ── Filter ── */
-        function filterTable() {
+        function filterTable(resetPage) {
+            if (resetPage) studentPage = 1;
             var q = document.getElementById('searchInput').value.toLowerCase();
             var kelas = document.getElementById('filterKelas').value;
-            var rows = document.querySelectorAll('#tableBody tr[data-nama]');
-            rows.forEach(function (row) {
-                var matchQ = !q || row.dataset.nama.indexOf(q) > -1 || row.dataset.email.indexOf(q) > -1;
-                var matchK = !kelas || row.dataset.kelas === kelas;
-                row.style.display = (matchQ && matchK) ? '' : 'none';
+            
+            var filtered = allStudents.filter(function(s) {
+                var sNama = (s.nama || s.googleName || '').toLowerCase();
+                var sEmail = (s.email || '').toLowerCase();
+                var sKelas = (s.kelas || '');
+                var matchQ = !q || sNama.indexOf(q) > -1 || sEmail.indexOf(q) > -1;
+                var matchK = !kelas || sKelas === kelas;
+                return matchQ && matchK;
             });
+            
+            var totalItems = filtered.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            if (studentPage > totalPages) studentPage = totalPages;
+            
+            var start = (studentPage - 1) * ITEMS_PER_PAGE;
+            var end = start + ITEMS_PER_PAGE;
+            var paginated = filtered.slice(start, end);
+            
+            var html = '';
+            if (totalItems === 0) {
+                html = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data siswa.</p></div></td></tr>';
+            } else {
+                paginated.forEach(function(s, i) {
+                    html += buildRow(s, start + i);
+                });
+            }
+            document.getElementById('tableBody').innerHTML = html;
+            
+            var pageHtml = '';
+            if (totalItems > 0) {
+                pageHtml = '<div class="pagination">' +
+                    '<span class="page-info">Menampilkan ' + (start + 1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' data</span>' +
+                    '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="studentPage--;filterTable()" ' + (studentPage === 1 ? 'disabled' : '') + '>Prev</button>' +
+                    '<span class="page-info">Halaman ' + studentPage + ' dari ' + totalPages + '</span>' +
+                    '<button class="page-btn" onclick="studentPage++;filterTable()" ' + (studentPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '</div></div>';
+            }
+            document.getElementById('studentPagination').innerHTML = pageHtml;
         }
 
         /* ── Export CSV ── */
@@ -690,16 +731,28 @@
         }
 
         function renderCheckinLog(el) {
+            var logEl = document.getElementById('ciLogWrap');
+            if (el) logEl = el;
+            if (!logEl) return;
             if (!ciLogs.length) {
-                el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang check-in.</p></div>';
+                logEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang check-in.</p></div>';
                 return;
             }
+            
+            var totalItems = ciLogs.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            if (checkinLogPage > totalPages) checkinLogPage = totalPages;
+            
+            var start = (checkinLogPage - 1) * ITEMS_PER_PAGE;
+            var end = start + ITEMS_PER_PAGE;
+            var paginated = ciLogs.slice(start, end);
+
             var html = '<div class="table-wrap"><table class="data-table"><thead><tr>' +
                 '<th>No</th><th>Tanggal</th><th>Deskripsi</th><th>Nama</th><th>Email</th><th>Kelas</th><th>Absen</th><th>Waktu Check-In</th>' +
                 '</tr></thead><tbody>';
-            ciLogs.forEach(function(l, i){
+            paginated.forEach(function(l, i){
                 html += '<tr>' +
-                    '<td>' + (i+1) + '</td>' +
+                    '<td>' + (start + i + 1) + '</td>' +
                     '<td style="white-space:nowrap">' + (l.tanggal || '—') + '</td>' +
                     '<td style="font-size:.75rem;color:rgba(255,255,255,.4)">' + (l.deskripsi || '—') + '</td>' +
                     '<td><strong>' + (l.nama || l.googleName || '—') + '</strong></td>' +
@@ -710,7 +763,17 @@
                     '</tr>';
             });
             html += '</tbody></table></div>';
-            el.innerHTML = html;
+            
+            if (totalItems > 0) {
+                html += '<div class="pagination">' +
+                    '<span class="page-info">Menampilkan ' + (start + 1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' log</span>' +
+                    '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="checkinLogPage--;renderCheckinLog()" ' + (checkinLogPage === 1 ? 'disabled' : '') + '>Prev</button>' +
+                    '<span class="page-info">Halaman ' + checkinLogPage + ' dari ' + totalPages + '</span>' +
+                    '<button class="page-btn" onclick="checkinLogPage++;renderCheckinLog()" ' + (checkinLogPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '</div></div>';
+            }
+            logEl.innerHTML = html;
         }
 
         /* ══════════════════════════════════════
@@ -753,27 +816,15 @@
         }
 
         function renderReflections(el) {
-            if (!allReflections.length) {
-                el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada refleksi yang masuk.</p></div>';
-                return;
-            }
+            var wrap = document.getElementById('refTableWrap');
+            if (el) wrap = el;
+            if (!wrap) return;
             var html = '<div class="table-wrap"><table class="data-table" id="refTable"><thead><tr>' +
                 '<th>No</th><th>Sesi</th><th>Nama</th><th>Email</th><th>Kelas</th><th>Absen</th><th>Refleksi</th><th>Waktu</th>' +
-                '</tr></thead><tbody id="refTableBody">';
-            allReflections.forEach(function(r, i){
-                html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '">' +
-                    '<td>' + (i+1) + '</td>' +
-                    '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
-                    '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
-                    '<td style="font-size:.75rem;color:rgba(255,255,255,.4)">' + (r.email||'—') + '</td>' +
-                    '<td>' + (r.kelas||'—') + '</td>' +
-                    '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
-                    '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
-                    '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + (r.submittedAt ? formatDate(r.submittedAt) : '—') + '</td>' +
-                    '</tr>';
-            });
-            html += '</tbody></table></div>';
-            el.innerHTML = html;
+                '</tr></thead><tbody id="refTableBody"></tbody></table></div>';
+            html += '<div id="refPagination"></div>';
+            wrap.innerHTML = html;
+            filterReflections(true);
         }
 
         function escHtml(s) {
@@ -782,16 +833,61 @@
             return d.innerHTML;
         }
 
-        function filterReflections() {
+        function filterReflections(resetPage) {
+            if (resetPage) refleksiPage = 1;
             var q = (document.getElementById('refSearchInput')||{}).value;
             q = q ? q.toLowerCase() : '';
             var sesi = (document.getElementById('filterSesi')||{}).value;
-            var rows = document.querySelectorAll('#refTableBody tr');
-            rows.forEach(function(row){
-                var matchQ = !q || (row.dataset.nama||'').indexOf(q) > -1 || (row.dataset.email||'').indexOf(q) > -1;
-                var matchS = !sesi || row.dataset.sesi === sesi;
-                row.style.display = (matchQ && matchS) ? '' : 'none';
+            
+            var filtered = allReflections.filter(function(r) {
+                var rNama = (r.nama||r.googleName||'').toLowerCase();
+                var rEmail = (r.email||'').toLowerCase();
+                var matchQ = !q || rNama.indexOf(q) > -1 || rEmail.indexOf(q) > -1;
+                var matchS = !sesi || (r.sesi||'').toString() === sesi;
+                return matchQ && matchS;
             });
+            
+            var totalItems = filtered.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            if (refleksiPage > totalPages) refleksiPage = totalPages;
+            
+            var start = (refleksiPage - 1) * ITEMS_PER_PAGE;
+            var end = start + ITEMS_PER_PAGE;
+            var paginated = filtered.slice(start, end);
+            
+            var tbody = document.getElementById('refTableBody');
+            if (!tbody) return;
+            var html = '';
+            if (totalItems === 0) {
+                html = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data refleksi.</p></div></td></tr>';
+            } else {
+                paginated.forEach(function(r, idx){
+                    var i = start + idx;
+                    html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '">' +
+                        '<td>' + (i+1) + '</td>' +
+                        '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
+                        '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
+                        '<td style="font-size:.75rem;color:rgba(255,255,255,.4)">' + (r.email||'—') + '</td>' +
+                        '<td>' + (r.kelas||'—') + '</td>' +
+                        '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
+                        '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
+                        '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + (r.submittedAt ? formatDate(r.submittedAt) : '—') + '</td>' +
+                        '</tr>';
+                });
+            }
+            tbody.innerHTML = html;
+            
+            var pageHtml = '';
+            if (totalItems > 0) {
+                pageHtml = '<div class="pagination">' +
+                    '<span class="page-info">Menampilkan ' + (start+1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' refleksi</span>' +
+                    '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="refleksiPage--;filterReflections()" ' + (refleksiPage === 1 ? 'disabled' : '') + '>Prev</button>' +
+                    '<span class="page-info">Halaman ' + refleksiPage + ' dari ' + totalPages + '</span>' +
+                    '<button class="page-btn" onclick="refleksiPage++;filterReflections()" ' + (refleksiPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '</div></div>';
+            }
+            document.getElementById('refPagination').innerHTML = pageHtml;
         }
 
         function exportReflCSV() {
