@@ -518,9 +518,11 @@
                 pageHtml = '<div class="pagination">' +
                     '<span class="page-info">Menampilkan ' + (start + 1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' data</span>' +
                     '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="studentPage=1;filterTable()" ' + (studentPage === 1 ? 'disabled' : '') + '>Awal</button>' +
                     '<button class="page-btn" onclick="studentPage--;filterTable()" ' + (studentPage === 1 ? 'disabled' : '') + '>Prev</button>' +
-                    '<span class="page-info">Halaman ' + studentPage + ' dari ' + totalPages + '</span>' +
+                    '<span class="page-info">Hal ' + studentPage + ' / ' + totalPages + '</span>' +
                     '<button class="page-btn" onclick="studentPage++;filterTable()" ' + (studentPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '<button class="page-btn" onclick="studentPage=' + totalPages + ';filterTable()" ' + (studentPage === totalPages ? 'disabled' : '') + '>Akhir</button>' +
                     '</div></div>';
             }
             document.getElementById('studentPagination').innerHTML = pageHtml;
@@ -768,9 +770,11 @@
                 html += '<div class="pagination">' +
                     '<span class="page-info">Menampilkan ' + (start + 1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' log</span>' +
                     '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="checkinLogPage=1;renderCheckinLog()" ' + (checkinLogPage === 1 ? 'disabled' : '') + '>Awal</button>' +
                     '<button class="page-btn" onclick="checkinLogPage--;renderCheckinLog()" ' + (checkinLogPage === 1 ? 'disabled' : '') + '>Prev</button>' +
-                    '<span class="page-info">Halaman ' + checkinLogPage + ' dari ' + totalPages + '</span>' +
+                    '<span class="page-info">Hal ' + checkinLogPage + ' / ' + totalPages + '</span>' +
                     '<button class="page-btn" onclick="checkinLogPage++;renderCheckinLog()" ' + (checkinLogPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '<button class="page-btn" onclick="checkinLogPage=' + totalPages + ';renderCheckinLog()" ' + (checkinLogPage === totalPages ? 'disabled' : '') + '>Akhir</button>' +
                     '</div></div>';
             }
             logEl.innerHTML = html;
@@ -791,6 +795,27 @@
             fetch(API_URL + '?type=reflections')
                 .then(function(r){ return r.json(); })
                 .then(function(data){
+                    var studentMap = {};
+                    allStudents.forEach(function(s) {
+                        if(s.email) studentMap[s.email.toLowerCase()] = s;
+                    });
+                    
+                    data.forEach(function(r) {
+                        var email = (r.email || '').toLowerCase();
+                        if (studentMap[email]) {
+                            r.nama = studentMap[email].nama || r.nama;
+                            r.kelas = studentMap[email].kelas || r.kelas;
+                            r.absen = studentMap[email].absen || r.absen;
+                            r.googleName = studentMap[email].googleName || r.googleName;
+                        }
+                    });
+                    
+                    data.sort(function(a, b) {
+                        var dateA = new Date(a.submittedAt || 0);
+                        var dateB = new Date(b.submittedAt || 0);
+                        return dateB - dateA;
+                    });
+                    
                     allReflections = data;
                     _refLoaded = true;
                     renderRefStats(stats);
@@ -882,9 +907,11 @@
                 pageHtml = '<div class="pagination">' +
                     '<span class="page-info">Menampilkan ' + (start+1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' refleksi</span>' +
                     '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="refleksiPage=1;filterReflections()" ' + (refleksiPage === 1 ? 'disabled' : '') + '>Awal</button>' +
                     '<button class="page-btn" onclick="refleksiPage--;filterReflections()" ' + (refleksiPage === 1 ? 'disabled' : '') + '>Prev</button>' +
-                    '<span class="page-info">Halaman ' + refleksiPage + ' dari ' + totalPages + '</span>' +
+                    '<span class="page-info">Hal ' + refleksiPage + ' / ' + totalPages + '</span>' +
                     '<button class="page-btn" onclick="refleksiPage++;filterReflections()" ' + (refleksiPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '<button class="page-btn" onclick="refleksiPage=' + totalPages + ';filterReflections()" ' + (refleksiPage === totalPages ? 'disabled' : '') + '>Akhir</button>' +
                     '</div></div>';
             }
             document.getElementById('refPagination').innerHTML = pageHtml;
