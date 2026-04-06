@@ -2315,6 +2315,14 @@
                     var area = document.getElementById('checkinArea');
                     if (!area) return;
                     if (!data.length) { area.innerHTML = ''; return; }
+
+                    var profileRaw = localStorage.getItem('molesh_profile');
+                    var isProfileComplete = false;
+                    try {
+                        var prof = profileRaw ? JSON.parse(profileRaw) : {};
+                        isProfileComplete = !!(prof.nama && prof.kelas && prof.absen);
+                    } catch (e) {}
+
                     var html = '';
                     data.forEach(function (ci) {
                         /* Skip if already dismissed */
@@ -2333,6 +2341,10 @@
                         if (alreadyDone) {
                             html += '<div class="cb-icon">✅</div>' +
                                 '<div class="cb-info"><div class="cb-title">Check-In tercatat</div><div class="cb-meta">' + tanggal + '</div></div>';
+                        } else if (!isProfileComplete) {
+                            html += '<div class="cb-icon">🔒</div>' +
+                                '<div class="cb-info"><div class="cb-title" style="color:#fb7185">Profil Belum Lengkap</div><div class="cb-meta">Lengkapi Nama, Kelas, & Absen untuk absen.</div></div>' +
+                                '<a class="cb-btn" href="profil.html" style="text-decoration:none; text-align:center; background:linear-gradient(135deg, #fb7185, #f43f5e)">Isi Profil</a>';
                         } else {
                             html += '<div class="cb-icon">📍</div>' +
                                 '<div class="cb-info"><div class="cb-title">Check-In Tersedia!</div><div class="cb-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div></div>' +
@@ -2382,6 +2394,13 @@
                 var user = JSON.parse(raw);
                 var prof = profile ? JSON.parse(profile) : {};
             } catch (e) { return; }
+
+            /* Check if profile is complete before allowing check-in */
+            if (!prof.nama || !prof.kelas || !prof.absen) {
+                alert('Silakan lengkapi profil (Nama, Kelas, & No. Absen) Anda terlebih dahulu untuk absen.');
+                window.location.href = 'profil.html';
+                return;
+            }
 
             var btn = document.querySelector('#ci_' + ciId + ' .cb-btn');
             if (btn) { btn.disabled = true; btn.textContent = '\u23F3 Mengirim...'; }
