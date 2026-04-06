@@ -802,6 +802,7 @@
             if (!raw) { alert('Silakan login terlebih dahulu untuk mengirim refleksi.'); return; }
             try { var user = JSON.parse(raw); var prof = JSON.parse(profile || '{}'); } catch(e) { alert('Data user tidak valid. Silakan login ulang.'); return; }
             if (!user.email || user.email === 'Mode pratinjau') { alert('Silakan login dengan akun Google untuk mengirim refleksi.'); return; }
+            if (!prof.nama || !prof.kelas || !prof.absen) { alert('Silakan lengkapi data profil (Nama, Kelas, Absen) di halaman Profil sebelum mengirim refleksi!'); window.location.href = 'profil.html'; return; }
             var btn = document.getElementById('refSubmitBtn');
             btn.disabled = true; btn.textContent = '\u23F3 Mengirim...';
             var apiUrl = '';
