@@ -1725,7 +1725,7 @@
         <div class="auth-card" style="padding: 18px 20px; border-radius: 16px;">
             <h2 style="font-size: 1rem; margin-bottom: 4px;">🔐 Masuk untuk Belajar</h2>
             <p style="font-size: 0.75rem; margin-bottom: 8px;">Sign in dengan Google untuk akses 6 sesi MOLESH.</p>
-            <p style="font-size: 0.65rem; font-style: italic; color: #c4b5fd; margin-bottom: 14px; line-height: 1.4;">"Kepemimpinan adalah kemampuan untuk mengubah visi menjadi kenyataan."</p>
+            <p id="loginQuote" style="font-size: 0.65rem; font-style: italic; color: #c4b5fd; margin-bottom: 14px; line-height: 1.4; min-height: 2.8em;"></p>
             <div id="googleBtnContainer" style="display:inline-block;min-height:44px; margin-bottom: 4px;"></div>
             <br>
             <button class="g-btn-alt" onclick="handleGuestAccess()" style="margin-top: 6px; padding: 6px 12px; font-size: 0.72rem;">
@@ -1815,7 +1815,7 @@
                 <div class="user-info">
                     <div class="user-name" id="userName"></div>
                     <div class="user-email" id="userEmail"></div>
-                    <div class="user-quote" style="font-size: 0.65rem; font-style: italic; opacity: 0.6; margin-top: 4px; color: #c4b5fd;">"Action precedes leadership."</div>
+                    <div id="dashQuote" style="font-size: 0.65rem; font-style: italic; opacity: 0.6; margin-top: 4px; color: #c4b5fd;"></div>
                 </div>
             </div>
             <div class="user-actions" id="userActions">
@@ -1936,6 +1936,43 @@
         var userName = document.getElementById('userName');
         var userEmail = document.getElementById('userEmail');
         var themeToggle = document.getElementById('themeToggle');
+
+        var LEADERSHIP_QUOTES = [
+            "Kepemimpinan adalah kemampuan mengubah visi menjadi kenyataan.",
+            "Seorang pemimpin tahu jalan, menunjukkan jalan, dan melewati jalan tersebut.",
+            "Kepemimpinan bukan tentang gelar, tapi tentang dampak dan teladan.",
+            "Pemimpin tidak menciptakan pengikut, mereka menciptakan lebih banyak pemimpin.",
+            "Inovasi membedakan antara seorang pemimpin dan pengikut.",
+            "Kepemimpinan adalah soal membuat orang lain lebih baik karena kehadiranmu.",
+            "Integritas adalah kualitas terpenting bagi seorang pemimpin.",
+            "Kepemimpinan bukan soal kekuasaan, tapi soal tanggung jawab.",
+            "Disiplin adalah jembatan antara tujuan dan pencapaian.",
+            "Aksi nyata jauh lebih kuat daripada seribu kata.",
+            "Growth mindset adalah kunci utama seorang pemimpin digital.",
+            "Jadilah pemimpin yang ingin kamu ikuti.",
+            "Keberanian adalah kunci mengambil keputusan di tengah ketidakpastian.",
+            "Empati adalah kekuatan rahasia kepemimpinan yang efektif.",
+            "Fokus pada solusi, bukan pada masalah.",
+            "Pemimpin yang bijak mendengarkan lebih banyak daripada berbicara.",
+            "Kualitas seorang pemimpin tercermin dalam standar yang mereka tetapkan.",
+            "Kepemimpinan adalah aksi, bukan posisi.",
+            "Pemimpin hebat membangun kepercayaan melalui kejujuran.",
+            "Kesuksesan tim adalah cerminan kepemimpinan yang suportif.",
+            "Jangan menunggu pemimpin, lakukanlah sendiri, orang ke orang.",
+            "Pekerjaan pemimpin bukan melakukan pekerjaan orang lain, tapi membantu mereka melakukannya.",
+            "Karakter adalah fondasi dari kepemimpinan yang bertahan lama.",
+            "Visi tanpa aksi hanyalah mimpi. Aksi tanpa visi hanyalah hobi.",
+            "Pemimpin masa depan adalah mereka yang mampu beradaptasi dengan cepat."
+        ];
+
+        function displayRandomQuote() {
+            var idx = Math.floor(Math.random() * LEADERSHIP_QUOTES.length);
+            var quote = LEADERSHIP_QUOTES[idx];
+            var loginQuote = document.getElementById('loginQuote');
+            var dashQuote = document.getElementById('dashQuote');
+            if (loginQuote) loginQuote.textContent = '"' + quote + '"';
+            if (dashQuote) dashQuote.textContent = '"' + quote + '"';
+        }
 
         function applyTheme(theme) {
             var isLight = theme === 'light';
@@ -2248,6 +2285,7 @@
 
         /* ── Init ── */
         initThemeToggle();
+        displayRandomQuote();
 
         if (!checkSession()) {
             waitForGIS();
