@@ -1,10 +1,10 @@
-# Moklet Leadership: Sadari, Peduli, Berani
+# Moklet Leadership: Sadari, Peduli, Berani Beraksi
 
 Materi ini dirancang untuk membentuk karakter kepemimpinan siswa melalui tiga pilar utama:
 
 - Sadari
 - Peduli
-- Berani
+- Berani Beraksi
 
 Ketiganya menjadi fondasi agar kepemimpinan tidak hanya terlihat saat memimpin, tetapi juga terasa dalam sikap sehari-hari.
 
@@ -42,16 +42,16 @@ Hasil yang diharapkan:
 - Lingkungan belajar yang aman dan suportif
 - Meningkatnya rasa memiliki terhadap komunitas
 
-## 3) Berani
+## 3) Berani Beraksi
 
-Berani berarti berani melangkah, berpendapat, dan bertanggung jawab atas keputusan.
+Berani Beraksi berarti berani melangkah, mengeksekusi keputusan, dan bertanggung jawab atas dampaknya.
 
 Fokus pembahasan:
 
-- Berani menyampaikan ide dengan jelas
-- Berani mengambil keputusan berbasis nilai
-- Berani menghadapi tantangan dan perubahan
-- Berani mengakui kesalahan lalu memperbaiki
+- Berani beraksi menyampaikan ide dengan jelas
+- Berani beraksi mengambil keputusan berbasis nilai
+- Berani beraksi menghadapi tantangan dan perubahan
+- Berani beraksi mengakui kesalahan lalu memperbaiki
 
 Hasil yang diharapkan:
 
@@ -63,11 +63,11 @@ Hasil yang diharapkan:
 
 1. Sadari diri: mulai dari refleksi dan target pribadi
 2. Peduli sekitar: praktik empati di kelas, organisasi, dan proyek
-3. Berani bertindak: ambil peran, eksekusi ide, evaluasi hasil
+3. Berani beraksi: ambil peran, eksekusi ide, evaluasi hasil
 
 ## Penutup
 
-Pemimpin yang kuat dimulai dari kesadaran diri, tumbuh lewat kepedulian, dan diwujudkan melalui keberanian.
+Pemimpin yang kuat dimulai dari kesadaran diri, tumbuh lewat kepedulian, dan diwujudkan lewat kebiasaan berani beraksi.
 
 ## Presentasi
 
