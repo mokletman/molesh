@@ -250,6 +250,30 @@
             .data-table th,.data-table td{padding:8px 10px}
             .toolbar{flex-direction:column}
         }
+
+        /* Analysis Tab Styles */
+        .analysis-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); margin-top: 16px; }
+        .analysis-card {
+            background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+            border-radius: 20px; padding: 24px; transition: all .3s;
+            position: relative; overflow: hidden;
+        }
+        .analysis-card::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px;
+            background: linear-gradient(135deg, transparent 50%, rgba(124,58,237,0.05) 50%);
+            border-radius: 0 0 0 100%;
+        }
+        .analysis-card:hover { transform: translateY(-4px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+        .analysis-card h4 { font-size: 1.1rem; color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .analysis-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; font-size: 0.75rem; }
+        .analysis-stat-item { background: rgba(255,255,255,.04); padding: 4px 10px; border-radius: 8px; color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.03); }
+        .analysis-topic { font-size: 0.7rem; color: #7dd3fc; background: rgba(125,211,252,0.1); padding: 2px 8px; border-radius: 6px; margin-right: 4px; }
+        .analysis-summary { font-size: 0.85rem; color: #e2e8f0; line-height: 1.6; border-left: 3px solid #7c3aed; padding-left: 14px; margin-bottom: 12px; }
+        .analysis-keywords { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 12px; font-style: italic; }
+        .sentiment-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+        .sentiment-pos { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+        .sentiment-neu { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); }
+        .sentiment-neg { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.25); }
     </style>
 </head>
 <body>
@@ -394,6 +418,7 @@
                 '<button class="tab-btn active" onclick="switchTab(this,\'tabStudents\')" >📋 Data Siswa</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabCheckin\')" >📅 Check-In</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabRefleksi\');loadReflections()" >📝 Refleksi</button>' +
+                '<button class="tab-btn" onclick="switchTab(this,\'tabAnalysis\');runAnalysis()" >📊 Analisa</button>' +
                 '</div>';
 
             html += '<div id="tabStudents" class="tab-content active">';
@@ -440,6 +465,16 @@
             html += '<div id="refStats" style="margin-bottom:14px"></div>';
             html += '<div id="refTableWrap"><div class="empty-state"><div class="empty-icon">📝</div><p>Klik tab ini untuk memuat data refleksi.</p></div></div>';
             html += '</div>'; /* close tabRefleksi */
+
+            /* ── Tab: Analisa ── */
+            html += '<div id="tabAnalysis" class="tab-content">';
+            html += '<div class="toolbar">' +
+                '<h3 style="color:#e2e8f0;font-size:1rem;margin:0">📊 Kesimpulan Feedback per Kelas</h3>' +
+                '<div style="display:flex;gap:8px">' +
+                '<button class="refresh-btn" onclick="runAnalysis()">🔄 Refresh Analisa</button>' +
+                '</div></div>';
+            html += '<div id="analysisWrap"><div class="empty-state"><div class="empty-icon">📊</div><p>Klik tombol Refresh untuk mulai menganalisa feedback siswa.</p></div></div>';
+            html += '</div>'; /* close tabAnalysis */
 
             panel.innerHTML = html;
 
@@ -936,6 +971,123 @@
             a.download = 'molesh_refleksi_' + new Date().toISOString().slice(0,10) + '.csv';
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        /* ══════════════════════════════════════
+           ANALYSIS LOGIC
+           ══════════════════════════════════════ */
+        function runAnalysis() {
+            var wrap = document.getElementById('analysisWrap');
+            if (!wrap) return;
+
+            if (allReflections.length === 0) {
+                if (!_refLoaded) {
+                    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat data untuk analisa...</p></div>';
+                    loadReflections();
+                    var checkTimer = setInterval(function() {
+                        if (_refLoaded) {
+                            clearInterval(checkTimer);
+                            runAnalysis();
+                        }
+                    }, 500);
+                    return;
+                } else {
+                    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data refleksi untuk dianalisa.</p></div>';
+                    return;
+                }
+            }
+
+            /* Group by class */
+            var grouped = {};
+            allReflections.forEach(function(r) {
+                var k = r.kelas || 'Tanpa Kelas';
+                if (!grouped[k]) grouped[k] = { reflections: [], totalBySesi: {} };
+                grouped[k].reflections.push(r);
+                grouped[k].totalBySesi[r.sesi] = (grouped[k].totalBySesi[r.sesi] || 0) + 1;
+            });
+
+            var sortedClasses = Object.keys(grouped).sort();
+            var html = '<div class="analysis-grid">';
+
+            sortedClasses.forEach(function(k) {
+                var data = grouped[k];
+                var count = data.reflections.length;
+                var sentiment = analyzeSentiment(data.reflections);
+                var topSesi = getTopSesi(data.totalBySesi);
+                var commonKeywords = extractKeywords(data.reflections);
+                
+                var sentimentClass = 'sentiment-neu';
+                var sentimentLabel = 'Neutral';
+                if (sentiment > 0.15) { sentimentClass = 'sentiment-pos'; sentimentLabel = 'Positif'; }
+                else if (sentiment < -0.05) { sentimentClass = 'sentiment-neg'; sentimentLabel = 'Perlu Perhatian'; }
+
+                html += '<div class="analysis-card">' +
+                    '<h4>🏫 Kelas ' + k + '</h4>' +
+                    '<div class="analysis-stats">' +
+                        '<span class="analysis-stat-item">📝 ' + count + ' feedback</span>' +
+                        '<span class="analysis-stat-item">🎯 Sesi ' + topSesi + ' aktif</span>' +
+                        '<span class="sentiment-badge ' + sentimentClass + '">' + sentimentLabel + '</span>' +
+                    '</div>' +
+                    '<div class="analysis-summary">' + generateSummary(data.reflections) + '</div>' +
+                    '<div class="analysis-keywords">' +
+                        '<strong>Topik:</strong> ' + commonKeywords.map(function(t){ return '<span class="analysis-topic">' + t + '</span>'; }).join('') +
+                    '</div>' +
+                    '</div>';
+            });
+
+            html += '</div>';
+            wrap.innerHTML = html;
+        }
+
+        function analyzeSentiment(refls) {
+            var score = 0;
+            var pos = ['senang', 'seru', 'paham', 'mengerti', 'bermanfaat', 'bagus', 'keren', 'terima kasih', 'asik', 'motivasi', 'semangat', 'mantap', 'belajar', 'menambah'];
+            var neg = ['bingung', 'sulit', 'bosan', 'kurang', 'lambat', 'susah', 'ngantuk', 'lelah', 'capek', 'pusing', 'tidak tahu'];
+            
+            refls.forEach(function(r) {
+                var text = (r.refleksi || '').toLowerCase();
+                pos.forEach(function(w) { if (text.indexOf(w) > -1) score += 1; });
+                neg.forEach(function(w) { if (text.indexOf(w) > -1) score -= 1.5; });
+            });
+            return refls.length > 0 ? score / refls.length : 0;
+        }
+
+        function getTopSesi(bySesi) {
+            var max = 0;
+            var top = '—';
+            for (var s in bySesi) {
+                if (bySesi[s] > max) { max = bySesi[s]; top = s; }
+            }
+            return top;
+        }
+
+        function extractKeywords(refls) {
+            var stopWords = ['saya', 'dan', 'di', 'yang', 'ini', 'itu', 'untuk', 'dengan', 'ada', 'dari', 'bisa', 'jadi', 'sudah', 'lebih', 'bahwa', 'adalah'];
+            var counts = {};
+            refls.forEach(function(r) {
+                var words = (r.refleksi || '').toLowerCase().replace(/[^a-z ]/g, '').split(/\s+/);
+                words.forEach(function(w) {
+                    if (w.length > 4 && stopWords.indexOf(w) === -1) {
+                        counts[w] = (counts[w] || 0) + 1;
+                    }
+                });
+            });
+            return Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; }).slice(0, 5);
+        }
+
+        function generateSummary(refls) {
+            if (refls.length === 0) return 'Tidak ada data.';
+            /* Optimization: find a meaningful reflection (not too short, not too long) */
+            var best = refls[0].refleksi || '—';
+            for(var i=0; i<refls.length; i++) {
+                var txt = refls[i].refleksi || '';
+                if(txt.length > 40 && txt.length < 150) {
+                    best = txt;
+                    break;
+                }
+            }
+            if (best.length > 160) best = best.substring(0, 157) + '...';
+            return best;
         }
 
         function formatTanggal(str) {
