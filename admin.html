@@ -268,8 +268,21 @@
         .analysis-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; font-size: 0.75rem; }
         .analysis-stat-item { background: rgba(255,255,255,.04); padding: 4px 10px; border-radius: 8px; color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.03); }
         .analysis-topic { font-size: 0.7rem; color: #7dd3fc; background: rgba(125,211,252,0.1); padding: 2px 8px; border-radius: 6px; margin-right: 4px; }
-        .analysis-summary { font-size: 0.85rem; color: #e2e8f0; line-height: 1.6; border-left: 3px solid #7c3aed; padding-left: 14px; margin-bottom: 12px; }
-        .analysis-keywords { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 12px; font-style: italic; }
+        .analysis-summary { display: grid; gap: 14px; margin-bottom: 12px; }
+        .analysis-block {
+            background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+            border-radius: 14px; padding: 14px 16px;
+        }
+        .analysis-block-title {
+            font-size: 0.78rem; font-weight: 700; letter-spacing: .02em;
+            text-transform: uppercase; color: #c4b5fd; margin-bottom: 8px;
+        }
+        .analysis-list {
+            margin: 0; padding-left: 18px; color: #e2e8f0;
+            font-size: 0.84rem; line-height: 1.65;
+        }
+        .analysis-list li + li { margin-top: 6px; }
+        .analysis-keywords { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 12px; font-style: italic; line-height: 1.6; }
         .sentiment-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
         .sentiment-pos { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
         .sentiment-neu { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); }
@@ -976,6 +989,77 @@
         /* ══════════════════════════════════════
            ANALYSIS LOGIC
            ══════════════════════════════════════ */
+        var ANALYSIS_SIGNALS = [
+            {
+                key: 'pemahaman',
+                topic: 'pemahaman diri',
+                label: 'pemahaman materi dan kesadaran diri',
+                type: 'strength',
+                keywords: ['paham', 'mengerti', 'faham', 'memahami', 'sadar', 'menyadari', 'belajar', 'pelajaran', 'insight', 'ternyata'],
+                teacherAction: 'Pertahankan penutup sesi yang meminta siswa menyebut satu pelajaran inti dan satu contoh penerapannya.',
+                studentAction: 'Pilih satu pelajaran paling penting lalu praktikkan dalam satu situasi nyata minggu ini.'
+            },
+            {
+                key: 'aksi',
+                topic: 'aksi nyata',
+                label: 'kemauan beraksi dan berubah',
+                type: 'strength',
+                keywords: ['akan', 'ingin', 'mau', 'siap', 'mulai', 'mencoba', 'menerapkan', 'mempraktikkan', 'langkah', 'target', 'rencana', 'komitmen', 'aksi'],
+                teacherAction: 'Bantu siswa menjaga momentum dengan meminta laporan singkat atas aksi yang sudah direncanakan.',
+                studentAction: 'Ubah niat menjadi satu langkah kecil yang jelas: apa yang dilakukan, kapan, dan dengan siapa.'
+            },
+            {
+                key: 'kolaborasi',
+                topic: 'kerja sama',
+                label: 'kepedulian dan kerja sama',
+                type: 'strength',
+                keywords: ['teman', 'kerja sama', 'kerjasama', 'komunikasi', 'membantu', 'peduli', 'menghargai', 'mendengarkan', 'kolaborasi', 'tim', 'kelompok'],
+                teacherAction: 'Siapkan aktivitas berpasangan atau kelompok kecil agar kepedulian yang sudah muncul bisa dipraktikkan.',
+                studentAction: 'Ambil satu aksi sederhana untuk membantu teman atau memperbaiki komunikasi di timmu.'
+            },
+            {
+                key: 'kepemimpinan',
+                topic: 'inisiatif',
+                label: 'inisiatif dan tanggung jawab',
+                type: 'strength',
+                keywords: ['tanggung jawab', 'inisiatif', 'memimpin', 'pemimpin', 'berani', 'tegas', 'percaya diri', 'menjadi contoh'],
+                excludeKeywords: ['kurang percaya diri', 'tidak percaya diri', 'belum berani', 'takut', 'malu', 'minder', 'ragu'],
+                teacherAction: 'Berikan kesempatan peran kecil agar siswa bisa melatih inisiatif dan tanggung jawab secara bertahap.',
+                studentAction: 'Ambil satu tanggung jawab konkret di kelas, rumah, atau tim untuk melatih kepemimpinanmu.'
+            },
+            {
+                key: 'kebingungan',
+                topic: 'butuh kejelasan materi',
+                label: 'kebingungan memahami materi',
+                type: 'challenge',
+                keywords: ['bingung', 'sulit', 'susah', 'kurang paham', 'belum paham', 'tidak paham', 'kurang jelas', 'belum mengerti', 'tidak mengerti', 'tidak tahu'],
+                teacherAction: 'Ulangi poin inti dengan contoh yang lebih dekat dengan keseharian siswa dan sediakan ruang tanya singkat.',
+                studentAction: 'Catat satu hal yang masih membingungkan lalu tanyakan secara spesifik kepada guru atau teman.'
+            },
+            {
+                key: 'percaya_diri',
+                topic: 'percaya diri',
+                label: 'keberanian dan percaya diri yang belum stabil',
+                type: 'challenge',
+                keywords: ['takut', 'malu', 'minder', 'grogi', 'gugup', 'ragu', 'cemas', 'belum berani', 'kurang percaya diri'],
+                teacherAction: 'Berikan latihan bertahap, peran kecil, dan apresiasi progres agar siswa berani mencoba tanpa takut salah.',
+                studentAction: 'Pilih satu momen kecil minggu ini untuk berbicara, memimpin, atau menyampaikan pendapat meski belum sempurna.'
+            },
+            {
+                key: 'konsistensi',
+                topic: 'konsistensi',
+                label: 'konsistensi, disiplin, dan manajemen diri',
+                type: 'challenge',
+                keywords: ['malas', 'menunda', 'prokrastinasi', 'mager', 'lupa', 'tidak konsisten', 'belum konsisten', 'kurang disiplin', 'sulit fokus', 'manajemen waktu', 'mengatur waktu'],
+                teacherAction: 'Bantu siswa memecah target menjadi langkah kecil dan cek progresnya pada awal sesi berikutnya.',
+                studentAction: 'Buat satu kebiasaan kecil harian dan pasang pengingat supaya komitmen tidak berhenti di refleksi.'
+            }
+        ];
+
+        var ACTION_PLAN_KEYWORDS = ['akan', 'mulai', 'mau', 'ingin', 'siap', 'langkah', 'target', 'rencana', 'komitmen', 'besok', 'minggu ini', 'setelah ini', 'ke depan', 'akan saya', 'saya akan'];
+        var POSITIVE_SENTIMENT_WORDS = ['senang', 'seru', 'paham', 'mengerti', 'bermanfaat', 'bagus', 'keren', 'terima kasih', 'asik', 'motivasi', 'semangat', 'mantap', 'belajar', 'bertumbuh', 'percaya diri', 'siap'];
+        var NEGATIVE_SENTIMENT_WORDS = ['bingung', 'sulit', 'bosan', 'kurang jelas', 'susah', 'ngantuk', 'lelah', 'capek', 'pusing', 'takut', 'malu', 'minder', 'ragu', 'cemas'];
+
         function runAnalysis() {
             var wrap = document.getElementById('analysisWrap');
             if (!wrap) return;
@@ -1011,10 +1095,11 @@
 
             sortedClasses.forEach(function(k) {
                 var data = grouped[k];
-                var count = data.reflections.length;
-                var sentiment = analyzeSentiment(data.reflections);
+                var analysis = analyzeReflectionSet(data.reflections);
+                var count = analysis.validCount;
+                var sentiment = analysis.sentimentScore;
                 var topSesi = getTopSesi(data.totalBySesi);
-                var commonKeywords = extractKeywords(data.reflections);
+                var commonKeywords = analysis.keywords;
                 
                 var sentimentClass = 'sentiment-neu';
                 var sentimentLabel = 'Neutral';
@@ -1024,13 +1109,14 @@
                 html += '<div class="analysis-card">' +
                     '<h4>🏫 Kelas ' + k + '</h4>' +
                     '<div class="analysis-stats">' +
-                        '<span class="analysis-stat-item">📝 ' + count + ' feedback</span>' +
+                        '<span class="analysis-stat-item">📝 ' + count + ' refleksi</span>' +
                         '<span class="analysis-stat-item">🎯 Sesi ' + topSesi + ' aktif</span>' +
+                        '<span class="analysis-stat-item">🚀 ' + analysis.actionReadyText + '</span>' +
                         '<span class="sentiment-badge ' + sentimentClass + '">' + sentimentLabel + '</span>' +
                     '</div>' +
-                    '<div class="analysis-summary">' + generateSummary(data.reflections) + '</div>' +
+                    '<div class="analysis-summary">' + analysis.summaryHtml + '</div>' +
                     '<div class="analysis-keywords">' +
-                        '<strong>Topik:</strong> ' + commonKeywords.map(function(t){ return '<span class="analysis-topic">' + t + '</span>'; }).join('') +
+                        '<strong>Topik dominan:</strong> ' + commonKeywords.map(function(t){ return '<span class="analysis-topic">' + escHtml(t) + '</span>'; }).join('') +
                     '</div>' +
                     '</div>';
             });
@@ -1039,17 +1125,49 @@
             wrap.innerHTML = html;
         }
 
+        function normalizeText(text) {
+            return ' ' + (text || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim() + ' ';
+        }
+
+        function containsKeyword(text, keyword) {
+            var normalizedKeyword = normalizeText(keyword).trim();
+            if (!normalizedKeyword) return false;
+            return text.indexOf(' ' + normalizedKeyword + ' ') > -1;
+        }
+
+        function containsAnyKeyword(text, keywords) {
+            if (!keywords || !keywords.length) return false;
+            for (var i = 0; i < keywords.length; i++) {
+                if (containsKeyword(text, keywords[i])) return true;
+            }
+            return false;
+        }
+
+        function countKeywordHits(text, keywords) {
+            var hits = 0;
+            if (!keywords) return hits;
+            keywords.forEach(function(keyword) {
+                if (containsKeyword(text, keyword)) hits += 1;
+            });
+            return hits;
+        }
+
         function analyzeSentiment(refls) {
             var score = 0;
-            var pos = ['senang', 'seru', 'paham', 'mengerti', 'bermanfaat', 'bagus', 'keren', 'terima kasih', 'asik', 'motivasi', 'semangat', 'mantap', 'belajar', 'menambah'];
-            var neg = ['bingung', 'sulit', 'bosan', 'kurang', 'lambat', 'susah', 'ngantuk', 'lelah', 'capek', 'pusing', 'tidak tahu'];
+            var counted = 0;
             
             refls.forEach(function(r) {
-                var text = (r.refleksi || '').toLowerCase();
-                pos.forEach(function(w) { if (text.indexOf(w) > -1) score += 1; });
-                neg.forEach(function(w) { if (text.indexOf(w) > -1) score -= 1.5; });
+                var text = normalizeText(r.refleksi || '');
+                if (text.trim().length === 0) return;
+                counted += 1;
+                score += countKeywordHits(text, POSITIVE_SENTIMENT_WORDS);
+                score -= countKeywordHits(text, NEGATIVE_SENTIMENT_WORDS) * 1.2;
             });
-            return refls.length > 0 ? score / refls.length : 0;
+            return counted > 0 ? score / counted : 0;
         }
 
         function getTopSesi(bySesi) {
@@ -1061,33 +1179,175 @@
             return top;
         }
 
-        function extractKeywords(refls) {
-            var stopWords = ['saya', 'dan', 'di', 'yang', 'ini', 'itu', 'untuk', 'dengan', 'ada', 'dari', 'bisa', 'jadi', 'sudah', 'lebih', 'bahwa', 'adalah'];
+        function extractKeywords(refls, fallbackTopics) {
+            var stopWords = [
+                'saya', 'aku', 'kami', 'kita', 'dan', 'di', 'yang', 'ini', 'itu', 'untuk', 'dengan', 'ada', 'dari', 'bisa',
+                'jadi', 'sudah', 'lebih', 'bahwa', 'adalah', 'karena', 'dalam', 'agar', 'pada', 'atau', 'juga', 'tidak',
+                'masih', 'sangat', 'setelah', 'sebelum', 'tetapi', 'seperti', 'akan', 'ingin', 'mau', 'saat', 'supaya'
+            ];
             var counts = {};
             refls.forEach(function(r) {
-                var words = (r.refleksi || '').toLowerCase().replace(/[^a-z ]/g, '').split(/\s+/);
+                var words = normalizeText(r.refleksi || '').trim().split(/\s+/);
                 words.forEach(function(w) {
-                    if (w.length > 4 && stopWords.indexOf(w) === -1) {
+                    if (w.length > 3 && stopWords.indexOf(w) === -1) {
                         counts[w] = (counts[w] || 0) + 1;
                     }
                 });
             });
-            return Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; }).slice(0, 5);
+            var keywords = Object.keys(counts)
+                .sort(function(a, b) { return counts[b] - counts[a]; })
+                .slice(0, 5);
+            if (keywords.length) return keywords;
+            return (fallbackTopics || []).slice(0, 5).map(function(item) { return item.label; });
         }
 
-        function generateSummary(refls) {
-            if (refls.length === 0) return 'Tidak ada data.';
-            /* Optimization: find a meaningful reflection (not too short, not too long) */
-            var best = refls[0].refleksi || '—';
-            for(var i=0; i<refls.length; i++) {
-                var txt = refls[i].refleksi || '';
-                if(txt.length > 40 && txt.length < 150) {
-                    best = txt;
-                    break;
-                }
+        function uniqueList(items) {
+            var seen = {};
+            return items.filter(function(item) {
+                if (!item || seen[item]) return false;
+                seen[item] = true;
+                return true;
+            });
+        }
+
+        function sortSignals(counts, type) {
+            return ANALYSIS_SIGNALS
+                .filter(function(signal) {
+                    return signal.type === type && counts[signal.key];
+                })
+                .sort(function(a, b) {
+                    return counts[b.key] - counts[a.key];
+                });
+        }
+
+        function joinSignalLabels(signals, fallbackText) {
+            if (!signals || !signals.length) return fallbackText || 'belum ada pola yang menonjol';
+            var labels = signals.map(function(signal) { return signal.label; });
+            if (labels.length === 1) return labels[0];
+            if (labels.length === 2) return labels[0] + ' dan ' + labels[1];
+            return labels.slice(0, -1).join(', ') + ', dan ' + labels[labels.length - 1];
+        }
+
+        function buildTeacherActions(strengths, challenges, actionRate) {
+            var actions = [];
+
+            if (strengths.length) {
+                actions.push('Pertahankan aktivitas yang menguatkan ' + strengths[0].label + ' karena tema ini paling sering muncul di kelas.');
+            } else {
+                actions.push('Gunakan pertanyaan refleksi yang lebih terarah agar siswa lebih mudah menuliskan insight yang spesifik.');
             }
-            if (best.length > 160) best = best.substring(0, 157) + '...';
-            return best;
+
+            if (challenges.length) actions.push(challenges[0].teacherAction);
+
+            if (actionRate < 0.5) {
+                actions.push('Tutup sesi berikutnya dengan target 1 langkah kecil yang spesifik: apa yang dilakukan, kapan, dan bagaimana guru mengeceknya.');
+            } else {
+                actions.push('Awali sesi berikutnya dengan follow-up 3 menit untuk mengecek apakah rencana aksi siswa benar-benar dijalankan.');
+            }
+
+            return uniqueList(actions).slice(0, 3);
+        }
+
+        function buildStudentActions(strengths, challenges, actionRate) {
+            var actions = [];
+
+            if (strengths.length) {
+                actions.push('Pertahankan ' + strengths[0].label + ' dengan satu tindakan nyata di kelas, rumah, atau tim minggu ini.');
+            } else {
+                actions.push('Tuliskan refleksi dengan lebih konkret: apa yang dipelajari, apa yang dirasakan, dan apa yang akan dilakukan.');
+            }
+
+            if (challenges.length) actions.push(challenges[0].studentAction);
+
+            if (actionRate < 0.5) {
+                actions.push('Ubah refleksimu menjadi satu aksi 24 jam ke depan yang jelas: apa, kapan, dan dengan siapa.');
+            } else {
+                actions.push('Jalankan satu aksi yang sudah kamu rencanakan lalu evaluasi hasilnya pada refleksi berikutnya.');
+            }
+
+            return uniqueList(actions).slice(0, 3);
+        }
+
+        function renderAnalysisBlock(title, items) {
+            return '<div class="analysis-block">' +
+                '<div class="analysis-block-title">' + escHtml(title) + '</div>' +
+                '<ul class="analysis-list">' +
+                items.map(function(item) {
+                    return '<li>' + escHtml(item) + '</li>';
+                }).join('') +
+                '</ul>' +
+                '</div>';
+        }
+
+        function analyzeReflectionSet(refls) {
+            if (!refls || !refls.length) {
+                return {
+                    validCount: 0,
+                    sentimentScore: 0,
+                    actionReadyText: 'Belum ada data aksi',
+                    keywords: ['belum cukup data'],
+                    summaryHtml: renderAnalysisBlock('Ringkasan Kelas', ['Belum ada data refleksi yang bisa dianalisa.'])
+                };
+            }
+
+            var validCount = 0;
+            var actionCount = 0;
+            var signalCounts = {};
+
+            refls.forEach(function(r) {
+                var text = normalizeText(r.refleksi || '');
+                if (text.trim().length === 0) return;
+
+                validCount += 1;
+
+                ANALYSIS_SIGNALS.forEach(function(signal) {
+                    var matched = containsAnyKeyword(text, signal.keywords);
+                    if (matched && signal.excludeKeywords && containsAnyKeyword(text, signal.excludeKeywords)) matched = false;
+                    if (matched) signalCounts[signal.key] = (signalCounts[signal.key] || 0) + 1;
+                });
+
+                if (containsAnyKeyword(text, ACTION_PLAN_KEYWORDS)) actionCount += 1;
+            });
+
+            var strengths = sortSignals(signalCounts, 'strength').slice(0, 2);
+            var challenges = sortSignals(signalCounts, 'challenge').slice(0, 2);
+            var actionRate = validCount > 0 ? actionCount / validCount : 0;
+            var sentimentScore = analyzeSentiment(refls);
+            var actionReadyText = actionRate >= 0.75
+                ? 'Aksi siap ditindaklanjuti'
+                : actionRate >= 0.45
+                    ? 'Aksi mulai terbentuk'
+                    : 'Aksi masih perlu diarahkan';
+
+            var summaryItems = [];
+            summaryItems.push('Tema yang paling sering muncul: ' + joinSignalLabels(strengths, 'belum ada tema positif yang dominan') + '.');
+            if (challenges.length) {
+                summaryItems.push('Area yang masih perlu didampingi: ' + joinSignalLabels(challenges) + '.');
+            } else {
+                summaryItems.push('Belum tampak hambatan dominan; fokus berikutnya adalah menjaga konsistensi praktik baik yang sudah muncul.');
+            }
+            summaryItems.push(actionCount + ' dari ' + validCount + ' refleksi (' + Math.round(actionRate * 100) + '%) sudah menyebut langkah atau niat aksi ke depan.');
+
+            var teacherActions = buildTeacherActions(strengths, challenges, actionRate);
+            var studentActions = buildStudentActions(strengths, challenges, actionRate);
+            var derivedTopics = uniqueList(strengths.concat(challenges).map(function(signal) {
+                return signal.topic || signal.label;
+            }));
+            var keywordTopics = extractKeywords(refls, []).filter(function(topic) {
+                return derivedTopics.indexOf(topic) === -1;
+            });
+            var topics = derivedTopics.concat(keywordTopics).slice(0, 5);
+
+            return {
+                validCount: validCount,
+                sentimentScore: sentimentScore,
+                actionReadyText: actionReadyText,
+                keywords: topics.length ? topics : ['belum cukup data'],
+                summaryHtml:
+                    renderAnalysisBlock('Ringkasan Kelas', summaryItems) +
+                    renderAnalysisBlock('Tindak Lanjut Guru', teacherActions) +
+                    renderAnalysisBlock('Tindak Lanjut Siswa', studentActions)
+            };
         }
 
         function formatTanggal(str) {
