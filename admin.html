@@ -845,7 +845,7 @@
             if (el) wrap = el;
             if (!wrap) return;
             var html = '<div class="table-wrap"><table class="data-table" id="refTable"><thead><tr>' +
-                '<th>No</th><th>Sesi</th><th>Nama</th><th>Email</th><th>Kelas</th><th>Absen</th><th>Refleksi</th><th>Waktu</th>' +
+                '<th>No</th><th>Sesi</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Refleksi</th><th>Waktu</th>' +
                 '</tr></thead><tbody id="refTableBody"></tbody></table></div>';
             html += '<div id="refPagination"></div>';
             wrap.innerHTML = html;
@@ -884,7 +884,7 @@
             if (!tbody) return;
             var html = '';
             if (totalItems === 0) {
-                html = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data refleksi.</p></div></td></tr>';
+                html = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data refleksi.</p></div></td></tr>';
             } else {
                 paginated.forEach(function(r, idx){
                     var i = start + idx;
@@ -892,7 +892,6 @@
                         '<td>' + (i+1) + '</td>' +
                         '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
                         '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
-                        '<td style="font-size:.75rem;color:rgba(255,255,255,.4)">' + (r.email||'—') + '</td>' +
                         '<td>' + (r.kelas||'—') + '</td>' +
                         '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
                         '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
@@ -919,12 +918,12 @@
 
         function exportReflCSV() {
             if (!allReflections.length) return;
-            var csv = 'No,Sesi,Nama,Email,Kelas,Absen,Refleksi,Waktu\n';
+            var csv = 'No,Sesi,Nama,Kelas,Absen,Refleksi,Waktu\n';
             allReflections.forEach(function(r, i){
                 csv += (i+1) + ',' +
                     (r.sesi||'') + ',' +
                     '"' + (r.nama||r.googleName||'').replace(/"/g,'""') + '",' +
-                    '"' + (r.email||'') + '",' +
+
                     '"' + (r.kelas||'') + '",' +
                     (r.absen||'') + ',' +
                     '"' + (r.refleksi||'').replace(/"/g,'""').replace(/\n/g,' ') + '",' +
