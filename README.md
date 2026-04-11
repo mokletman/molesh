@@ -1,16 +1,16 @@
-# Moklet Leadership: Sadari, Peduli, Berani Beraksi
+# Moklet Leadership: Sadar Diri, Peduli Kasih, Beraksi dan Melayani
 
 Materi ini dirancang untuk membentuk karakter kepemimpinan siswa melalui tiga pilar utama:
 
-- Sadari
-- Peduli
-- Berani Beraksi
+- Sadar Diri
+- Peduli Kasih
+- Beraksi dan Melayani
 
 Ketiganya menjadi fondasi agar kepemimpinan tidak hanya terlihat saat memimpin, tetapi juga terasa dalam sikap sehari-hari.
 
-## 1) Sadari
+## 1) Sadar Diri
 
-Sadari berarti mengenali diri sendiri sebelum mengarahkan orang lain.
+Sadar Diri berarti mengenali diri sendiri sebelum mengarahkan orang lain.
 
 Fokus pembahasan:
 
@@ -25,13 +25,13 @@ Hasil yang diharapkan:
 - Tidak mudah reaktif dalam konflik
 - Memiliki arah pengembangan diri yang jelas
 
-## 2) Peduli
+## 2) Peduli Kasih
 
-Peduli berarti mampu melihat, mendengar, dan merespons kebutuhan orang lain serta lingkungan.
+Peduli Kasih berarti mampu melihat, mendengar, dan merespons kebutuhan orang lain serta lingkungan dengan empati yang aktif.
 
 Fokus pembahasan:
 
-- Empati dalam komunikasi dan kerja tim
+- Empati yang diwujudkan dalam komunikasi dan kerja tim
 - Membangun kebiasaan saling menghargai
 - Menumbuhkan tanggung jawab sosial
 - Menjadi teladan dalam budaya kolaboratif
@@ -42,16 +42,16 @@ Hasil yang diharapkan:
 - Lingkungan belajar yang aman dan suportif
 - Meningkatnya rasa memiliki terhadap komunitas
 
-## 3) Berani Beraksi
+## 3) Beraksi dan Melayani
 
-Berani Beraksi berarti berani melangkah, mengeksekusi keputusan, dan bertanggung jawab atas dampaknya.
+Beraksi dan Melayani berarti berani melangkah, mengeksekusi keputusan, dan memastikan tindakan kita memberi manfaat bagi orang lain.
 
 Fokus pembahasan:
 
-- Berani beraksi menyampaikan ide dengan jelas
-- Berani beraksi mengambil keputusan berbasis nilai
-- Berani beraksi menghadapi tantangan dan perubahan
-- Berani beraksi mengakui kesalahan lalu memperbaiki
+- Beraksi dengan jelas saat menyampaikan ide
+- Melayani lewat keputusan yang berbasis nilai
+- Berani mengambil tanggung jawab saat menghadapi tantangan dan perubahan
+- Rendah hati mengakui kesalahan lalu memperbaiki dampaknya
 
 Hasil yang diharapkan:
 
@@ -61,13 +61,13 @@ Hasil yang diharapkan:
 
 ## Alur Penerapan di Sekolah
 
-1. Sadari diri: mulai dari refleksi dan target pribadi
-2. Peduli sekitar: praktik empati di kelas, organisasi, dan proyek
-3. Berani beraksi: ambil peran, eksekusi ide, evaluasi hasil
+1. Sadar diri: mulai dari refleksi dan target pribadi
+2. Peduli kasih: praktik empati aktif di kelas, organisasi, dan proyek
+3. Beraksi dan melayani: ambil peran, eksekusi ide, lalu pastikan hasilnya bermanfaat
 
 ## Penutup
 
-Pemimpin yang kuat dimulai dari kesadaran diri, tumbuh lewat kepedulian, dan diwujudkan lewat kebiasaan berani beraksi.
+Pemimpin yang kuat dimulai dari kesadaran diri, tumbuh lewat peduli kasih, dan diwujudkan lewat kebiasaan beraksi dan melayani.
 
 ## Presentasi
 
