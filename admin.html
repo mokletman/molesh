@@ -466,8 +466,11 @@
 
             /* ── Tab: Refleksi ── */
             html += '<div id="tabRefleksi" class="tab-content">';
+            var refKelasOptions = '<option value="">Semua Kelas</option>';
+            kelasList.forEach(function(k){ refKelasOptions += '<option value="' + k + '">' + k + '</option>'; });
             html += '<div class="toolbar">' +
-                '<input class="search-input" id="refSearchInput" type="text" placeholder="🔍 Cari nama atau email..." oninput="filterReflections(true)">' +
+                '<input class="search-input" id="refSearchInput" type="text" placeholder="🔍 Cari nama, kelas, atau email..." oninput="filterReflections(true)">' +
+                '<select class="filter-select" id="filterRefKelas" onchange="filterReflections(true)">' + refKelasOptions + '</select>' +
                 '<select class="filter-select" id="filterSesi" onchange="filterReflections(true)">' +
                 '<option value="">Semua Sesi</option>' +
                 '<option value="1">Sesi 1</option><option value="2">Sesi 2</option>' +
@@ -911,13 +914,16 @@
             var q = (document.getElementById('refSearchInput')||{}).value;
             q = q ? q.toLowerCase() : '';
             var sesi = (document.getElementById('filterSesi')||{}).value;
+            var kelasFilter = (document.getElementById('filterRefKelas')||{}).value || '';
             
             var filtered = allReflections.filter(function(r) {
                 var rNama = (r.nama||r.googleName||'').toLowerCase();
                 var rEmail = (r.email||'').toLowerCase();
-                var matchQ = !q || rNama.indexOf(q) > -1 || rEmail.indexOf(q) > -1;
+                var rKelas = (r.kelas||'').toLowerCase();
+                var matchQ = !q || rNama.indexOf(q) > -1 || rEmail.indexOf(q) > -1 || rKelas.indexOf(q) > -1;
                 var matchS = !sesi || (r.sesi||'').toString() === sesi;
-                return matchQ && matchS;
+                var matchK = !kelasFilter || (r.kelas||'') === kelasFilter;
+                return matchQ && matchS && matchK;
             });
             
             var totalItems = filtered.length;
