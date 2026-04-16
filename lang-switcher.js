@@ -3,6 +3,12 @@
     var COOKIE_NAME = 'googtrans';
     var SOURCE_LANG = '/id';
     var TARGET_LANG = '/en';
+    var HOME_PATHS = {
+        '/molesh/': true,
+        '/molesh/index.html': true,
+        '/': true,
+        '/index.html': true
+    };
 
     var PAGE_TITLES = {
         '/molesh/': { id: 'Moklet Leadership', en: 'Moklet Leadership' },
@@ -43,6 +49,10 @@
         }
         localStorage.setItem(LANG_KEY, lang);
         document.documentElement.lang = lang;
+    }
+
+    function isHomePage() {
+        return !!HOME_PATHS[location.pathname];
     }
 
     function applyTitle(lang) {
@@ -131,6 +141,52 @@
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     }
 
+    function placeManagementButton() {
+        if (!isHomePage()) return;
+        if (document.querySelector('.ml-management-link')) return;
+
+        var link = document.createElement('a');
+        link.href = 'manajemen.html';
+        link.className = 'ml-management-link';
+        link.setAttribute('aria-label', 'Buka About Manajemen');
+        link.title = 'Buka About Manajemen';
+        link.textContent = 'ABOUT MANAJEMEN';
+        link.style.position = 'fixed';
+        link.style.zIndex = '10000';
+        link.style.right = '16px';
+        link.style.top = document.querySelector('.theme-toggle') ? '112px' : '64px';
+        link.style.minWidth = '152px';
+        link.style.height = '40px';
+        link.style.padding = '0 16px';
+        link.style.display = 'inline-flex';
+        link.style.alignItems = 'center';
+        link.style.justifyContent = 'center';
+        link.style.borderRadius = '999px';
+        link.style.border = '1px solid rgba(255, 255, 255, .16)';
+        link.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, .92), rgba(37, 99, 235, .92))';
+        link.style.color = '#f8fafc';
+        link.style.backdropFilter = 'blur(14px)';
+        link.style.webkitBackdropFilter = 'blur(14px)';
+        link.style.fontFamily = "'Plus Jakarta Sans', system-ui, sans-serif";
+        link.style.fontSize = '.72rem';
+        link.style.fontWeight = '800';
+        link.style.letterSpacing = '.7px';
+        link.style.textDecoration = 'none';
+        link.style.boxShadow = '0 8px 24px rgba(0,0,0,.2)';
+        link.style.transition = 'transform .18s ease, filter .18s ease, box-shadow .18s ease';
+        link.addEventListener('mouseenter', function () {
+            link.style.transform = 'translateY(-1px)';
+            link.style.filter = 'saturate(1.08) brightness(1.03)';
+            link.style.boxShadow = '0 12px 30px rgba(0,0,0,.26)';
+        });
+        link.addEventListener('mouseleave', function () {
+            link.style.transform = 'translateY(0)';
+            link.style.filter = 'none';
+            link.style.boxShadow = '0 8px 24px rgba(0,0,0,.2)';
+        });
+        document.body.appendChild(link);
+    }
+
     function syncButtonTheme(btn) {
         if (!btn) return;
         if (document.documentElement.classList.contains('theme-light')) {
@@ -150,6 +206,7 @@
         applyTitle(lang);
         injectGoogleTranslate();
         placeButton();
+        placeManagementButton();
     }
 
     if (document.readyState === 'loading') {
