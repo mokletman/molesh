@@ -1341,7 +1341,7 @@
         /* Dual mentor layout */
         .mentors-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 10px;
             width: 100%;
             margin-bottom: 20px
@@ -1386,6 +1386,30 @@
             color: #34d399
         }
 
+        .mentor-feature.attitude-card {
+            background: linear-gradient(135deg, rgba(254, 240, 138, .14), rgba(125, 211, 252, .14));
+            border-color: rgba(250, 204, 21, .24);
+            cursor: pointer;
+        }
+
+        .mentor-feature.attitude-card:hover {
+            background: linear-gradient(135deg, rgba(254, 240, 138, .2), rgba(125, 211, 252, .2));
+            border-color: rgba(250, 204, 21, .42);
+        }
+
+        .mentor-feature.attitude-card .mf-icon {
+            background: linear-gradient(135deg, #f59e0b, #38bdf8);
+            box-shadow: 0 3px 12px rgba(59, 130, 246, .22);
+        }
+
+        .mentor-feature.attitude-card .mf-title {
+            color: #fde68a;
+        }
+
+        .mentor-feature.attitude-card .mf-ext {
+            color: rgba(255, 255, 255, .46);
+        }
+
         .mf-ext {
             display: inline-flex;
             align-items: center;
@@ -1404,6 +1428,148 @@
             .mentors-row {
                 grid-template-columns: 1fr
             }
+        }
+
+        /* ── ATTITUDE Popup ── */
+        .attitude-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10010;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .22s ease;
+            background: rgba(11, 11, 26, .78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .attitude-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .attitude-modal-card {
+            width: 100%;
+            max-width: 920px;
+            max-height: min(90vh, 980px);
+            overflow: auto;
+            border-radius: 28px;
+            padding: 22px;
+            background:
+                radial-gradient(circle at top left, rgba(250, 204, 21, .16), transparent 36%),
+                radial-gradient(circle at bottom right, rgba(59, 130, 246, .16), transparent 40%),
+                linear-gradient(145deg, rgba(15, 23, 42, .98), rgba(30, 41, 59, .98));
+            border: 1px solid rgba(250, 204, 21, .18);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+            transform: translateY(16px);
+            transition: transform .22s ease;
+        }
+
+        .attitude-modal.active .attitude-modal-card {
+            transform: translateY(0);
+        }
+
+        .attitude-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .attitude-modal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, .14);
+            border: 1px solid rgba(125, 211, 252, .18);
+            color: #bfdbfe;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .attitude-modal-close {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
+            color: #e2e8f0;
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        .attitude-modal h2 {
+            font-size: clamp(1.25rem, 3vw, 2rem);
+            line-height: 1.15;
+            color: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .attitude-modal p {
+            color: rgba(226, 232, 240, .72);
+            line-height: 1.65;
+            font-size: .95rem;
+            margin-bottom: 16px;
+        }
+
+        .attitude-modal figure {
+            margin: 0;
+        }
+
+        .attitude-modal img {
+            width: 100%;
+            display: block;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .attitude-modal figcaption {
+            margin-top: 10px;
+            font-size: .78rem;
+            color: rgba(203, 213, 225, .68);
+            text-align: center;
+        }
+
+        html.theme-light .attitude-modal {
+            background: rgba(255, 255, 255, .72);
+        }
+
+        html.theme-light .attitude-modal-card {
+            background:
+                radial-gradient(circle at top left, rgba(254, 240, 138, .26), transparent 36%),
+                radial-gradient(circle at bottom right, rgba(191, 219, 254, .24), transparent 40%),
+                linear-gradient(145deg, rgba(255, 255, 255, .98), rgba(248, 250, 252, .98));
+            border-color: rgba(59, 130, 246, .12);
+        }
+
+        html.theme-light .attitude-modal h2 {
+            color: #111827;
+        }
+
+        html.theme-light .attitude-modal p {
+            color: rgba(31, 41, 55, .72);
+        }
+
+        html.theme-light .attitude-modal-close {
+            background: rgba(15, 23, 42, .05);
+            border-color: rgba(15, 23, 42, .08);
+            color: #0f172a;
+        }
+
+        html.theme-light .attitude-modal figcaption {
+            color: rgba(31, 41, 55, .58);
         }
 
         .cta {
@@ -2405,6 +2571,16 @@
                     </div>
                     <span class="mf-ext">↗ Buka ChatGPT</span>
                 </a>
+                <a class="mentor-feature attitude-card" href="#" role="button" aria-label="Lihat poster nilai ATTITUDE" onclick="showAttitudePopup(); return false;">
+                    <div class="mf-top">
+                        <div class="mf-icon">🖼️</div>
+                        <div class="mf-info">
+                            <div class="mf-title">Nilai ATTITUDE</div>
+                            <div class="mf-desc">Klik untuk melihat poster budaya &amp; karakter</div>
+                        </div>
+                    </div>
+                    <span class="mf-ext">Lihat poster</span>
+                </a>
             </div>
 
             <a class="cta" id="ctaBtn" href="presentasi.html">
@@ -3357,6 +3533,21 @@
         </div>
     </div>
 
+    <div id="attitudeModal" class="attitude-modal" onclick="closeAttitudePopup()">
+        <div class="attitude-modal-card" onclick="event.stopPropagation()">
+            <div class="attitude-modal-head">
+                <span class="attitude-modal-badge">ATTITUDE</span>
+                <button class="attitude-modal-close" type="button" onclick="closeAttitudePopup()" aria-label="Tutup popup ATTITUDE">×</button>
+            </div>
+            <h2>Budaya dan Karakter Unggul SMK Telkom Malang</h2>
+            <p>Poster ini menampilkan nilai ATTITUDE sebagai pengingat budaya belajar, etika, dan karakter yang kita jaga bersama di Moklet.</p>
+            <figure>
+                <img src="assets/nilai-attitude-2026.jpeg" alt="Poster nilai ATTITUDE SMK Telkom Malang">
+                <figcaption>Poster ATTITUDE SMK Telkom Malang 2026</figcaption>
+            </figure>
+        </div>
+    </div>
+
     <script>
         function showInsight(title, desc, icon) {
             var modal = document.getElementById('insightModal');
@@ -3381,6 +3572,16 @@
             document.getElementById('mIcon').textContent = '🔥';
             document.getElementById('mBtn').textContent = 'SAYA MENGERTI';
             modal.classList.add('active');
+        }
+        function showAttitudePopup() {
+            var modal = document.getElementById('attitudeModal');
+            document.body.style.overflow = 'hidden';
+            modal.classList.add('active');
+        }
+        function closeAttitudePopup() {
+            var modal = document.getElementById('attitudeModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
         }
         function closeInsight() {
             var modal = document.getElementById('insightModal');
