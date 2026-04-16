@@ -958,6 +958,108 @@
             text-align: center
         }
 
+        .commitment-history {
+            display: none;
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 20px;
+            text-align: left;
+            background: linear-gradient(145deg, rgba(127, 29, 29, .24), rgba(30, 64, 175, .18));
+            border: 1px solid rgba(125, 211, 252, .18);
+            box-shadow: inset 0 0 0 1px rgba(254, 226, 226, .04);
+        }
+
+        .commitment-history.show {
+            display: block;
+            animation: fadein .35s ease both;
+        }
+
+        .commitment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .commitment-title {
+            font-size: .9rem;
+            font-weight: 800;
+            color: #fef2f2;
+        }
+
+        .commitment-subtitle {
+            font-size: .72rem;
+            color: rgba(226, 232, 240, .68);
+            margin-top: 3px;
+        }
+
+        .commitment-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: .64rem;
+            font-weight: 800;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, .08);
+            color: #bfdbfe;
+        }
+
+        .commitment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .commitment-item {
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, .34);
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .commitment-item-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .commitment-item-title {
+            font-size: .8rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .commitment-item-meta {
+            font-size: .68rem;
+            color: rgba(226, 232, 240, .54);
+            margin-top: 2px;
+            line-height: 1.45;
+        }
+
+        .commitment-item-time {
+            flex-shrink: 0;
+            font-size: .66rem;
+            font-weight: 700;
+            color: #bfdbfe;
+            text-align: right;
+        }
+
+        .commitment-note {
+            font-size: .8rem;
+            line-height: 1.7;
+            color: rgba(255, 241, 242, .92);
+        }
+
+        .commitment-note strong {
+            color: #fecaca;
+        }
+
         .op-bar {
             width: 100%;
             height: 8px;
@@ -1311,6 +1413,16 @@
                 flex-direction: column;
             }
 
+            .commitment-header,
+            .commitment-item-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .commitment-item-time {
+                text-align: left;
+            }
+
             .cta {
                 padding: 13px 26px;
                 font-size: .88rem
@@ -1507,6 +1619,50 @@
 
         html.theme-light .op-pct {
             color: #6d28d9
+        }
+
+        html.theme-light .commitment-history {
+            background: linear-gradient(145deg, rgba(254, 226, 226, .92), rgba(219, 234, 254, .9));
+            border-color: rgba(239, 68, 68, .12);
+            box-shadow: 0 16px 30px rgba(15, 23, 42, .06);
+        }
+
+        html.theme-light .commitment-title {
+            color: #7f1d1d;
+        }
+
+        html.theme-light .commitment-subtitle {
+            color: rgba(30, 41, 59, .62);
+        }
+
+        html.theme-light .commitment-pill {
+            background: rgba(255, 255, 255, .72);
+            color: #1d4ed8;
+        }
+
+        html.theme-light .commitment-item {
+            background: rgba(255, 255, 255, .72);
+            border-color: rgba(15, 23, 42, .08);
+        }
+
+        html.theme-light .commitment-item-title {
+            color: #0f172a;
+        }
+
+        html.theme-light .commitment-item-meta {
+            color: rgba(30, 41, 59, .58);
+        }
+
+        html.theme-light .commitment-item-time {
+            color: #1d4ed8;
+        }
+
+        html.theme-light .commitment-note {
+            color: rgba(30, 41, 59, .88);
+        }
+
+        html.theme-light .commitment-note strong {
+            color: #b91c1c;
         }
 
         html.theme-light .s-continue {
@@ -2071,6 +2227,8 @@
             <h2>📚 Menu Pembelajaran</h2>
             <p class="dash-subtitle">Pilih sesi untuk memulai. Selesaikan secara berurutan untuk hasil terbaik.</p>
 
+            <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
+
             <div class="overall-progress" id="overallProgress">
                 <div style="display:flex;align-items:center;justify-content:space-between">
                     <span class="op-label">Progress Keseluruhan</span>
@@ -2288,6 +2446,9 @@
             /* Render sessions with progress */
             renderSessionProgress(user.email);
 
+            /* Render commitment history */
+            loadCommitmentHistory(user.email);
+
             /* Render achievement badges */
             renderBadges(user.email);
         }
@@ -2301,6 +2462,7 @@
             { num: 5, href: 'sesi5.html', title: 'Kepemimpinan Organisasi', desc: 'Situational leadership & conflict resolution' },
             { num: 6, href: 'sesi6.html', title: 'Rencana Aksi', desc: 'Personal leadership roadmap 3 bulan' }
         ];
+        var COMMITMENT_NOTE = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari orang lain.';
 
         function renderSessionProgress(email) {
             var container = document.getElementById('sessionsContainer');
@@ -2396,6 +2558,140 @@
 
         function openSession(href) {
             window.location.href = href;
+        }
+
+        function getCommitmentStorageKey(email) {
+            return 'molesh_commitment_history_' + email;
+        }
+
+        function saveCommitmentHistoryCache(email, items) {
+            try {
+                localStorage.setItem(getCommitmentStorageKey(email), JSON.stringify(items || []));
+            } catch (e) { }
+        }
+
+        function getCommitmentHistoryCache(email) {
+            try {
+                return JSON.parse(localStorage.getItem(getCommitmentStorageKey(email)) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function formatCommitmentDate(value) {
+            if (!value) return '';
+            try {
+                var date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    return date.toLocaleString('id-ID', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'long',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            } catch (e) { }
+            return String(value);
+        }
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function normalizeCommitmentEntry(entry) {
+            return {
+                checkinId: entry.checkinId || entry.id || '',
+                tanggal: entry.tanggal || '',
+                deskripsi: entry.deskripsi || '',
+                checkinTime: entry.checkinTime || entry.createdAt || entry.timestamp || '',
+                note: COMMITMENT_NOTE
+            };
+        }
+
+        function renderCommitmentHistory(items) {
+            var wrap = document.getElementById('commitmentHistory');
+            if (!wrap) return;
+
+            if (!items || !items.length) {
+                wrap.classList.remove('show');
+                wrap.innerHTML = '';
+                return;
+            }
+
+            var html = '';
+            html += '<div class="commitment-header">';
+            html += '<div><div class="commitment-title">🔥 Catatan Komitmen Check-In</div><div class="commitment-subtitle">Riwayat komitmen yang sudah kamu tandai dari beranda.</div></div>';
+            html += '<span class="commitment-pill">Sudah Check-In</span>';
+            html += '</div>';
+            html += '<div class="commitment-list">';
+
+            items.slice(0, 3).forEach(function (item) {
+                var title = item.tanggal ? 'Check-In ' + item.tanggal : 'Check-In Tercatat';
+                var metaText = item.deskripsi || 'Komitmen harian sudah dicatat di beranda.';
+                html += '<div class="commitment-item">';
+                html += '<div class="commitment-item-top">';
+                html += '<div><div class="commitment-item-title">' + escapeHtml(title) + '</div><div class="commitment-item-meta">' + escapeHtml(metaText) + '</div></div>';
+                html += '<div class="commitment-item-time">' + formatCommitmentDate(item.checkinTime || item.tanggal) + '</div>';
+                html += '</div>';
+                html += '<div class="commitment-note"><strong>Komitmen:</strong> ' + escapeHtml(item.note) + '</div>';
+                html += '</div>';
+            });
+
+            html += '</div>';
+            wrap.innerHTML = html;
+            wrap.classList.add('show');
+        }
+
+        function loadCommitmentHistory(email) {
+            if (!email || email === 'Mode pratinjau') return;
+
+            var cached = getCommitmentHistoryCache(email);
+            if (cached.length) {
+                renderCommitmentHistory(cached);
+            }
+
+            if (typeof MOLESH_CONFIG === 'undefined' || MOLESH_CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL') {
+                return;
+            }
+
+            fetch(MOLESH_CONFIG.APPS_SCRIPT_URL + '?type=checkinLog')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var items = (data || [])
+                        .filter(function (entry) { return entry.email === email; })
+                        .map(normalizeCommitmentEntry)
+                        .sort(function (a, b) {
+                            return new Date(b.checkinTime || b.tanggal || 0) - new Date(a.checkinTime || a.tanggal || 0);
+                        });
+                    saveCommitmentHistoryCache(email, items);
+                    renderCommitmentHistory(items);
+                })
+                .catch(function () {
+                    renderCommitmentHistory(cached);
+                });
+        }
+
+        function addCommitmentHistoryEntry(user, tanggal, deskripsi, ciId) {
+            if (!user || !user.email || user.email === 'Mode pratinjau') return;
+
+            var items = getCommitmentHistoryCache(user.email);
+            var entry = normalizeCommitmentEntry({
+                checkinId: ciId,
+                tanggal: tanggal,
+                deskripsi: deskripsi,
+                checkinTime: new Date().toISOString()
+            });
+
+            items = items.filter(function (item) { return item.checkinId !== ciId; });
+            items.unshift(entry);
+            saveCommitmentHistoryCache(user.email, items);
+            renderCommitmentHistory(items);
         }
 
         var currentReflectionSession = null;
@@ -2832,6 +3128,7 @@
                 body: payload
             }).then(function () {
                 markCheckedIn(ciId);
+                addCommitmentHistoryEntry(user, tanggal, deskripsi, ciId);
                 var card = document.getElementById('ci_' + ciId);
                 if (card) {
                     card.innerHTML = '<div class="cb-icon">✅</div><div class="cb-info"><div class="cb-title">Check-In tercatat</div></div><button class="cb-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>';
