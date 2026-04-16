@@ -682,9 +682,9 @@
                         html += '<button class="ci-close" onclick="dismissCheckin(\'' + ci.id + '\')" title="Tutup">×</button>';
                         if (alreadyDone) {
                             html += '<div class="checkin-header"><div class="ci-icon">✅</div>' +
-                                '<h3>Check-In ' + tanggal + '</h3></div>';
+                                '<h3>Kehadiran ' + tanggal + '</h3></div>';
                         } else {
-                            html += '<div class="checkin-header"><div class="ci-icon">📍</div><h3>Check-In Tersedia!</h3></div><div class="ci-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div><button class="checkin-btn" onclick="doCheckin(\'' + ci.id + '\',\'' + (ci.tanggal||'') + '\',\'' + (ci.deskripsi||'').replace(/'/g,"\\'") + '\')">'+'📍 Check In Sekarang</button>';
+                            html += '<div class="checkin-header"><div class="ci-icon">📍</div><h3>Kehadiran Tersedia!</h3></div><div class="ci-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div><button class="checkin-btn" onclick="doCheckin(\'' + ci.id + '\',\'' + (ci.tanggal||'') + '\',\'' + (ci.deskripsi||'').replace(/'/g,"\\'") + '\')">'+'📍 Hadir Sekarang</button>';
                         }
                         html += '</div>';
                     });
@@ -727,8 +727,8 @@
             if (btn) { btn.disabled = true; btn.textContent = '⏳ Mengirim...'; }
             var payload = JSON.stringify({ action: 'doCheckin', checkinId: ciId, tanggal: tanggal, deskripsi: deskripsi, email: user.email, googleName: user.name || '', nama: prof.nama || '', kelas: prof.kelas || '', absen: prof.absen || '' });
             fetch(MOLESH_CONFIG.APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: payload })
-                .then(function() { markCheckedIn(ciId); var card = document.getElementById('ci_' + ciId); if (card) { card.className = 'checkin-card compact'; card.innerHTML = '<button class="ci-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>' + '<div class="checkin-header"><div class="ci-icon">✅</div>' + '<h3>Check-In ' + (tanggal||'').split('-').reverse().join('-') + '</h3></div>'; } })
-                .catch(function() { if (btn) { btn.disabled = false; btn.textContent = '📍 Check In Sekarang'; } alert('Gagal check-in. Coba lagi.'); });
+                .then(function() { markCheckedIn(ciId); var card = document.getElementById('ci_' + ciId); if (card) { card.className = 'checkin-card compact'; card.innerHTML = '<button class="ci-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>' + '<div class="checkin-header"><div class="ci-icon">✅</div>' + '<h3>Kehadiran ' + (tanggal||'').split('-').reverse().join('-') + '</h3></div>'; } })
+                .catch(function() { if (btn) { btn.disabled = false; btn.textContent = '📍 Hadir Sekarang'; } alert('Gagal menandai kehadiran. Coba lagi.'); });
         }
         function dismissCheckin(ciId) {
             var card = document.getElementById('ci_' + ciId);
@@ -741,7 +741,7 @@
                 markCheckinDismissed(ciId);
             }
         }
-        /* Get/Set dismissed check-in IDs per user */
+        /* Get/Set dismissed kehadiran IDs per user */
         function getDismissedCheckinIds() {
             var raw = localStorage.getItem('molesh_user');
             if (!raw) return [];

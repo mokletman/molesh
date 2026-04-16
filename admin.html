@@ -429,7 +429,7 @@
             /* Tab bar */
             html += '<div class="tab-bar">' +
                 '<button class="tab-btn active" onclick="switchTab(this,\'tabStudents\')" >📋 Data Siswa</button>' +
-                '<button class="tab-btn" onclick="switchTab(this,\'tabCheckin\')" >📅 Check-In</button>' +
+                '<button class="tab-btn" onclick="switchTab(this,\'tabCheckin\')" >📅 Kehadiran</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabRefleksi\');loadReflections()" >📝 Refleksi</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabAnalysis\');runAnalysis()" >📊 Analisa</button>' +
                 '</div>';
@@ -454,13 +454,13 @@
             html += '<div id="studentPagination"></div>';
             html += '</div>'; /* close tabStudents */
 
-            /* ── Tab: Check-In ── */
+            /* ── Tab: Kehadiran ── */
             html += '<div id="tabCheckin" class="tab-content">';
             html += '<div class="toolbar">' +
-                '<button class="setting-btn" onclick="openCheckinModal()">➕ Tambah Jadwal Check-In</button>' +
+                '<button class="setting-btn" onclick="openCheckinModal()">➕ Tambah Jadwal Kehadiran</button>' +
                 '<button class="refresh-btn" onclick="loadCheckinData()">🔄 Refresh</button></div>';
-            html += '<div id="ciSettingsList"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat jadwal check-in...</p></div></div>';
-            html += '<h3 style="margin-top:24px;font-size:.95rem;color:#e2e8f0">📝 Log Check-In Siswa</h3>';
+            html += '<div id="ciSettingsList"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat jadwal kehadiran...</p></div></div>';
+            html += '<h3 style="margin-top:24px;font-size:.95rem;color:#e2e8f0">📝 Log Kehadiran Siswa</h3>';
             html += '<div id="ciLogWrap" style="margin-top:10px"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat log...</p></div></div>';
             html += '</div>'; /* close tabCheckin */
 
@@ -495,7 +495,7 @@
             panel.innerHTML = html;
 
             filterTable(true);
-            /* Auto-load check-in data */
+            /* Auto-load kehadiran data */
             loadCheckinData();
         }
 
@@ -683,7 +683,7 @@
             /* IMPORTANT: Keep tanggal as string YYYY-MM-DD, do NOT convert to Date object */
             /* Show confirmation with formatted date */
             var previewDate = formatTanggalLong(tanggal);
-            if (!confirm('Simpan jadwal check-in?\n\nTanggal: ' + previewDate + '\nDeskripsi: ' + (deskripsi||'-') + '\nStatus: ' + status)) return;
+            if (!confirm('Simpan jadwal kehadiran?\n\nTanggal: ' + previewDate + '\nDeskripsi: ' + (deskripsi||'-') + '\nStatus: ' + status)) return;
 
             _saving = true;
             var saveBtn = document.querySelector('.btn-primary');
@@ -713,7 +713,7 @@
         }
 
         function deleteCheckinSetting(id) {
-            if (!confirm('Yakin hapus jadwal check-in ini?')) return;
+            if (!confirm('Yakin hapus jadwal kehadiran ini?')) return;
             var payload = JSON.stringify({ action: 'deleteCheckinSetting', id: id });
             fetch(API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: payload })
                 .then(function(){
@@ -748,7 +748,7 @@
 
         function renderCheckinSettings(el) {
             if (!ciSettings.length) {
-                el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>Belum ada jadwal check-in.</p></div>';
+                el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>Belum ada jadwal kehadiran.</p></div>';
                 return;
             }
             /* Count logs per checkinId */
@@ -773,7 +773,7 @@
                 var count = logCount[s.id] || 0;
                 html += '<div class="ci-card">' +
                     '<div><div class="ci-date">' + formatTanggal(tanggal) + '</div>' +
-                    '<div class="ci-count">' + count + ' siswa check-in</div></div>' +
+                    '<div class="ci-count">' + count + ' siswa kehadiran</div></div>' +
                     '<div class="ci-desc">' + (s.deskripsi || '—') + '</div>' +
                     '<span class="ci-status ' + statusClass + '">' + s.status + '</span>' +
                     '<button class="ci-del" onclick="deleteCheckinSetting(\'' + s.id + '\')">🗑️</button>' +
@@ -788,7 +788,7 @@
             if (el) logEl = el;
             if (!logEl) return;
             if (!ciLogs.length) {
-                logEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang check-in.</p></div>';
+                logEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang kehadiran.</p></div>';
                 return;
             }
             
@@ -801,7 +801,7 @@
             var paginated = ciLogs.slice(start, end);
 
             var html = '<div class="table-wrap"><table class="data-table"><thead><tr>' +
-                '<th>No</th><th>Tanggal</th><th>Deskripsi</th><th>Nama</th><th>Email</th><th>Kelas</th><th>Absen</th><th>Waktu Check-In</th>' +
+                '<th>No</th><th>Tanggal</th><th>Deskripsi</th><th>Nama</th><th>Email</th><th>Kelas</th><th>Absen</th><th>Waktu Kehadiran</th>' +
                 '</tr></thead><tbody>';
             paginated.forEach(function(l, i){
                 html += '<tr>' +
@@ -1390,11 +1390,11 @@
         }
     </script>
 
-    <!-- Check-In Setting Modal -->
+    <!-- Kehadiran Setting Modal -->
     <div class="modal-overlay" id="ciModal">
         <div class="modal">
-            <h3>📅 Tambah Jadwal Check-In</h3>
-            <p>Atur tanggal check-in untuk siswa. Siswa hanya bisa check-in pada tanggal yang aktif.</p>
+            <h3>📅 Tambah Jadwal Kehadiran</h3>
+            <p>Atur tanggal kehadiran untuk siswa. Siswa hanya bisa kehadiran pada tanggal yang aktif.</p>
             <label>Tanggal</label>
             <input type="date" id="ciTanggal" onchange="_selectedTanggal=this.value;updateTanggalPreview(this.value)">
             <div id="ciTanggalPreview" style="font-size:.82rem;color:#c4b5fd;margin:-10px 0 14px 2px"></div>

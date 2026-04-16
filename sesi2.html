@@ -684,11 +684,11 @@
                         html += '<div class="checkin-bar" id="ci_' + ci.id + '">';
                         if (alreadyDone) {
                             html += '<div class="cb-icon">✅</div>' +
-                                '<div class="cb-info"><div class="cb-title">Check-In tercatat</div><div class="cb-meta">' + tanggal + '</div></div>';
+                                '<div class="cb-info"><div class="cb-title">Kehadiran tercatat</div><div class="cb-meta">' + tanggal + '</div></div>';
                         } else {
                             html += '<div class="cb-icon">📍</div>' +
-                                '<div class="cb-info"><div class="cb-title">Check-In Tersedia!</div><div class="cb-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div></div>' +
-                                '<button class="cb-btn" onclick="doCheckin(\'' + ci.id + '\',\'' + (ci.tanggal||'') + '\',\'' + (ci.deskripsi||'').replace(/'/g,"\\'") + '\')">Check In</button>';
+                                '<div class="cb-info"><div class="cb-title">Kehadiran Tersedia!</div><div class="cb-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div></div>' +
+                                '<button class="cb-btn" onclick="doCheckin(\'' + ci.id + '\',\'' + (ci.tanggal||'') + '\',\'' + (ci.deskripsi||'').replace(/'/g,"\\'") + '\')">Hadir</button>';
                         }
                         html += '<button class="cb-close" onclick="dismissCheckin(\'' + ci.id + '\')" title="Tutup">×</button>';
                         html += '</div>';
@@ -757,13 +757,13 @@
                     if (card) {
                         card.className = 'checkin-bar';
                         card.innerHTML = '<div class="cb-icon">✅</div>' +
-                            '<div class="cb-info"><div class="cb-title">Check-In tercatat</div><div class="cb-meta">' + (tanggal||'').split('-').reverse().join('-') + '</div></div>' +
+                            '<div class="cb-info"><div class="cb-title">Kehadiran tercatat</div><div class="cb-meta">' + (tanggal||'').split('-').reverse().join('-') + '</div></div>' +
                             '<button class="cb-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>';
                     }
                 })
                 .catch(function() {
-                    if (btn) { btn.disabled = false; btn.textContent = 'Check In'; }
-                    alert('Gagal check-in. Coba lagi.');
+                    if (btn) { btn.disabled = false; btn.textContent = 'Hadir'; }
+                    alert('Gagal menandai kehadiran. Coba lagi.');
                 });
         }
 
@@ -779,7 +779,7 @@
             }
         }
 
-        /* Get/Set dismissed check-in IDs per user */
+        /* Get/Set dismissed kehadiran IDs per user */
         function getDismissedCheckinIds() {
             var raw = localStorage.getItem('molesh_user');
             if (!raw) return [];
@@ -807,7 +807,7 @@
             } catch(e){}
         }
 
-        /* Load check-in on page load */
+        /* Load kehadiran on page load */
         loadActiveCheckin();
 
         /* ── Reflection submission ── */
