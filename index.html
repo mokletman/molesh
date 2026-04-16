@@ -1390,6 +1390,25 @@
             text-align: center;
         }
 
+        .footer-link {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: fit-content;
+            margin: 10px auto 0;
+            font-size: .76rem;
+            font-weight: 700;
+            color: #7dd3fc;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(125, 211, 252, .28);
+            padding-bottom: 2px;
+        }
+
+        .footer-link:hover {
+            color: #bae6fd;
+            border-color: rgba(186, 230, 253, .52);
+        }
+
         @media(max-width:480px) {
             .hero h1 {
                 font-size: 1.8rem
@@ -1663,6 +1682,11 @@
 
         html.theme-light .commitment-note strong {
             color: #b91c1c;
+        }
+
+        html.theme-light .footer-link {
+            color: #0e7490;
+            border-color: rgba(14, 116, 144, .22);
         }
 
         html.theme-light .s-continue {
@@ -2320,6 +2344,7 @@
     </section>
 
     <p class="footer">© 2026 Moklet Leadership &bull; SMK Telkom Malang</p>
+    <a class="footer-link" href="manajemen.html">About Manajemen Sekolah</a>
 
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
