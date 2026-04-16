@@ -1804,6 +1804,49 @@
             padding-right: 4px;
         }
 
+        .m-modal-editor {
+            width: 100%;
+            min-height: 220px;
+            resize: vertical;
+            border-radius: 16px;
+            border: 1px solid rgba(125, 211, 252, .22);
+            background: rgba(15, 23, 42, .58);
+            color: #e2e8f0;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: .92rem;
+            line-height: 1.7;
+            margin-bottom: 14px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .m-modal-editor:focus {
+            border-color: rgba(125, 211, 252, .5);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, .12);
+        }
+
+        .m-modal-status {
+            margin: -2px 0 16px;
+            font-size: .8rem;
+            line-height: 1.5;
+            color: rgba(191, 219, 254, .88);
+        }
+
+        .m-modal-status.error {
+            color: #fda4af;
+        }
+
+        .m-modal-status.success {
+            color: #86efac;
+        }
+
+        .m-modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         .m-modal-btn {
             width: 100%;
             background: linear-gradient(135deg, #7c3aed, #06b6d4);
@@ -1826,6 +1869,13 @@
         .molesh-modal.modal-reflection .m-modal-btn {
             background: linear-gradient(135deg, #7c3aed, #0891b2);
             box-shadow: 0 14px 30px rgba(14, 165, 233, .18);
+        }
+
+        .m-modal-btn-secondary {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: #e2e8f0;
+            box-shadow: none;
         }
 
         .m-modal-btn:hover {
@@ -1881,6 +1931,22 @@
 
         html.theme-light .molesh-modal.modal-reflection .m-modal-desc {
             color: rgba(30, 41, 59, .82);
+        }
+
+        html.theme-light .m-modal-editor {
+            background: rgba(255, 255, 255, .96);
+            border-color: rgba(14, 116, 144, .18);
+            color: #0f172a;
+        }
+
+        html.theme-light .m-modal-status {
+            color: rgba(30, 64, 175, .8);
+        }
+
+        html.theme-light .m-modal-btn-secondary {
+            background: rgba(15, 23, 42, .04);
+            border-color: rgba(15, 23, 42, .08);
+            color: #0f172a;
         }
     </style>
 </head>
@@ -2332,6 +2398,37 @@
             window.location.href = href;
         }
 
+        var currentReflectionSession = null;
+
+        function getReflectionState() {
+            var raw = localStorage.getItem('molesh_user');
+            if (!raw) throw new Error('Silakan login terlebih dahulu untuk melihat refleksi.');
+
+            var user = JSON.parse(raw);
+            if (!user.email || user.email === 'Mode pratinjau') {
+                throw new Error('Silakan login dengan akun Google untuk mengelola refleksi.');
+            }
+
+            var profileRaw = localStorage.getItem('molesh_profile');
+            var profile = {};
+            try { profile = profileRaw ? JSON.parse(profileRaw) : {}; } catch (e) { profile = {}; }
+
+            return {
+                user: user,
+                profile: profile
+            };
+        }
+
+        function setModalStandardMode() {
+            document.getElementById('mDesc').hidden = false;
+            document.getElementById('mEditor').hidden = true;
+            document.getElementById('mStatus').hidden = true;
+            document.getElementById('mStatus').textContent = '';
+            document.getElementById('mStatus').className = 'm-modal-status';
+            document.getElementById('mActionRow').hidden = true;
+            document.getElementById('mBtn').hidden = false;
+        }
+
         function showReflectionModal(sesiNum) {
             var raw = localStorage.getItem('molesh_user');
             if (!raw) {
@@ -2352,13 +2449,109 @@
                 var modal = document.getElementById('insightModal');
                 modal.classList.remove('modal-commit');
                 modal.classList.add('modal-reflection');
+                setModalStandardMode();
+                currentReflectionSession = sesiNum;
                 document.getElementById('mTitle').textContent = 'Refleksi Sesi ' + sesiNum + (sesi ? ' • ' + sesi.title : '');
-                document.getElementById('mDesc').textContent = reflection;
                 document.getElementById('mIcon').textContent = '📝';
-                document.getElementById('mBtn').textContent = 'TUTUP';
+                document.getElementById('mDesc').hidden = true;
+                document.getElementById('mEditor').hidden = false;
+                document.getElementById('mEditor').value = reflection;
+                document.getElementById('mActionRow').hidden = false;
+                document.getElementById('mBtn').hidden = true;
                 modal.classList.add('active');
             } catch (e) {
                 alert('Gagal membuka refleksi. Coba refresh halaman.');
+            }
+        }
+
+        function saveReflectionEdit() {
+            if (!currentReflectionSession) return;
+
+            var editor = document.getElementById('mEditor');
+            var statusEl = document.getElementById('mStatus');
+            var saveBtn = document.getElementById('mSaveBtn');
+            var text = editor.value.trim();
+
+            if (!text) {
+                statusEl.hidden = false;
+                statusEl.className = 'm-modal-status error';
+                statusEl.textContent = 'Refleksi tidak boleh kosong.';
+                return;
+            }
+
+            if (text.length < 20) {
+                statusEl.hidden = false;
+                statusEl.className = 'm-modal-status error';
+                statusEl.textContent = 'Refleksi minimal 20 karakter supaya tetap bermakna.';
+                return;
+            }
+
+            try {
+                var state = getReflectionState();
+                var user = state.user;
+                var prof = state.profile;
+                if (!prof.nama || !prof.kelas || !prof.absen) {
+                    statusEl.hidden = false;
+                    statusEl.className = 'm-modal-status error';
+                    statusEl.textContent = 'Lengkapi profil terlebih dahulu sebelum menyimpan refleksi.';
+                    return;
+                }
+
+                var localKey = 'molesh_ref_' + currentReflectionSession + '_' + user.email;
+                var apiUrl = '';
+                try { apiUrl = MOLESH_CONFIG.APPS_SCRIPT_URL; } catch (e) { }
+
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Menyimpan...';
+                statusEl.hidden = false;
+                statusEl.className = 'm-modal-status';
+                statusEl.textContent = 'Menyimpan perubahan refleksi...';
+
+                var finishSave = function () {
+                    localStorage.setItem(localKey, text);
+                    statusEl.hidden = false;
+                    statusEl.className = 'm-modal-status success';
+                    statusEl.textContent = 'Perubahan refleksi berhasil disimpan.';
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'SIMPAN';
+                    renderSessionProgress(user.email);
+                    renderBadges(user.email);
+                };
+
+                if (!apiUrl || apiUrl === 'YOUR_APPS_SCRIPT_URL') {
+                    finishSave();
+                    return;
+                }
+
+                var payload = JSON.stringify({
+                    action: 'saveReflection',
+                    sesi: currentReflectionSession,
+                    email: user.email,
+                    googleName: user.name || '',
+                    nama: prof.nama || '',
+                    kelas: prof.kelas || '',
+                    absen: prof.absen || '',
+                    refleksi: text
+                });
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: payload
+                }).then(function () {
+                    finishSave();
+                }).catch(function () {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'SIMPAN';
+                    statusEl.hidden = false;
+                    statusEl.className = 'm-modal-status error';
+                    statusEl.textContent = 'Gagal menyimpan perubahan. Coba lagi.';
+                });
+            } catch (e) {
+                statusEl.hidden = false;
+                statusEl.className = 'm-modal-status error';
+                statusEl.textContent = e.message || 'Gagal memproses refleksi.';
             }
         }
 
@@ -2702,6 +2895,12 @@
             <div class="m-modal-icon" id="mIcon">🚀</div>
             <h2 class="m-modal-title" id="mTitle">Insight Title</h2>
             <p class="m-modal-desc" id="mDesc">Description text goes here.</p>
+            <textarea id="mEditor" class="m-modal-editor" hidden maxlength="1000"></textarea>
+            <div id="mStatus" class="m-modal-status" hidden></div>
+            <div id="mActionRow" class="m-modal-actions" hidden>
+                <button class="m-modal-btn m-modal-btn-secondary" type="button" onclick="closeInsight()">TUTUP</button>
+                <button class="m-modal-btn" id="mSaveBtn" type="button" onclick="saveReflectionEdit()">SIMPAN</button>
+            </div>
             <button class="m-modal-btn" id="mBtn" onclick="closeInsight()">SAYA MENGERTI</button>
         </div>
     </div>
@@ -2711,6 +2910,8 @@
             var modal = document.getElementById('insightModal');
             modal.classList.remove('modal-commit');
             modal.classList.remove('modal-reflection');
+            currentReflectionSession = null;
+            setModalStandardMode();
             document.getElementById('mTitle').textContent = title;
             document.getElementById('mDesc').textContent = desc;
             document.getElementById('mIcon').textContent = icon;
@@ -2721,6 +2922,8 @@
             var modal = document.getElementById('insightModal');
             modal.classList.add('modal-commit');
             modal.classList.remove('modal-reflection');
+            currentReflectionSession = null;
+            setModalStandardMode();
             document.getElementById('mTitle').textContent = 'Komitmen Hari Ini';
             document.getElementById('mDesc').textContent = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari orang lain.';
             document.getElementById('mIcon').textContent = '🔥';
@@ -2729,6 +2932,8 @@
         }
         function closeInsight() {
             var modal = document.getElementById('insightModal');
+            currentReflectionSession = null;
+            setModalStandardMode();
             modal.classList.remove('active');
             modal.classList.remove('modal-commit');
             modal.classList.remove('modal-reflection');
