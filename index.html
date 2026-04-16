@@ -2809,7 +2809,7 @@
                     statusEl.className = 'm-modal-status success';
                     statusEl.textContent = 'Perubahan refleksi berhasil disimpan.';
                     saveBtn.disabled = false;
-                    saveBtn.textContent = 'SIMPAN';
+                    saveBtn.textContent = 'Perbaiki dan Simpan';
                     renderSessionProgress(user.email);
                     renderBadges(user.email);
                 };
@@ -2839,7 +2839,7 @@
                     finishSave();
                 }).catch(function () {
                     saveBtn.disabled = false;
-                    saveBtn.textContent = 'SIMPAN';
+                    saveBtn.textContent = 'Perbaiki dan Simpan';
                     statusEl.hidden = false;
                     statusEl.className = 'm-modal-status error';
                     statusEl.textContent = 'Gagal menyimpan perubahan. Coba lagi.';
@@ -3196,7 +3196,7 @@
             <div id="mStatus" class="m-modal-status" hidden></div>
             <div id="mActionRow" class="m-modal-actions" hidden>
                 <button class="m-modal-btn m-modal-btn-secondary" type="button" onclick="closeInsight()">TUTUP</button>
-                <button class="m-modal-btn" id="mSaveBtn" type="button" onclick="saveReflectionEdit()">SIMPAN</button>
+                <button class="m-modal-btn" id="mSaveBtn" type="button" onclick="saveReflectionEdit()">Perbaiki dan Simpan</button>
             </div>
             <button class="m-modal-btn" id="mBtn" onclick="closeInsight()">SAYA MENGERTI</button>
         </div>
