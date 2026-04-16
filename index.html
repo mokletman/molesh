@@ -962,11 +962,15 @@
             display: none;
             margin-bottom: 20px;
             padding: 18px;
-            border-radius: 20px;
+            border-radius: 24px;
             text-align: left;
-            background: linear-gradient(145deg, rgba(127, 29, 29, .24), rgba(30, 64, 175, .18));
-            border: 1px solid rgba(125, 211, 252, .18);
-            box-shadow: inset 0 0 0 1px rgba(254, 226, 226, .04);
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, .08), transparent 34%),
+                linear-gradient(145deg, rgba(127, 29, 29, .24), rgba(30, 64, 175, .18));
+            border: 1px solid rgba(125, 211, 252, .16);
+            box-shadow:
+                inset 0 0 0 1px rgba(254, 226, 226, .04),
+                0 18px 34px rgba(15, 23, 42, .14);
         }
 
         .commitment-history.show {
@@ -984,7 +988,6 @@
             justify-content: space-between;
             gap: 12px;
             margin-bottom: 12px;
-            cursor: pointer;
         }
 
         .commitment-history.collapsed .commitment-header {
@@ -1028,15 +1031,27 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .12);
             border-radius: 999px;
-            padding: 8px 12px;
+            padding: 10px 14px;
             color: #f8fafc;
             font-size: .72rem;
             font-weight: 800;
             letter-spacing: .3px;
             text-transform: uppercase;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease;
+        }
+
+        .commitment-toggle:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .14);
+        }
+
+        .commitment-toggle:active {
+            transform: translateY(0);
         }
 
         .commitment-toggle::after {
@@ -1053,14 +1068,19 @@
         .commitment-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            max-height: 420px;
+            overflow: auto;
+            padding-right: 2px;
         }
 
         .commitment-item {
-            padding: 14px;
-            border-radius: 16px;
-            background: rgba(15, 23, 42, .34);
-            border: 1px solid rgba(255, 255, 255, .06);
+            padding: 16px;
+            border-radius: 18px;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, .74));
+            border: 1px solid rgba(255, 255, 255, .16);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
         }
 
         .commitment-item-top {
@@ -1072,34 +1092,34 @@
         }
 
         .commitment-item-title {
-            font-size: .8rem;
+            font-size: .86rem;
             font-weight: 700;
-            color: #e2e8f0;
+            color: #0f172a;
         }
 
         .commitment-item-meta {
-            font-size: .68rem;
-            color: rgba(226, 232, 240, .54);
+            font-size: .72rem;
+            color: rgba(30, 41, 59, .56);
             margin-top: 2px;
             line-height: 1.45;
         }
 
         .commitment-item-time {
             flex-shrink: 0;
-            font-size: .66rem;
+            font-size: .68rem;
             font-weight: 700;
-            color: #bfdbfe;
+            color: #1d4ed8;
             text-align: right;
         }
 
         .commitment-note {
-            font-size: .8rem;
+            font-size: .84rem;
             line-height: 1.7;
-            color: rgba(255, 241, 242, .92);
+            color: rgba(15, 23, 42, .86);
         }
 
         .commitment-note strong {
-            color: #fecaca;
+            color: #b91c1c;
         }
 
         .op-bar {
@@ -1484,6 +1504,10 @@
                 text-align: left;
             }
 
+            .commitment-list {
+                max-height: 360px;
+            }
+
             .cta {
                 padding: 13px 26px;
                 font-size: .88rem
@@ -1683,9 +1707,11 @@
         }
 
         html.theme-light .commitment-history {
-            background: linear-gradient(145deg, rgba(254, 226, 226, .92), rgba(219, 234, 254, .9));
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, .96), transparent 26%),
+                linear-gradient(145deg, rgba(254, 226, 226, .92), rgba(219, 234, 254, .9));
             border-color: rgba(239, 68, 68, .12);
-            box-shadow: 0 16px 30px rgba(15, 23, 42, .06);
+            box-shadow: 0 16px 30px rgba(15, 23, 42, .08);
         }
 
         html.theme-light .commitment-title {
@@ -1702,14 +1728,14 @@
         }
 
         html.theme-light .commitment-toggle {
-            background: rgba(255, 255, 255, .76);
+            background: rgba(255, 255, 255, .84);
             border-color: rgba(15, 23, 42, .08);
             color: #0f172a;
         }
 
         html.theme-light .commitment-item {
-            background: rgba(255, 255, 255, .72);
-            border-color: rgba(15, 23, 42, .08);
+            background: rgba(255, 255, 255, .9);
+            border-color: rgba(15, 23, 42, .07);
         }
 
         html.theme-light .commitment-item-title {
@@ -1717,7 +1743,7 @@
         }
 
         html.theme-light .commitment-item-meta {
-            color: rgba(30, 41, 59, .58);
+            color: rgba(30, 41, 59, .62);
         }
 
         html.theme-light .commitment-item-time {
@@ -2738,9 +2764,9 @@
             } catch (e) { }
             var collapsed = isCommitmentCollapsed(email);
             var html = '';
-            html += '<button class="commitment-header" type="button" onclick="toggleCommitmentHistory()">';
+            html += '<div class="commitment-header">';
             html += '<div><div class="commitment-title">🔥 Catatan Komitmen Check-In</div><div class="commitment-subtitle">Riwayat komitmen yang sudah kamu tandai dari beranda.</div></div>';
-            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Check-In</span><span class="commitment-toggle"><span id="commitmentToggleText">' + (collapsed ? 'Buka' : 'Tutup') + '</span></span></div>';
+            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Check-In</span><button class="commitment-toggle" type="button" onclick="toggleCommitmentHistory()"><span id="commitmentToggleText">' + (collapsed ? 'Buka' : 'Tutup') + '</span></button></div>';
             html += '</div>';
             html += '<div class="commitment-list">';
 
