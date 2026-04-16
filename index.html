@@ -1655,6 +1655,15 @@
             transform: translateY(0)
         }
 
+        .molesh-modal.modal-commit .m-modal-card {
+            background:
+                radial-gradient(circle at top left, rgba(248, 113, 113, .22), transparent 38%),
+                radial-gradient(circle at bottom right, rgba(59, 130, 246, .26), transparent 42%),
+                linear-gradient(145deg, rgba(69, 10, 10, .96), rgba(12, 20, 60, .98));
+            border: 1px solid rgba(248, 113, 113, .3);
+            box-shadow: 0 22px 54px rgba(6, 8, 24, .58), 0 0 28px rgba(59, 130, 246, .16);
+        }
+
         .m-modal-icon {
             width: 64px;
             height: 64px;
@@ -1667,6 +1676,12 @@
             border: 1px solid rgba(124, 58, 237, .3)
         }
 
+        .molesh-modal.modal-commit .m-modal-icon {
+            background: linear-gradient(135deg, rgba(239, 68, 68, .24), rgba(37, 99, 235, .24));
+            border-color: rgba(125, 211, 252, .28);
+            box-shadow: 0 10px 24px rgba(239, 68, 68, .18);
+        }
+
         .m-modal-title {
             font-size: 1.3rem;
             font-weight: 800;
@@ -1675,11 +1690,22 @@
             line-height: 1.2
         }
 
+        .molesh-modal.modal-commit .m-modal-title {
+            background: linear-gradient(90deg, #fecaca, #bfdbfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .m-modal-desc {
             font-size: .95rem;
             color: rgba(226, 232, 240, .7);
             line-height: 1.7;
             margin-bottom: 24px
+        }
+
+        .molesh-modal.modal-commit .m-modal-desc {
+            color: rgba(255, 241, 242, .92);
         }
 
         .m-modal-btn {
@@ -1696,6 +1722,11 @@
             transition: all .2s
         }
 
+        .molesh-modal.modal-commit .m-modal-btn {
+            background: linear-gradient(135deg, #ef4444, #2563eb);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, .22);
+        }
+
         .m-modal-btn:hover {
             filter: brightness(1.1);
             transform: translateY(-2px)
@@ -1706,12 +1737,32 @@
             border-color: rgba(109, 40, 217, .15)
         }
 
+        html.theme-light .molesh-modal.modal-commit .m-modal-card {
+            background:
+                radial-gradient(circle at top left, rgba(254, 226, 226, .95), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(219, 234, 254, .95), transparent 38%),
+                linear-gradient(145deg, rgba(255, 255, 255, .98), rgba(239, 246, 255, .98));
+            border-color: rgba(239, 68, 68, .18);
+            box-shadow: 0 20px 44px rgba(15, 23, 42, .14);
+        }
+
         html.theme-light .m-modal-title {
             color: #111827
         }
 
         html.theme-light .m-modal-desc {
             color: rgba(31, 41, 55, .7)
+        }
+
+        html.theme-light .molesh-modal.modal-commit .m-modal-title {
+            background: linear-gradient(90deg, #b91c1c, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        html.theme-light .molesh-modal.modal-commit .m-modal-desc {
+            color: rgba(30, 41, 59, .85);
         }
     </style>
 </head>
@@ -2432,6 +2483,7 @@
                 if (card) {
                     card.innerHTML = '<div class="cb-icon">✅</div><div class="cb-info"><div class="cb-title">Check-In tercatat</div></div><button class="cb-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>';
                 }
+                showCommitmentModal();
             }).catch(function () {
                 if (btn) { btn.disabled = false; btn.textContent = 'Check In'; }
                 alert('Gagal check-in. Coba lagi nanti.');
@@ -2496,13 +2548,24 @@
 
     <script>
         function showInsight(title, desc, icon) {
+            document.getElementById('insightModal').classList.remove('modal-commit');
             document.getElementById('mTitle').textContent = title;
             document.getElementById('mDesc').textContent = desc;
             document.getElementById('mIcon').textContent = icon;
             document.getElementById('insightModal').classList.add('active');
         }
+        function showCommitmentModal() {
+            var modal = document.getElementById('insightModal');
+            modal.classList.add('modal-commit');
+            document.getElementById('mTitle').textContent = 'Komitmen Hari Ini';
+            document.getElementById('mDesc').textContent = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari yang lain.';
+            document.getElementById('mIcon').textContent = '🔥';
+            modal.classList.add('active');
+        }
         function closeInsight() {
-            document.getElementById('insightModal').classList.remove('active');
+            var modal = document.getElementById('insightModal');
+            modal.classList.remove('active');
+            modal.classList.remove('modal-commit');
         }
     </script>
 </body>
