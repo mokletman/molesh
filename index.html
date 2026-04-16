@@ -769,7 +769,6 @@
             display: flex;
             flex-direction: column;
             gap: 0;
-            text-decoration: none;
             background: rgba(255, 255, 255, .05);
             border: 1px solid rgba(255, 255, 255, .08);
             border-radius: 14px;
@@ -780,6 +779,17 @@
         .session-link:hover {
             background: rgba(255, 255, 255, .1);
             transform: translateY(-2px)
+        }
+
+        .session-main {
+            width: 100%;
+            border: none;
+            padding: 0;
+            background: none;
+            color: inherit;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
         }
 
         .s-top {
@@ -875,6 +885,51 @@
             align-items: center;
             justify-content: space-between;
             margin-top: 6px
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .s-action-btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: .72rem;
+            font-weight: 700;
+            text-decoration: none;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform .18s, background .18s, border-color .18s, color .18s, box-shadow .18s;
+        }
+
+        .s-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .s-action-primary {
+            border: none;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(124, 58, 237, .2);
+        }
+
+        .s-action-secondary {
+            border: 1px solid rgba(125, 211, 252, .24);
+            background: rgba(255, 255, 255, .04);
+            color: #7dd3fc;
+        }
+
+        .s-action-secondary:hover {
+            background: rgba(125, 211, 252, .1);
+            border-color: rgba(125, 211, 252, .34);
         }
 
         .s-pct {
@@ -1252,6 +1307,10 @@
                 grid-template-columns: 1fr
             }
 
+            .session-actions {
+                flex-direction: column;
+            }
+
             .cta {
                 padding: 13px 26px;
                 font-size: .88rem
@@ -1452,6 +1511,17 @@
 
         html.theme-light .s-continue {
             color: #0e7490
+        }
+
+        html.theme-light .s-action-secondary {
+            background: rgba(255, 255, 255, .84);
+            border-color: rgba(14, 116, 144, .14);
+            color: #0e7490;
+        }
+
+        html.theme-light .s-action-secondary:hover {
+            background: rgba(14, 116, 144, .08);
+            border-color: rgba(14, 116, 144, .24);
         }
 
         html.theme-light .badge-card {
@@ -1664,6 +1734,15 @@
             box-shadow: 0 22px 54px rgba(6, 8, 24, .58), 0 0 28px rgba(59, 130, 246, .16);
         }
 
+        .molesh-modal.modal-reflection .m-modal-card {
+            background:
+                radial-gradient(circle at top right, rgba(125, 211, 252, .14), transparent 34%),
+                radial-gradient(circle at bottom left, rgba(196, 181, 253, .16), transparent 36%),
+                linear-gradient(145deg, rgba(14, 23, 48, .98), rgba(25, 33, 67, .98));
+            border: 1px solid rgba(125, 211, 252, .24);
+            box-shadow: 0 22px 54px rgba(2, 8, 23, .55), 0 0 28px rgba(6, 182, 212, .12);
+        }
+
         .m-modal-icon {
             width: 64px;
             height: 64px;
@@ -1682,6 +1761,11 @@
             box-shadow: 0 10px 24px rgba(239, 68, 68, .18);
         }
 
+        .molesh-modal.modal-reflection .m-modal-icon {
+            background: linear-gradient(135deg, rgba(124, 58, 237, .24), rgba(6, 182, 212, .24));
+            border-color: rgba(125, 211, 252, .28);
+        }
+
         .m-modal-title {
             font-size: 1.3rem;
             font-weight: 800;
@@ -1697,6 +1781,10 @@
             background-clip: text;
         }
 
+        .molesh-modal.modal-reflection .m-modal-title {
+            color: #e0f2fe;
+        }
+
         .m-modal-desc {
             font-size: .95rem;
             color: rgba(226, 232, 240, .7);
@@ -1706,6 +1794,14 @@
 
         .molesh-modal.modal-commit .m-modal-desc {
             color: rgba(255, 241, 242, .92);
+        }
+
+        .molesh-modal.modal-reflection .m-modal-desc {
+            color: rgba(226, 232, 240, .86);
+            white-space: pre-line;
+            max-height: min(42vh, 320px);
+            overflow-y: auto;
+            padding-right: 4px;
         }
 
         .m-modal-btn {
@@ -1727,6 +1823,11 @@
             box-shadow: 0 14px 30px rgba(37, 99, 235, .22);
         }
 
+        .molesh-modal.modal-reflection .m-modal-btn {
+            background: linear-gradient(135deg, #7c3aed, #0891b2);
+            box-shadow: 0 14px 30px rgba(14, 165, 233, .18);
+        }
+
         .m-modal-btn:hover {
             filter: brightness(1.1);
             transform: translateY(-2px)
@@ -1746,6 +1847,15 @@
             box-shadow: 0 20px 44px rgba(15, 23, 42, .14);
         }
 
+        html.theme-light .molesh-modal.modal-reflection .m-modal-card {
+            background:
+                radial-gradient(circle at top right, rgba(224, 242, 254, .96), transparent 34%),
+                radial-gradient(circle at bottom left, rgba(237, 233, 254, .96), transparent 36%),
+                linear-gradient(145deg, rgba(255, 255, 255, .98), rgba(248, 250, 252, .98));
+            border-color: rgba(14, 116, 144, .16);
+            box-shadow: 0 20px 44px rgba(15, 23, 42, .12);
+        }
+
         html.theme-light .m-modal-title {
             color: #111827
         }
@@ -1761,8 +1871,16 @@
             background-clip: text;
         }
 
+        html.theme-light .molesh-modal.modal-reflection .m-modal-title {
+            color: #0f172a;
+        }
+
         html.theme-light .molesh-modal.modal-commit .m-modal-desc {
             color: rgba(30, 41, 59, .85);
+        }
+
+        html.theme-light .molesh-modal.modal-reflection .m-modal-desc {
+            color: rgba(30, 41, 59, .82);
         }
     </style>
 </head>
@@ -2161,7 +2279,8 @@
                 var numClass = status === 'selesai' ? 's-num done' : 's-num';
                 var barClass = status === 'selesai' ? 's-progress-bar done' : 's-progress-bar';
 
-                html += '<a class="session-link" href="' + s.href + '">';
+                html += '<div class="session-link">';
+                html += '<button class="session-main" type="button" onclick="openSession(\'' + s.href + '\')">';
                 html += '<div class="s-top">';
                 html += '<div class="' + numClass + '">S' + s.num + '</div>';
                 html += '<div class="s-info">';
@@ -2176,7 +2295,14 @@
                     html += '<span class="s-continue">' + (status === 'belum' ? 'Mulai →' : 'Lanjutkan →') + '</span>';
                 }
                 html += '</div>';
-                html += '</a>';
+                html += '</button>';
+                html += '<div class="session-actions">';
+                html += '<a class="s-action-btn s-action-primary" href="' + s.href + '">' + (status === 'belum' ? 'Mulai Sesi' : 'Buka Sesi') + '</a>';
+                if (hasRef) {
+                    html += '<button class="s-action-btn s-action-secondary" type="button" onclick="showReflectionModal(' + s.num + ')">Lihat Refleksi</button>';
+                }
+                html += '</div>';
+                html += '</div>';
             });
 
             container.innerHTML = html;
@@ -2199,6 +2325,40 @@
                     var label = nextSesi.num === 1 ? 'MULAI SESI 1' : 'LANJUTKAN SESI ' + nextSesi.num;
                     ctaBtn.innerHTML = label + ' <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>';
                 }
+            }
+        }
+
+        function openSession(href) {
+            window.location.href = href;
+        }
+
+        function showReflectionModal(sesiNum) {
+            var raw = localStorage.getItem('molesh_user');
+            if (!raw) {
+                alert('Silakan login terlebih dahulu untuk melihat refleksi.');
+                return;
+            }
+
+            try {
+                var user = JSON.parse(raw);
+                var refKey = 'molesh_ref_' + sesiNum + '_' + user.email;
+                var reflection = localStorage.getItem(refKey) || '';
+                var sesi = SESSION_DATA.find(function (item) { return item.num === sesiNum; });
+                if (!reflection) {
+                    alert('Refleksi untuk sesi ini belum tersedia.');
+                    return;
+                }
+
+                var modal = document.getElementById('insightModal');
+                modal.classList.remove('modal-commit');
+                modal.classList.add('modal-reflection');
+                document.getElementById('mTitle').textContent = 'Refleksi Sesi ' + sesiNum + (sesi ? ' • ' + sesi.title : '');
+                document.getElementById('mDesc').textContent = reflection;
+                document.getElementById('mIcon').textContent = '📝';
+                document.getElementById('mBtn').textContent = 'TUTUP';
+                modal.classList.add('active');
+            } catch (e) {
+                alert('Gagal membuka refleksi. Coba refresh halaman.');
             }
         }
 
@@ -2542,30 +2702,36 @@
             <div class="m-modal-icon" id="mIcon">🚀</div>
             <h2 class="m-modal-title" id="mTitle">Insight Title</h2>
             <p class="m-modal-desc" id="mDesc">Description text goes here.</p>
-            <button class="m-modal-btn" onclick="closeInsight()">SAYA MENGERTI</button>
+            <button class="m-modal-btn" id="mBtn" onclick="closeInsight()">SAYA MENGERTI</button>
         </div>
     </div>
 
     <script>
         function showInsight(title, desc, icon) {
-            document.getElementById('insightModal').classList.remove('modal-commit');
+            var modal = document.getElementById('insightModal');
+            modal.classList.remove('modal-commit');
+            modal.classList.remove('modal-reflection');
             document.getElementById('mTitle').textContent = title;
             document.getElementById('mDesc').textContent = desc;
             document.getElementById('mIcon').textContent = icon;
-            document.getElementById('insightModal').classList.add('active');
+            document.getElementById('mBtn').textContent = 'SAYA MENGERTI';
+            modal.classList.add('active');
         }
         function showCommitmentModal() {
             var modal = document.getElementById('insightModal');
             modal.classList.add('modal-commit');
+            modal.classList.remove('modal-reflection');
             document.getElementById('mTitle').textContent = 'Komitmen Hari Ini';
             document.getElementById('mDesc').textContent = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari orang lain.';
             document.getElementById('mIcon').textContent = '🔥';
+            document.getElementById('mBtn').textContent = 'SAYA MENGERTI';
             modal.classList.add('active');
         }
         function closeInsight() {
             var modal = document.getElementById('insightModal');
             modal.classList.remove('active');
             modal.classList.remove('modal-commit');
+            modal.classList.remove('modal-reflection');
         }
     </script>
 </body>
