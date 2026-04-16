@@ -2716,13 +2716,24 @@
         }
 
         function setModalStandardMode() {
-            document.getElementById('mDesc').hidden = false;
-            document.getElementById('mEditor').hidden = true;
-            document.getElementById('mStatus').hidden = true;
-            document.getElementById('mStatus').textContent = '';
-            document.getElementById('mStatus').className = 'm-modal-status';
-            document.getElementById('mActionRow').hidden = true;
-            document.getElementById('mBtn').hidden = false;
+            var desc = document.getElementById('mDesc');
+            var editor = document.getElementById('mEditor');
+            var status = document.getElementById('mStatus');
+            var actionRow = document.getElementById('mActionRow');
+            var mainBtn = document.getElementById('mBtn');
+
+            desc.hidden = false;
+            desc.style.display = '';
+            editor.hidden = true;
+            editor.style.display = 'none';
+            status.hidden = true;
+            status.style.display = 'none';
+            status.textContent = '';
+            status.className = 'm-modal-status';
+            actionRow.hidden = true;
+            actionRow.style.display = 'none';
+            mainBtn.hidden = false;
+            mainBtn.style.display = 'block';
         }
 
         function showReflectionModal(sesiNum) {
@@ -2750,10 +2761,14 @@
                 document.getElementById('mTitle').textContent = 'Refleksi Sesi ' + sesiNum + (sesi ? ' • ' + sesi.title : '');
                 document.getElementById('mIcon').textContent = '📝';
                 document.getElementById('mDesc').hidden = true;
+                document.getElementById('mDesc').style.display = 'none';
                 document.getElementById('mEditor').hidden = false;
+                document.getElementById('mEditor').style.display = 'block';
                 document.getElementById('mEditor').value = reflection;
                 document.getElementById('mActionRow').hidden = false;
+                document.getElementById('mActionRow').style.display = 'grid';
                 document.getElementById('mBtn').hidden = true;
+                document.getElementById('mBtn').style.display = 'none';
                 modal.classList.add('active');
             } catch (e) {
                 alert('Gagal membuka refleksi. Coba refresh halaman.');
@@ -3212,7 +3227,7 @@
             document.getElementById('mTitle').textContent = title;
             document.getElementById('mDesc').textContent = desc;
             document.getElementById('mIcon').textContent = icon;
-            document.getElementById('mBtn').textContent = 'SAYA MENGERTI';
+            document.getElementById('mBtn').textContent = 'SIAP SAYA MENGERTI';
             modal.classList.add('active');
         }
         function showCommitmentModal() {
