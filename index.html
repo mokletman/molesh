@@ -974,12 +974,28 @@
             animation: fadein .35s ease both;
         }
 
+        .commitment-history.collapsed .commitment-list {
+            display: none;
+        }
+
         .commitment-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
             margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .commitment-history.collapsed .commitment-header {
+            margin-bottom: 0;
+        }
+
+        .commitment-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .commitment-title {
@@ -1006,6 +1022,32 @@
             text-transform: uppercase;
             background: rgba(255, 255, 255, .08);
             color: #bfdbfe;
+        }
+
+        .commitment-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 999px;
+            padding: 8px 12px;
+            color: #f8fafc;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+        }
+
+        .commitment-toggle::after {
+            content: '▾';
+            font-size: .85rem;
+            line-height: 1;
+            transition: transform .2s ease;
+        }
+
+        .commitment-history.collapsed .commitment-toggle::after {
+            transform: rotate(-90deg);
         }
 
         .commitment-list {
@@ -1657,6 +1699,12 @@
         html.theme-light .commitment-pill {
             background: rgba(255, 255, 255, .72);
             color: #1d4ed8;
+        }
+
+        html.theme-light .commitment-toggle {
+            background: rgba(255, 255, 255, .76);
+            border-color: rgba(15, 23, 42, .08);
+            color: #0f172a;
         }
 
         html.theme-light .commitment-item {
@@ -2589,6 +2637,10 @@
             return 'molesh_commitment_history_' + email;
         }
 
+        function getCommitmentCollapseKey(email) {
+            return 'molesh_commitment_collapsed_' + email;
+        }
+
         function saveCommitmentHistoryCache(email, items) {
             try {
                 localStorage.setItem(getCommitmentStorageKey(email), JSON.stringify(items || []));
@@ -2639,6 +2691,36 @@
             };
         }
 
+        function isCommitmentCollapsed(email) {
+            try {
+                return localStorage.getItem(getCommitmentCollapseKey(email)) !== 'open';
+            } catch (e) {
+                return true;
+            }
+        }
+
+        function setCommitmentCollapsed(email, collapsed) {
+            try {
+                localStorage.setItem(getCommitmentCollapseKey(email), collapsed ? 'collapsed' : 'open');
+            } catch (e) { }
+        }
+
+        function toggleCommitmentHistory() {
+            var raw = localStorage.getItem('molesh_user');
+            if (!raw) return;
+
+            try {
+                var user = JSON.parse(raw);
+                if (!user.email || user.email === 'Mode pratinjau') return;
+                var wrap = document.getElementById('commitmentHistory');
+                if (!wrap) return;
+                var collapsed = wrap.classList.toggle('collapsed');
+                setCommitmentCollapsed(user.email, collapsed);
+                var toggleText = document.getElementById('commitmentToggleText');
+                if (toggleText) toggleText.textContent = collapsed ? 'Buka' : 'Tutup';
+            } catch (e) { }
+        }
+
         function renderCommitmentHistory(items) {
             var wrap = document.getElementById('commitmentHistory');
             if (!wrap) return;
@@ -2649,10 +2731,16 @@
                 return;
             }
 
+            var raw = localStorage.getItem('molesh_user');
+            var email = '';
+            try {
+                email = raw ? JSON.parse(raw).email || '' : '';
+            } catch (e) { }
+            var collapsed = isCommitmentCollapsed(email);
             var html = '';
-            html += '<div class="commitment-header">';
+            html += '<button class="commitment-header" type="button" onclick="toggleCommitmentHistory()">';
             html += '<div><div class="commitment-title">🔥 Catatan Komitmen Check-In</div><div class="commitment-subtitle">Riwayat komitmen yang sudah kamu tandai dari beranda.</div></div>';
-            html += '<span class="commitment-pill">Sudah Check-In</span>';
+            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Check-In</span><span class="commitment-toggle"><span id="commitmentToggleText">' + (collapsed ? 'Buka' : 'Tutup') + '</span></span></div>';
             html += '</div>';
             html += '<div class="commitment-list">';
 
@@ -2671,6 +2759,7 @@
             html += '</div>';
             wrap.innerHTML = html;
             wrap.classList.add('show');
+            wrap.classList.toggle('collapsed', collapsed);
         }
 
         function loadCommitmentHistory(email) {
