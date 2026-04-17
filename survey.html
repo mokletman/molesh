@@ -368,6 +368,28 @@
             filter: brightness(1.05);
         }
 
+        .btn-primary:disabled,
+        .btn-secondary:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+            box-shadow: none;
+        }
+
+        .field input:disabled,
+        .field textarea:disabled,
+        .trait-option.disabled {
+            opacity: .58;
+            cursor: not-allowed;
+        }
+
+        .trait-option.disabled:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .05);
+        }
+
         .result-head {
             display: flex;
             align-items: center;
@@ -580,7 +602,7 @@
         <section class="survey-hero">
             <span class="survey-badge">Survey Kelas</span>
             <h1>Karakter utama yang harus dimiliki Mokleters saat jadi leader</h1>
-            <p>Pilih karakter yang paling kamu anggap penting, lalu tuliskan alasan singkatnya. Navigasi kelas di bawah akan menampilkan data yang sudah masuk per kelas, mengikuti kelas yang sudah diset di profil.</p>
+            <p>Pilih karakter yang paling kamu anggap penting, lalu tuliskan alasan singkatnya. Survey ini langsung mengikuti kelas yang sudah kamu set di profil, jadi kamu tidak perlu memilih kelas lagi saat mengisi.</p>
             <div class="profile-chip-row">
                 <div class="profile-chip" id="profileNameChip">Nama: -</div>
                 <div class="profile-chip" id="profileClassChip">Kelas aktif: -</div>
@@ -591,12 +613,12 @@
         <section class="card" style="margin-top:16px;">
             <div class="section-head">
                 <div>
-                    <div class="section-title">Navigasi Per Kelas</div>
-                    <div class="section-subtitle">Pilih kelas untuk melihat masukan yang sudah tersimpan.</div>
+                    <div class="section-title">Kelas Survey Aktif</div>
+                    <div class="section-subtitle">Semua hasil yang tampil di halaman ini otomatis mengikuti kelas dari profilmu.</div>
                 </div>
                 <div class="result-badge" id="activeClassBadge">Kelas aktif</div>
             </div>
-            <div class="class-nav" id="classNav"></div>
+            <div class="profile-note" id="classInfoNote">Kelas aktif akan dipakai untuk pengisian dan menampilkan data survey teman sekelasmu.</div>
         </section>
 
         <section class="layout">
@@ -608,7 +630,7 @@
                     </div>
                 </div>
 
-                <div class="profile-note" id="profileNote">Masukan akan disimpan mengikuti kelas yang sedang dipilih.</div>
+                <div class="profile-note" id="profileNote">Masukan akan langsung disimpan ke kelas yang tersimpan di profilmu.</div>
 
                 <div class="trait-grid" id="traitGrid"></div>
 
@@ -665,17 +687,7 @@
     <script>
         (function () {
             var STORAGE_KEY = 'molesh_leader_survey_v1';
-            var SELECTED_KEY = 'molesh_leader_survey_selected_class';
             var PROFILE_KEY = 'molesh_profile';
-            var ALL_CLASSES = [
-                'X RPL 1', 'X RPL 2', 'X RPL 3', 'X RPL 4', 'X RPL 5', 'X RPL 6', 'X RPL 7', 'X RPL 8',
-                'XI RPL 1', 'XI RPL 2', 'XI RPL 3', 'XI RPL 4', 'XI RPL 5', 'XI RPL 6', 'XI RPL 7', 'XI RPL 8',
-                'XII RPL 1', 'XII RPL 2', 'XII RPL 3', 'XII RPL 4', 'XII RPL 5', 'XII RPL 6', 'XII RPL 7', 'XII RPL 8',
-                'X TKJ 1', 'X TKJ 2', 'X TKJ 3',
-                'XI TKJ 1', 'XI TKJ 2', 'XI TKJ 3', 'XI TKJ 4',
-                'XII TKJ 1', 'XII TKJ 2', 'XII TKJ 3',
-                'X PG 1', 'X PG 2', 'XI PG 1', 'XI PG 2', 'XII PG 1', 'XII PG 2'
-            ];
             var TRAITS = [
                 { key: 'AMANAH', desc: 'Bisa dipercaya dan memegang tanggung jawab.' },
                 { key: 'KOMPETEN', desc: 'Punya skill dan kerja rapi.' },
@@ -690,7 +702,7 @@
             ];
 
             var entries = [];
-            var selectedClass = '';
+            var activeClass = '';
             var profile = {};
             var profileKey = '';
 
@@ -719,7 +731,7 @@
             function buildProfileKey() {
                 var email = normalize(getDisplayEmail());
                 var name = normalize(profile.nama || getDisplayName());
-                return (email || name || 'anon') + '|' + normalize(selectedClass);
+                return (email || name || 'anon') + '|' + normalize(activeClass);
             }
 
             function getStoredEntries() {
@@ -748,15 +760,6 @@
                 showToast._timer = setTimeout(function () {
                     toast.classList.remove('show');
                 }, 2600);
-            }
-
-            function uniqueClasses() {
-                var set = new Set(ALL_CLASSES);
-                entries.forEach(function (item) {
-                    if (item.kelas) set.add(item.kelas);
-                });
-                if (profile.kelas) set.add(profile.kelas);
-                return Array.from(set);
             }
 
             function entryKey(item) {
@@ -829,47 +832,59 @@
             }
 
             window.syncTraitCard = syncTraitCard;
-            window.setSelectedClass = setSelectedClass;
 
-            function renderClassNav() {
-                var nav = document.getElementById('classNav');
-                var classCounts = {};
-                entries.forEach(function (item) {
-                    if (!item.kelas) return;
-                    classCounts[item.kelas] = (classCounts[item.kelas] || 0) + 1;
+            function updateActiveClassPanel() {
+                document.getElementById('activeClassBadge').textContent = activeClass || 'Profil belum lengkap';
+                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (activeClass || '-');
+                document.getElementById('submitBtn').textContent = activeClass ? 'Kirim Survey untuk ' + activeClass : 'Lengkapi Profil Terlebih Dahulu';
+            }
+
+            function setFormAvailability() {
+                var ready = !!activeClass;
+                var submitBtn = document.getElementById('submitBtn');
+                var resetBtn = document.getElementById('resetBtn');
+                var otherTrait = document.getElementById('otherTrait');
+                var summaryInput = document.getElementById('summaryInput');
+
+                submitBtn.disabled = !ready;
+                resetBtn.disabled = !ready;
+                otherTrait.disabled = !ready;
+                summaryInput.disabled = !ready;
+
+                Array.prototype.slice.call(document.querySelectorAll('.trait-option')).forEach(function (card) {
+                    card.classList.toggle('disabled', !ready);
                 });
 
-                var html = '';
-                uniqueClasses().forEach(function (kelas) {
-                    var count = classCounts[kelas] || 0;
-                    html += '<button type="button" class="class-chip' + (kelas === selectedClass ? ' active' : '') + '" onclick="setSelectedClass(\'' + kelas.replace(/'/g, "\\'") + '\')">';
-                    html += kelas + ' <small>' + count + '</small>';
-                    html += '</button>';
+                Array.prototype.slice.call(document.querySelectorAll('.trait-option input')).forEach(function (input) {
+                    input.disabled = !ready;
                 });
-                nav.innerHTML = html;
-                document.getElementById('activeClassBadge').textContent = selectedClass || 'Pilih kelas';
-                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (selectedClass || '-');
-                document.getElementById('submitBtn').textContent = 'Kirim Survey ke ' + (selectedClass || 'Kelas');
             }
 
             function renderProfileChips() {
                 var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
                 document.getElementById('profileNameChip').textContent = 'Nama: ' + (profile.nama || rawUser.name || 'Belum diisi');
-                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (selectedClass || profile.kelas || '-');
+                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (activeClass || profile.kelas || '-');
                 document.getElementById('profileAbsenChip').textContent = 'Absen: ' + (profile.absen || '-');
                 var note = document.getElementById('profileNote');
+                var classNote = document.getElementById('classInfoNote');
                 if (profile.nama || profile.kelas || profile.absen) {
-                    note.textContent = 'Profil yang tersimpan akan dipakai sebagai identitas survey. Kamu bisa ganti kelas lewat navigasi di atas.';
+                    note.textContent = 'Profil yang tersimpan akan dipakai sebagai identitas survey. Kelas tujuan akan langsung mengikuti profilmu.';
+                    classNote.textContent = activeClass
+                        ? 'Survey ini akan menyimpan jawaban ke kelas ' + activeClass + ' dan menampilkan data survey dari kelas yang sama.'
+                        : 'Profil kelas belum terbaca, jadi kelas tujuan survey belum bisa ditentukan.';
                 } else {
                     note.innerHTML = 'Profil belum lengkap. Survey tetap bisa dilihat, tetapi agar data tersimpan rapi per kelas, lengkapi dulu profil di <a href="profil.html" style="color:#93c5fd;font-weight:800;text-decoration:none">halaman Profil</a>.';
+                    classNote.innerHTML = 'Kelas aktif belum tersedia. Lengkapi dulu <a href="profil.html" style="color:#93c5fd;font-weight:800;text-decoration:none">profil</a> agar survey langsung masuk ke kelasmu.';
                 }
             }
 
             function renderSummary() {
-                var filtered = entries.filter(function (item) { return item.kelas === selectedClass; });
+                var filtered = entries.filter(function (item) { return item.kelas === activeClass; });
                 document.getElementById('classTotal').textContent = String(filtered.length);
                 document.getElementById('resultCountBadge').textContent = filtered.length + ' masukan';
-                document.getElementById('resultSubtitle').textContent = filtered.length ? 'Masukan terbaru untuk kelas ' + selectedClass + '.' : 'Belum ada masukan untuk kelas ini.';
+                document.getElementById('resultSubtitle').textContent = activeClass
+                    ? (filtered.length ? 'Masukan terbaru untuk kelas ' + activeClass + '.' : 'Belum ada masukan untuk kelas ' + activeClass + '.')
+                    : 'Kelas profil belum tersedia.';
 
                 var counts = {};
                 filtered.forEach(function (item) {
@@ -891,9 +906,14 @@
 
             function renderResults() {
                 var list = document.getElementById('resultList');
-                var filtered = entries.filter(function (item) { return item.kelas === selectedClass; });
+                var filtered = entries.filter(function (item) { return item.kelas === activeClass; });
+                if (!activeClass) {
+                    list.innerHTML = '<div class="empty-state">Lengkapi kelas di profil dulu agar survey langsung terhubung ke kelasmu dan datanya bisa tampil di sini.</div>';
+                    renderSummary();
+                    return;
+                }
                 if (!filtered.length) {
-                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ini. Jadilah orang pertama yang mengisi survey karakter leader.</div>';
+                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ini. Jadilah orang pertama yang mengisi survey karakter leader di ' + activeClass + '.</div>';
                     renderSummary();
                     return;
                 }
@@ -934,7 +954,7 @@
 
             function fillDraftForSelectedClass() {
                 var draft = entries.find(function (item) {
-                    return normalize(item.kelas) === normalize(selectedClass) && normalize(entryKey(item)) === normalize(profileKey);
+                    return normalize(item.kelas) === normalize(activeClass) && normalize(entryKey(item)) === normalize(profileKey);
                 });
                 var other = document.getElementById('otherTrait');
                 var summary = document.getElementById('summaryInput');
@@ -954,7 +974,7 @@
                 var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
                 var email = normalize(rawUser.email);
                 var name = normalize(profile.nama || rawUser.name || 'anon');
-                return (email || name || 'anon') + '|' + normalize(selectedClass);
+                return (email || name || 'anon') + '|' + normalize(activeClass);
             }
 
             function saveSurveyLocally(payload) {
@@ -969,49 +989,22 @@
                 setStoredEntries(entries);
             }
 
-            function encodeSurveyReflection(payload) {
-                return JSON.stringify({
-                    recordKey: payload.recordKey,
-                    traits: payload.traits,
-                    otherTrait: payload.otherTrait || '',
-                    note: payload.note || '',
-                    submittedFrom: 'survey',
-                    updatedAt: payload.updatedAt || new Date().toISOString()
-                });
-            }
-
-            function decodeSurveyReflection(row) {
-                var raw = safeJSONParse(row.refleksi, {});
-                var traits = raw && raw.traits ? raw.traits : '';
-                var otherTrait = raw && raw.otherTrait ? raw.otherTrait : '';
-                var note = raw && raw.note ? raw.note : row.refleksi || '';
-                return {
-                    recordKey: raw && raw.recordKey ? raw.recordKey : (row.email || row.nama || '') + '|' + (row.kelas || ''),
-                    kelas: row.kelas || '',
-                    email: row.email || '',
-                    googleName: row.googleName || '',
-                    nama: row.nama || row.googleName || '',
-                    absen: row.absen || '',
-                    traits: traits,
-                    otherTrait: otherTrait,
-                    note: note,
-                    createdAt: row.submittedAt || '',
-                    updatedAt: row.submittedAt || row.updatedAt || row.createdAt || ''
-                };
-            }
-
             function syncSurveyToCloud(payload) {
                 var apiUrl = getApiUrl();
                 if (!apiUrl) return;
                 var body = JSON.stringify({
-                    action: 'saveReflection',
-                    sesi: 'survey|' + payload.kelas,
+                    action: 'saveSurveyIdea',
+                    recordKey: payload.recordKey,
                     kelas: payload.kelas,
                     email: payload.email,
                     googleName: payload.googleName || '',
                     nama: payload.nama || '',
                     absen: payload.absen || '',
-                    refleksi: encodeSurveyReflection(payload)
+                    traits: payload.traits,
+                    otherTrait: payload.otherTrait || '',
+                    note: payload.note || '',
+                    createdAt: payload.createdAt,
+                    updatedAt: payload.updatedAt
                 });
                 fetch(apiUrl, {
                     method: 'POST',
@@ -1024,40 +1017,22 @@
             function loadSurveyFromCloud() {
                 var apiUrl = getApiUrl();
                 if (!apiUrl) return Promise.resolve([]);
-                return fetch(apiUrl + '?type=reflections', { cache: 'no-store' })
+                return fetch(apiUrl + '?type=surveyIdeas', { cache: 'no-store' })
                     .then(function (res) { return res.json(); })
-                    .then(function (data) {
-                        data = Array.isArray(data) ? data : [];
-                        return data.filter(function (row) {
-                            return String(row.sesi || '').indexOf('survey|') === 0;
-                        }).map(function (row) {
-                            return decodeSurveyReflection(row);
-                        });
-                    })
+                    .then(function (data) { return Array.isArray(data) ? data : []; })
                     .catch(function () { return []; });
-            }
-
-            function setSelectedClass(kelas) {
-                selectedClass = kelas;
-                localStorage.setItem(SELECTED_KEY, selectedClass);
-                profileKey = buildRecordKey();
-                renderAll();
             }
 
             function renderAll() {
                 renderProfileChips();
-                renderClassNav();
+                updateActiveClassPanel();
                 fillDraftForSelectedClass();
+                setFormAvailability();
                 renderResults();
             }
 
             function initSelection() {
-                var classes = uniqueClasses();
-                var stored = localStorage.getItem(SELECTED_KEY);
-                selectedClass = stored || profile.kelas || classes[0] || ALL_CLASSES[0] || '';
-                if (classes.indexOf(selectedClass) === -1) {
-                    selectedClass = classes[0] || ALL_CLASSES[0] || '';
-                }
+                activeClass = profile.kelas || '';
                 profileKey = buildRecordKey();
             }
 
@@ -1082,8 +1057,8 @@
                     showToast('Tuliskan pendapat singkatnya dulu ya.', true);
                     return;
                 }
-                if (!selectedClass) {
-                    showToast('Pilih kelas terlebih dahulu.', true);
+                if (!activeClass) {
+                    showToast('Lengkapi kelas di profil terlebih dahulu.', true);
                     return;
                 }
 
@@ -1093,7 +1068,7 @@
                     email: rawUser.email || '',
                     googleName: rawUser.name || '',
                     nama: profile.nama || rawUser.name || 'Anonim',
-                    kelas: selectedClass,
+                    kelas: activeClass,
                     absen: profile.absen || '',
                     traits: traits.join(', '),
                     otherTrait: otherTrait,
@@ -1112,7 +1087,7 @@
                 saveSurveyLocally(payload);
                 syncSurveyToCloud(payload);
                 renderAll();
-                showToast('Survey tersimpan untuk ' + selectedClass + '.');
+                showToast('Survey tersimpan untuk ' + activeClass + '.');
             });
 
             document.addEventListener('DOMContentLoaded', function () {

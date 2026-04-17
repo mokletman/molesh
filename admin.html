@@ -445,6 +445,7 @@
                 '<button class="tab-btn active" onclick="switchTab(this,\'tabStudents\')" >📋 Data Siswa</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabCheckin\')" >📅 Kehadiran</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabRefleksi\');loadReflections()" >📝 Refleksi</button>' +
+                '<button class="tab-btn" onclick="switchTab(this,\'tabSurvey\');loadSurveyIdeas()" >🗳️ Survey</button>' +
                 '<button class="tab-btn" onclick="switchTab(this,\'tabAnalysis\');runAnalysis()" >📊 Analisa</button>' +
                 '</div>';
 
@@ -891,10 +892,6 @@
                     allStudents.forEach(function(s) {
                         if(s.email) studentMap[s.email.toLowerCase()] = s;
                     });
-                    
-                    data = data.filter(function (r) {
-                        return String(r.sesi || '').indexOf('survey|') !== 0;
-                    });
 
                     data.forEach(function(r) {
                         var email = (r.email || '').toLowerCase();
@@ -1064,13 +1061,28 @@
             return [];
         }
 
+        function refreshSurveyClassFilter() {
+            var select = document.getElementById('filterSurveyClass');
+            if (!select) return;
+            var current = select.value || '';
+            var classes = getSurveyClassList();
+            var html = '<option value="">Semua Kelas</option>';
+            classes.forEach(function (k) {
+                html += '<option value="' + k + '">' + k + '</option>';
+            });
+            select.innerHTML = html;
+            if (!current) return;
+            var hasCurrent = classes.some(function (k) { return k === current; });
+            select.value = hasCurrent ? current : '';
+        }
+
         function loadSurveyIdeas() {
             var wrap = document.getElementById('surveyTableWrap');
             var stats = document.getElementById('surveyStats');
             if (!wrap) return;
             wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat data survey karakter...</p></div>';
 
-            fetch(API_URL + '?type=reflections')
+            fetch(API_URL + '?type=surveyIdeas')
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     var studentMap = {};
@@ -1078,9 +1090,7 @@
                         if (s.email) studentMap[s.email.toLowerCase()] = s;
                     });
 
-                    data = data.filter(function (r) {
-                        return String(r.sesi || '').indexOf('survey|') === 0;
-                    });
+                    data = Array.isArray(data) ? data : [];
 
                     data.forEach(function (r) {
                         var email = (r.email || '').toLowerCase();
@@ -1090,17 +1100,12 @@
                             r.absen = studentMap[email].absen || r.absen;
                             r.googleName = studentMap[email].googleName || r.googleName;
                         }
-                        if (r.refleksi) {
-                            try {
-                                var surveyPayload = JSON.parse(r.refleksi);
-                                r.recordKey = surveyPayload.recordKey || r.recordKey || '';
-                                r.traits = surveyPayload.traits || r.traits || '';
-                            r.otherTrait = surveyPayload.otherTrait || r.otherTrait || '';
-                            r.note = surveyPayload.note || r.note || '';
-                        } catch (e) { }
-                        }
-                        r.createdAt = r.submittedAt || r.createdAt || '';
-                        r.updatedAt = r.submittedAt || r.updatedAt || r.createdAt || '';
+                        r.recordKey = r.recordKey || '';
+                        r.traits = r.traits || '';
+                        r.otherTrait = r.otherTrait || '';
+                        r.note = r.note || '';
+                        r.createdAt = r.createdAt || '';
+                        r.updatedAt = r.updatedAt || r.createdAt || '';
                     });
 
                     data.sort(function (a, b) {
@@ -1109,6 +1114,7 @@
 
                     allSurveyIdeas = data;
                     _surveyLoaded = true;
+                    refreshSurveyClassFilter();
                     renderSurveyStats(stats, getFilteredSurveyIdeas());
                     renderSurveyIdeas(wrap);
                 })
