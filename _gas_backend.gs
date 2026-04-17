@@ -27,6 +27,7 @@ var SHEET_NAME = 'Students';
 var CHECKIN_SETTINGS_SHEET = 'CheckIn_Settings';
 var CHECKIN_LOG_SHEET = 'CheckIn_Log';
 var REFLECTIONS_SHEET = 'Reflections';
+var SURVEY_SHEET = 'Leadership_Survey';
 var SHEET_ID = '1T0Bu-46xgInjUK1VxE8WeeMJ8V-REsKXET5KdyjWlgo'; // MOLESH Data spreadsheet
 
 /* ── Handle POST (login, saveProfile, checkin actions) ── */
@@ -50,6 +51,8 @@ function doPost(e) {
       return handleDoCheckin(data);
     } else if (data.action === 'saveReflection') {
       return handleSaveReflection(data);
+    } else if (data.action === 'saveSurveyIdea') {
+      return handleSaveSurveyIdea(data);
     }
 
     return jsonResponse({ error: 'Unknown action' });
@@ -74,6 +77,8 @@ function doGet(e) {
     return getActiveCheckin();
   } else if (type === 'reflections') {
     return getSheetAsJSON(getOrCreateReflections());
+  } else if (type === 'surveyIdeas') {
+    return getSheetAsJSON(getOrCreateSurveyIdeas());
   }
   return jsonResponse([]);
 }
@@ -296,6 +301,63 @@ function getOrCreateReflections() {
     sheet.getRange('A1:H1').setFontWeight('bold');
   }
   return sheet;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LEADERSHIP SURVEY
+   ══════════════════════════════════════════════════════════ */
+
+function getOrCreateSurveyIdeas() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(SURVEY_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(SURVEY_SHEET);
+    sheet.appendRow([
+      'recordKey', 'kelas', 'email', 'googleName', 'nama', 'absen',
+      'traits', 'otherTrait', 'note', 'createdAt', 'updatedAt'
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.getRange('A1:K1').setFontWeight('bold');
+  }
+  return sheet;
+}
+
+function handleSaveSurveyIdea(data) {
+  var sheet = getOrCreateSurveyIdeas();
+  var now = new Date().toISOString();
+  var key = data.recordKey || '';
+  var allData = sheet.getDataRange().getValues();
+
+  for (var i = 1; i < allData.length; i++) {
+    if (String(allData[i][0]) === String(key)) {
+      var row = i + 1;
+      sheet.getRange(row, 2).setValue(data.kelas || '');
+      sheet.getRange(row, 3).setValue(data.email || '');
+      sheet.getRange(row, 4).setValue(data.googleName || '');
+      sheet.getRange(row, 5).setValue(data.nama || '');
+      sheet.getRange(row, 6).setValue(data.absen || '');
+      sheet.getRange(row, 7).setValue(data.traits || '');
+      sheet.getRange(row, 8).setValue(data.otherTrait || '');
+      sheet.getRange(row, 9).setValue(data.note || '');
+      sheet.getRange(row, 11).setValue(data.updatedAt || now);
+      return jsonResponse({ status: 'updated', recordKey: key });
+    }
+  }
+
+  sheet.appendRow([
+    key,
+    data.kelas || '',
+    data.email || '',
+    data.googleName || '',
+    data.nama || '',
+    data.absen || '',
+    data.traits || '',
+    data.otherTrait || '',
+    data.note || '',
+    data.createdAt || now,
+    data.updatedAt || now
+  ]);
+  return jsonResponse({ status: 'ok', recordKey: key });
 }
 
 /* Save a student reflection */

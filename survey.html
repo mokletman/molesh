@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b1a">
+    <meta name="description" content="Survey karakter pemimpin per kelas untuk Moklet Leadership.">
+    <link rel="icon" type="image/png" sizes="100x100" href="assets/og-icon-100.png?v=20260408b">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Survey Karakter Pemimpin | Moklet Leadership</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: #0b0b1a;
+            color: #e2e8f0;
+            padding: 24px 18px 38px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .back-btn {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, .72);
+            font-size: .82rem;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .32;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 { width: 420px; height: 420px; background: #7c3aed; top: -120px; left: -90px; }
+        .orb-2 { width: 360px; height: 360px; background: #06b6d4; right: -100px; top: 20%; }
+        .orb-3 { width: 280px; height: 280px; background: #f59e0b; left: 30%; bottom: -120px; }
+
+        .survey-page {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .survey-hero {
+            margin-top: 18px;
+            padding: 28px 24px;
+            border-radius: 28px;
+            background: linear-gradient(145deg, rgba(17, 24, 39, .9), rgba(30, 41, 59, .82));
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .25);
+        }
+
+        .survey-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, .14);
+            border: 1px solid rgba(125, 211, 252, .18);
+            color: #bfdbfe;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .survey-hero h1 {
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            line-height: 1.08;
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+
+        .survey-hero p {
+            color: rgba(226, 232, 240, .68);
+            line-height: 1.65;
+            max-width: 760px;
+            margin-bottom: 18px;
+        }
+
+        .profile-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .profile-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            color: rgba(255, 255, 255, .76);
+            font-size: .76rem;
+            font-weight: 700;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 24px;
+            padding: 22px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, .18);
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .section-subtitle {
+            font-size: .8rem;
+            color: rgba(226, 232, 240, .55);
+            line-height: 1.55;
+            margin-top: 4px;
+        }
+
+        .class-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .class-chip {
+            border: 1px solid rgba(125, 211, 252, .14);
+            background: rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .72);
+            border-radius: 999px;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: .2px;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .class-chip:hover { transform: translateY(-1px); }
+        .class-chip.active {
+            background: linear-gradient(135deg, rgba(239, 68, 68, .2), rgba(37, 99, 235, .2));
+            border-color: rgba(125, 211, 252, .34);
+            color: #f8fafc;
+        }
+        .class-chip small {
+            color: rgba(255, 255, 255, .42);
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 14px 0 18px;
+        }
+
+        .stat {
+            padding: 14px 15px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+        .stat-num {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: .72rem;
+            color: rgba(226, 232, 240, .52);
+            line-height: 1.45;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .field {
+            text-align: left;
+        }
+
+        .field label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, .52);
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(15, 23, 42, .52);
+            color: #e2e8f0;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: .9rem;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-color: rgba(125, 211, 252, .4);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, .12);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: rgba(226, 232, 240, .3);
+        }
+
+        .profile-note {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(59, 130, 246, .1);
+            border: 1px solid rgba(125, 211, 252, .12);
+            font-size: .84rem;
+            line-height: 1.55;
+            color: rgba(224, 242, 254, .88);
+        }
+
+        .trait-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 10px;
+            margin: 10px 0 12px;
+        }
+
+        .trait-option {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 14px 14px 13px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+            min-height: 110px;
+        }
+
+        .trait-option:hover {
+            transform: translateY(-2px);
+            border-color: rgba(125, 211, 252, .22);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .trait-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .trait-option.selected {
+            border-color: rgba(125, 211, 252, .42);
+            background: linear-gradient(145deg, rgba(59, 130, 246, .16), rgba(124, 58, 237, .12));
+            box-shadow: inset 0 0 0 1px rgba(125, 211, 252, .08);
+        }
+
+        .trait-name {
+            font-size: .88rem;
+            font-weight: 800;
+            color: #f8fafc;
+            letter-spacing: .2px;
+        }
+
+        .trait-desc {
+            font-size: .75rem;
+            line-height: 1.5;
+            color: rgba(226, 232, 240, .58);
+        }
+
+        .other-box {
+            margin-top: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            border: none;
+            border-radius: 14px;
+            padding: 13px 16px;
+            font-family: inherit;
+            font-size: .88rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        }
+
+        .btn-primary {
+            flex: 1;
+            color: #fff;
+            background: linear-gradient(135deg, #ef4444, #2563eb);
+            box-shadow: 0 16px 30px rgba(37, 99, 235, .18);
+        }
+
+        .btn-secondary {
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        .result-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, .12);
+            border: 1px solid rgba(34, 197, 94, .22);
+            color: #bbf7d0;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+        }
+
+        .result-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .result-card {
+            padding: 15px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .result-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .result-name {
+            font-size: .93rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 3px;
+        }
+
+        .result-meta {
+            font-size: .74rem;
+            color: rgba(226, 232, 240, .52);
+            line-height: 1.45;
+        }
+
+        .result-time {
+            font-size: .7rem;
+            font-weight: 800;
+            color: #93c5fd;
+            text-align: right;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, .12);
+            border: 1px solid rgba(125, 211, 252, .12);
+            color: #dbeafe;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .2px;
+        }
+
+        .result-note {
+            font-size: .82rem;
+            line-height: 1.6;
+            color: rgba(226, 232, 240, .78);
+        }
+
+        .empty-state {
+            padding: 20px 14px;
+            border-radius: 18px;
+            border: 1px dashed rgba(125, 211, 252, .2);
+            background: rgba(255, 255, 255, .03);
+            color: rgba(226, 232, 240, .58);
+            text-align: center;
+            line-height: 1.6;
+            font-size: .86rem;
+        }
+
+        .footer {
+            margin-top: 18px;
+            text-align: center;
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .28);
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 26px;
+            transform: translateX(-50%) translateY(60px);
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 800;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all .28s ease;
+            background: rgba(15, 23, 42, .92);
+            border: 1px solid rgba(125, 211, 252, .18);
+            color: #bfdbfe;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .28);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.error {
+            color: #fecaca;
+            border-color: rgba(248, 113, 113, .22);
+        }
+
+        html.theme-light body { background: #f4f7fb; color: #111827; }
+        html.theme-light .back-btn,
+        html.theme-light .survey-hero,
+        html.theme-light .card,
+        html.theme-light .profile-chip,
+        html.theme-light .stat,
+        html.theme-light .trait-option,
+        html.theme-light .result-card,
+        html.theme-light .empty-state {
+            background: rgba(255, 255, 255, .9);
+            border-color: rgba(15, 23, 42, .1);
+        }
+        html.theme-light .survey-hero h1,
+        html.theme-light .section-title,
+        html.theme-light .stat-num,
+        html.theme-light .trait-name,
+        html.theme-light .result-name,
+        html.theme-light .back-btn { color: #0f172a; }
+        html.theme-light .survey-hero p,
+        html.theme-light .section-subtitle,
+        html.theme-light .stat-label,
+        html.theme-light .trait-desc,
+        html.theme-light .result-meta,
+        html.theme-light .result-note,
+        html.theme-light .footer { color: rgba(31, 41, 55, .64); }
+        html.theme-light .profile-chip,
+        html.theme-light .class-chip { color: #0f172a; }
+        html.theme-light .class-chip.active {
+            background: linear-gradient(135deg, rgba(254, 202, 202, .92), rgba(191, 219, 254, .92));
+            border-color: rgba(59, 130, 246, .16);
+            color: #111827;
+        }
+        html.theme-light .field input,
+        html.theme-light .field textarea {
+            background: rgba(255, 255, 255, .98);
+            color: #0f172a;
+            border-color: rgba(15, 23, 42, .14);
+        }
+        html.theme-light .field input::placeholder,
+        html.theme-light .field textarea::placeholder { color: rgba(31, 41, 55, .34); }
+        html.theme-light .result-badge {
+            background: rgba(34, 197, 94, .1);
+            color: #166534;
+        }
+        html.theme-light .pill {
+            background: rgba(59, 130, 246, .08);
+            color: #1d4ed8;
+            border-color: rgba(59, 130, 246, .14);
+        }
+
+        @media (max-width: 960px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 18px 12px 32px; }
+            .survey-hero { padding: 22px 18px; }
+            .stats,
+            .form-grid { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .result-top { flex-direction: column; }
+            .result-time { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <a class="back-btn" href="index.html">← Beranda</a>
+
+    <main class="survey-page">
+        <section class="survey-hero">
+            <span class="survey-badge">Survey Kelas</span>
+            <h1>Karakter utama yang harus dimiliki Mokleters saat jadi leader</h1>
+            <p>Pilih karakter yang paling kamu anggap penting, lalu tuliskan alasan singkatnya. Navigasi kelas di bawah akan menampilkan data yang sudah masuk per kelas, mengikuti kelas yang sudah diset di profil.</p>
+            <div class="profile-chip-row">
+                <div class="profile-chip" id="profileNameChip">Nama: -</div>
+                <div class="profile-chip" id="profileClassChip">Kelas aktif: -</div>
+                <div class="profile-chip" id="profileAbsenChip">Absen: -</div>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top:16px;">
+            <div class="section-head">
+                <div>
+                    <div class="section-title">Navigasi Per Kelas</div>
+                    <div class="section-subtitle">Pilih kelas untuk melihat masukan yang sudah tersimpan.</div>
+                </div>
+                <div class="result-badge" id="activeClassBadge">Kelas aktif</div>
+            </div>
+            <div class="class-nav" id="classNav"></div>
+        </section>
+
+        <section class="layout">
+            <form class="card" id="surveyForm">
+                <div class="section-head">
+                    <div>
+                        <div class="section-title">Isi Masukan</div>
+                        <div class="section-subtitle">Tandai karakter yang menurutmu paling penting untuk seorang pemimpin.</div>
+                    </div>
+                </div>
+
+                <div class="profile-note" id="profileNote">Masukan akan disimpan mengikuti kelas yang sedang dipilih.</div>
+
+                <div class="trait-grid" id="traitGrid"></div>
+
+                <div class="form-grid">
+                    <div class="field other-box">
+                        <label for="otherTrait">Tuliskan yang lain...</label>
+                        <input id="otherTrait" type="text" maxlength="80" placeholder="Contoh: empati, disiplin, teladan">
+                    </div>
+                    <div class="field">
+                        <label for="summaryInput">Pendapat singkat</label>
+                        <textarea id="summaryInput" maxlength="500" placeholder="Kenapa karakter ini paling penting menurut kamu?"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-primary" id="submitBtn" type="submit">Kirim Survey</button>
+                    <button class="btn-secondary" type="button" id="resetBtn">Bersihkan</button>
+                </div>
+            </form>
+
+            <aside class="card">
+                <div class="result-head">
+                    <div>
+                        <div class="section-title">Data Per Kelas</div>
+                        <div class="section-subtitle" id="resultSubtitle">Masukan terbaru yang sudah masuk.</div>
+                    </div>
+                    <div class="result-badge" id="resultCountBadge">0 masukan</div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-num" id="classTotal">0</div>
+                        <div class="stat-label">Masukan di kelas ini</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num" id="topTrait">-</div>
+                        <div class="stat-label">Karakter paling sering dipilih</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num" id="latestAt">-</div>
+                        <div class="stat-label">Input terakhir</div>
+                    </div>
+                </div>
+                <div class="result-list" id="resultList"></div>
+            </aside>
+        </section>
+
+        <p class="footer">© 2026 Moklet Leadership • Survey Karakter Pemimpin</p>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="config.js"></script>
+    <script src="lang-switcher.js"></script>
+    <script>
+        (function () {
+            var STORAGE_KEY = 'molesh_leader_survey_v1';
+            var SELECTED_KEY = 'molesh_leader_survey_selected_class';
+            var PROFILE_KEY = 'molesh_profile';
+            var ALL_CLASSES = [
+                'X RPL 1', 'X RPL 2', 'X RPL 3', 'X RPL 4', 'X RPL 5', 'X RPL 6', 'X RPL 7', 'X RPL 8',
+                'XI RPL 1', 'XI RPL 2', 'XI RPL 3', 'XI RPL 4', 'XI RPL 5', 'XI RPL 6', 'XI RPL 7', 'XI RPL 8',
+                'XII RPL 1', 'XII RPL 2', 'XII RPL 3', 'XII RPL 4', 'XII RPL 5', 'XII RPL 6', 'XII RPL 7', 'XII RPL 8',
+                'X TKJ 1', 'X TKJ 2', 'X TKJ 3',
+                'XI TKJ 1', 'XI TKJ 2', 'XI TKJ 3', 'XI TKJ 4',
+                'XII TKJ 1', 'XII TKJ 2', 'XII TKJ 3',
+                'X PG 1', 'X PG 2', 'XI PG 1', 'XI PG 2', 'XII PG 1', 'XII PG 2'
+            ];
+            var TRAITS = [
+                { key: 'AMANAH', desc: 'Bisa dipercaya dan memegang tanggung jawab.' },
+                { key: 'KOMPETEN', desc: 'Punya skill dan kerja rapi.' },
+                { key: 'HARMONI', desc: 'Menjaga suasana tetap selaras.' },
+                { key: 'LOYAL', desc: 'Setia pada tim, tujuan, dan nilai.' },
+                { key: 'ADAPTIF', desc: 'Cepat menyesuaikan saat keadaan berubah.' },
+                { key: 'KOLABORATIF', desc: 'Kuat kerja sama dan saling mendukung.' },
+                { key: 'BRAVERY', desc: 'Berani ambil sikap dan keputusan.' },
+                { key: 'INTEGRITY', desc: 'Konsisten jujur dan selaras dengan nilai.' },
+                { key: 'SERVICE EXCELLENT', desc: 'Siap melayani dengan sikap terbaik.' },
+                { key: 'AGILITY', desc: 'Lincah, cekatan, dan sigap bergerak.' }
+            ];
+
+            var entries = [];
+            var selectedClass = '';
+            var profile = {};
+            var profileKey = '';
+
+            function safeJSONParse(raw, fallback) {
+                try { return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
+            }
+
+            function readProfile() {
+                return safeJSONParse(localStorage.getItem(PROFILE_KEY), {});
+            }
+
+            function normalize(text) {
+                return String(text || '').trim().toLowerCase();
+            }
+
+            function getDisplayName() {
+                var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
+                return profile.nama || rawUser.name || 'Mokleter';
+            }
+
+            function getDisplayEmail() {
+                var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
+                return rawUser.email || '';
+            }
+
+            function buildProfileKey() {
+                var email = normalize(getDisplayEmail());
+                var name = normalize(profile.nama || getDisplayName());
+                return (email || name || 'anon') + '|' + normalize(selectedClass);
+            }
+
+            function getStoredEntries() {
+                return safeJSONParse(localStorage.getItem(STORAGE_KEY), []);
+            }
+
+            function setStoredEntries(list) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            }
+
+            function getApiUrl() {
+                try {
+                    if (typeof MOLESH_CONFIG !== 'undefined' && MOLESH_CONFIG.APPS_SCRIPT_URL && MOLESH_CONFIG.APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
+                        return MOLESH_CONFIG.APPS_SCRIPT_URL;
+                    }
+                } catch (e) { }
+                return '';
+            }
+
+            function showToast(message, isError) {
+                var toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast' + (isError ? ' error' : '');
+                requestAnimationFrame(function () { toast.classList.add('show'); });
+                clearTimeout(showToast._timer);
+                showToast._timer = setTimeout(function () {
+                    toast.classList.remove('show');
+                }, 2600);
+            }
+
+            function uniqueClasses() {
+                var set = new Set(ALL_CLASSES);
+                entries.forEach(function (item) {
+                    if (item.kelas) set.add(item.kelas);
+                });
+                if (profile.kelas) set.add(profile.kelas);
+                return Array.from(set);
+            }
+
+            function entryKey(item) {
+                return normalize(item.recordKey || item.email || item.nama || 'anon') + '|' + normalize(item.kelas);
+            }
+
+            function mergeEntries(base, incoming) {
+                var map = new Map();
+                base.forEach(function (item) {
+                    map.set(entryKey(item), item);
+                });
+                incoming.forEach(function (item) {
+                    var key = entryKey(item);
+                    var existing = map.get(key) || {};
+                    map.set(key, Object.assign({}, existing, item));
+                });
+                return Array.from(map.values()).sort(function (a, b) {
+                    return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+                });
+            }
+
+            function parseTraits(value) {
+                if (!value) return [];
+                if (Array.isArray(value)) return value;
+                if (typeof value === 'string') {
+                    if (value.indexOf('||') > -1) {
+                        return value.split('||').map(function (v) { return v.trim(); }).filter(Boolean);
+                    }
+                    return value.split(',').map(function (v) { return v.trim(); }).filter(Boolean);
+                }
+                return [];
+            }
+
+            function formatTime(iso) {
+                if (!iso) return '-';
+                var d = new Date(iso);
+                if (isNaN(d.getTime())) return '-';
+                return d.toLocaleString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            function getSelectedTraits() {
+                return Array.prototype.slice.call(document.querySelectorAll('.trait-option input:checked')).map(function (input) {
+                    return input.value;
+                });
+            }
+
+            function syncTraitCard(input) {
+                var card = input.closest('.trait-option');
+                if (card) card.classList.toggle('selected', input.checked);
+            }
+
+            function renderTraitGrid(selectedValues) {
+                var grid = document.getElementById('traitGrid');
+                var html = '';
+                TRAITS.forEach(function (trait) {
+                    var checked = selectedValues.indexOf(trait.key) > -1 ? ' checked' : '';
+                    html += '<label class="trait-option' + checked.replace(' checked', ' selected') + '">';
+                    html += '<input type="checkbox" value="' + trait.key + '"' + checked + ' onchange="syncTraitCard(this)">';
+                    html += '<div class="trait-name">' + trait.key + '</div>';
+                    html += '<div class="trait-desc">' + trait.desc + '</div>';
+                    html += '</label>';
+                });
+                grid.innerHTML = html;
+            }
+
+            window.syncTraitCard = syncTraitCard;
+            window.setSelectedClass = setSelectedClass;
+
+            function renderClassNav() {
+                var nav = document.getElementById('classNav');
+                var classCounts = {};
+                entries.forEach(function (item) {
+                    if (!item.kelas) return;
+                    classCounts[item.kelas] = (classCounts[item.kelas] || 0) + 1;
+                });
+
+                var html = '';
+                uniqueClasses().forEach(function (kelas) {
+                    var count = classCounts[kelas] || 0;
+                    html += '<button type="button" class="class-chip' + (kelas === selectedClass ? ' active' : '') + '" onclick="setSelectedClass(\'' + kelas.replace(/'/g, "\\'") + '\')">';
+                    html += kelas + ' <small>' + count + '</small>';
+                    html += '</button>';
+                });
+                nav.innerHTML = html;
+                document.getElementById('activeClassBadge').textContent = selectedClass || 'Pilih kelas';
+                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (selectedClass || '-');
+                document.getElementById('submitBtn').textContent = 'Kirim Survey ke ' + (selectedClass || 'Kelas');
+            }
+
+            function renderProfileChips() {
+                var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
+                document.getElementById('profileNameChip').textContent = 'Nama: ' + (profile.nama || rawUser.name || 'Belum diisi');
+                document.getElementById('profileClassChip').textContent = 'Kelas aktif: ' + (selectedClass || profile.kelas || '-');
+                document.getElementById('profileAbsenChip').textContent = 'Absen: ' + (profile.absen || '-');
+                var note = document.getElementById('profileNote');
+                if (profile.nama || profile.kelas || profile.absen) {
+                    note.textContent = 'Profil yang tersimpan akan dipakai sebagai identitas survey. Kamu bisa ganti kelas lewat navigasi di atas.';
+                } else {
+                    note.innerHTML = 'Profil belum lengkap. Survey tetap bisa dilihat, tetapi agar data tersimpan rapi per kelas, lengkapi dulu profil di <a href="profil.html" style="color:#93c5fd;font-weight:800;text-decoration:none">halaman Profil</a>.';
+                }
+            }
+
+            function renderSummary() {
+                var filtered = entries.filter(function (item) { return item.kelas === selectedClass; });
+                document.getElementById('classTotal').textContent = String(filtered.length);
+                document.getElementById('resultCountBadge').textContent = filtered.length + ' masukan';
+                document.getElementById('resultSubtitle').textContent = filtered.length ? 'Masukan terbaru untuk kelas ' + selectedClass + '.' : 'Belum ada masukan untuk kelas ini.';
+
+                var counts = {};
+                filtered.forEach(function (item) {
+                    parseTraits(item.traits).forEach(function (trait) {
+                        counts[trait] = (counts[trait] || 0) + 1;
+                    });
+                });
+                var topTrait = '-';
+                var topCount = 0;
+                Object.keys(counts).forEach(function (key) {
+                    if (counts[key] > topCount) {
+                        topCount = counts[key];
+                        topTrait = key;
+                    }
+                });
+                document.getElementById('topTrait').textContent = topTrait;
+                document.getElementById('latestAt').textContent = filtered[0] ? formatTime(filtered[0].updatedAt || filtered[0].createdAt) : '-';
+            }
+
+            function renderResults() {
+                var list = document.getElementById('resultList');
+                var filtered = entries.filter(function (item) { return item.kelas === selectedClass; });
+                if (!filtered.length) {
+                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ini. Jadilah orang pertama yang mengisi survey karakter leader.</div>';
+                    renderSummary();
+                    return;
+                }
+
+                var html = '';
+                filtered.forEach(function (item) {
+                    var traits = parseTraits(item.traits);
+                    html += '<article class="result-card">';
+                    html += '<div class="result-top">';
+                    html += '<div><div class="result-name">' + escapeHtml(item.nama || 'Anonim') + '</div><div class="result-meta">' + escapeHtml(item.kelas || '-') + (item.absen ? ' • Absen ' + escapeHtml(item.absen) : '') + '</div></div>';
+                    html += '<div class="result-time">' + formatTime(item.updatedAt || item.createdAt) + '</div>';
+                    html += '</div>';
+                    if (traits.length) {
+                        html += '<div class="pill-row">';
+                        traits.forEach(function (trait) {
+                            html += '<span class="pill">' + escapeHtml(trait) + '</span>';
+                        });
+                        html += '</div>';
+                    }
+                    if (item.otherTrait) {
+                        html += '<div class="result-note"><strong>Lainnya:</strong> ' + escapeHtml(item.otherTrait) + '</div>';
+                    }
+                    html += '<div class="result-note"><strong>Pendapat:</strong> ' + escapeHtml(item.note || '-') + '</div>';
+                    html += '</article>';
+                });
+                list.innerHTML = html;
+                renderSummary();
+            }
+
+            function escapeHtml(text) {
+                return String(text || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function fillDraftForSelectedClass() {
+                var draft = entries.find(function (item) {
+                    return normalize(item.kelas) === normalize(selectedClass) && normalize(entryKey(item)) === normalize(profileKey);
+                });
+                var other = document.getElementById('otherTrait');
+                var summary = document.getElementById('summaryInput');
+                if (draft) {
+                    var traitValues = parseTraits(draft.traits);
+                    renderTraitGrid(traitValues);
+                    other.value = draft.otherTrait || '';
+                    summary.value = draft.note || '';
+                } else {
+                    renderTraitGrid([]);
+                    other.value = '';
+                    summary.value = '';
+                }
+            }
+
+            function buildRecordKey() {
+                var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
+                var email = normalize(rawUser.email);
+                var name = normalize(profile.nama || rawUser.name || 'anon');
+                return (email || name || 'anon') + '|' + normalize(selectedClass);
+            }
+
+            function saveSurveyLocally(payload) {
+                var idx = entries.findIndex(function (item) {
+                    return normalize(item.recordKey) === normalize(payload.recordKey);
+                });
+                if (idx > -1) {
+                    entries[idx] = payload;
+                } else {
+                    entries.unshift(payload);
+                }
+                setStoredEntries(entries);
+            }
+
+            function syncSurveyToCloud(payload) {
+                var apiUrl = getApiUrl();
+                if (!apiUrl) return;
+                var body = JSON.stringify({
+                    action: 'saveSurveyIdea',
+                    recordKey: payload.recordKey,
+                    kelas: payload.kelas,
+                    email: payload.email,
+                    googleName: payload.googleName || '',
+                    nama: payload.nama || '',
+                    absen: payload.absen || '',
+                    traits: payload.traits,
+                    otherTrait: payload.otherTrait || '',
+                    note: payload.note || '',
+                    createdAt: payload.createdAt,
+                    updatedAt: payload.updatedAt
+                });
+                fetch(apiUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: body
+                }).catch(function () { });
+            }
+
+            function loadSurveyFromCloud() {
+                var apiUrl = getApiUrl();
+                if (!apiUrl) return Promise.resolve([]);
+                return fetch(apiUrl + '?type=surveyIdeas', { cache: 'no-store' })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) { return Array.isArray(data) ? data : []; })
+                    .catch(function () { return []; });
+            }
+
+            function setSelectedClass(kelas) {
+                selectedClass = kelas;
+                localStorage.setItem(SELECTED_KEY, selectedClass);
+                profileKey = buildRecordKey();
+                renderAll();
+            }
+
+            function renderAll() {
+                renderProfileChips();
+                renderClassNav();
+                fillDraftForSelectedClass();
+                renderResults();
+            }
+
+            function initSelection() {
+                var classes = uniqueClasses();
+                var stored = localStorage.getItem(SELECTED_KEY);
+                selectedClass = stored || profile.kelas || classes[0] || ALL_CLASSES[0] || '';
+                if (classes.indexOf(selectedClass) === -1) {
+                    selectedClass = classes[0] || ALL_CLASSES[0] || '';
+                }
+                profileKey = buildRecordKey();
+            }
+
+            document.getElementById('resetBtn').addEventListener('click', function () {
+                renderTraitGrid([]);
+                document.getElementById('otherTrait').value = '';
+                document.getElementById('summaryInput').value = '';
+                showToast('Isian dibersihkan.');
+            });
+
+            document.getElementById('surveyForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                var traits = getSelectedTraits();
+                var otherTrait = document.getElementById('otherTrait').value.trim();
+                var note = document.getElementById('summaryInput').value.trim();
+
+                if (!traits.length && !otherTrait) {
+                    showToast('Pilih minimal satu karakter atau isi kolom lainnya.', true);
+                    return;
+                }
+                if (!note) {
+                    showToast('Tuliskan pendapat singkatnya dulu ya.', true);
+                    return;
+                }
+                if (!selectedClass) {
+                    showToast('Pilih kelas terlebih dahulu.', true);
+                    return;
+                }
+
+                var rawUser = safeJSONParse(localStorage.getItem('molesh_user'), {});
+                var payload = {
+                    recordKey: buildRecordKey(),
+                    email: rawUser.email || '',
+                    googleName: rawUser.name || '',
+                    nama: profile.nama || rawUser.name || 'Anonim',
+                    kelas: selectedClass,
+                    absen: profile.absen || '',
+                    traits: traits.join(', '),
+                    otherTrait: otherTrait,
+                    note: note,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                var existing = entries.find(function (item) {
+                    return normalize(item.recordKey) === normalize(payload.recordKey);
+                });
+                if (existing && existing.createdAt) {
+                    payload.createdAt = existing.createdAt;
+                }
+
+                saveSurveyLocally(payload);
+                syncSurveyToCloud(payload);
+                renderAll();
+                showToast('Survey tersimpan untuk ' + selectedClass + '.');
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                profile = readProfile();
+                initSelection();
+                renderTraitGrid([]);
+                renderAll();
+
+                loadSurveyFromCloud().then(function (remoteEntries) {
+                    if (!remoteEntries.length) return;
+                    entries = mergeEntries(getStoredEntries(), remoteEntries);
+                    setStoredEntries(entries);
+                    renderAll();
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
