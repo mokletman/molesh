@@ -41,6 +41,14 @@
             border-radius:10px;color:#fb7185;font-size:.75rem;font-weight:700;
             padding:6px 14px;
         }
+        .admin-survey-btn{
+            border:none;
+            background:rgba(59,130,246,.15);
+            border:1px solid rgba(125,211,252,.25);
+            color:#bfdbfe;
+            cursor:pointer;
+        }
+        .admin-survey-btn:hover{background:rgba(59,130,246,.22);color:#e0f2fe}
 
         .panel{
             position:relative;z-index:1;width:100%;max-width:900px;
@@ -103,9 +111,9 @@
         .setting-btn:hover{background:rgba(251,191,36,.2);color:#fde68a}
 
         /* Tab bar */
-        .tab-bar{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px}
+        .tab-bar{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;flex-wrap:wrap}
         .tab-btn{
-            flex:1;text-align:center;padding:10px 12px;border-radius:10px;
+            flex:1 1 140px;text-align:center;padding:10px 12px;border-radius:10px;
             font-family:inherit;font-size:.82rem;font-weight:600;
             color:rgba(255,255,255,.4);background:transparent;border:none;
             cursor:pointer;transition:all .2s;
@@ -299,7 +307,10 @@
             <svg viewBox="0 0 20 20"><path d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"/></svg>
             Kembali
         </a>
-        <span class="admin-badge">🛡️ Admin Panel</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+            <span class="admin-badge">🛡️ Admin Panel</span>
+            <button class="admin-badge admin-survey-btn" type="button" onclick="openSurveyTab()">🗳️ Survey Kelas</button>
+        </div>
     </div>
 
     <div class="panel" id="mainPanel">
@@ -627,6 +638,20 @@
             if (tab) tab.classList.add('active');
         }
 
+        function openSurveyTab() {
+            var buttons = document.querySelectorAll('.tab-btn');
+            var btn = null;
+            for (var i = 0; i < buttons.length; i++) {
+                if ((buttons[i].textContent || '').indexOf('Survey') > -1) {
+                    btn = buttons[i];
+                    break;
+                }
+            }
+            if (!btn) return;
+            switchTab(btn, 'tabSurvey');
+            loadSurveyIdeas();
+        }
+
         /* ══════════════════════════════════════
            CHECK-IN MANAGEMENT
            ══════════════════════════════════════ */
@@ -867,6 +892,10 @@
                         if(s.email) studentMap[s.email.toLowerCase()] = s;
                     });
                     
+                    data = data.filter(function (r) {
+                        return String(r.sesi || '').indexOf('survey|') !== 0;
+                    });
+
                     data.forEach(function(r) {
                         var email = (r.email || '').toLowerCase();
                         if (studentMap[email]) {
@@ -1041,12 +1070,16 @@
             if (!wrap) return;
             wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat data survey karakter...</p></div>';
 
-            fetch(API_URL + '?type=surveyIdeas')
+            fetch(API_URL + '?type=reflections')
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     var studentMap = {};
                     allStudents.forEach(function (s) {
                         if (s.email) studentMap[s.email.toLowerCase()] = s;
+                    });
+
+                    data = data.filter(function (r) {
+                        return String(r.sesi || '').indexOf('survey|') === 0;
                     });
 
                     data.forEach(function (r) {
@@ -1057,6 +1090,17 @@
                             r.absen = studentMap[email].absen || r.absen;
                             r.googleName = studentMap[email].googleName || r.googleName;
                         }
+                        if (r.refleksi) {
+                            try {
+                                var surveyPayload = JSON.parse(r.refleksi);
+                                r.recordKey = surveyPayload.recordKey || r.recordKey || '';
+                                r.traits = surveyPayload.traits || r.traits || '';
+                            r.otherTrait = surveyPayload.otherTrait || r.otherTrait || '';
+                            r.note = surveyPayload.note || r.note || '';
+                        } catch (e) { }
+                        }
+                        r.createdAt = r.submittedAt || r.createdAt || '';
+                        r.updatedAt = r.submittedAt || r.updatedAt || r.createdAt || '';
                     });
 
                     data.sort(function (a, b) {

@@ -969,22 +969,49 @@
                 setStoredEntries(entries);
             }
 
+            function encodeSurveyReflection(payload) {
+                return JSON.stringify({
+                    recordKey: payload.recordKey,
+                    traits: payload.traits,
+                    otherTrait: payload.otherTrait || '',
+                    note: payload.note || '',
+                    submittedFrom: 'survey',
+                    updatedAt: payload.updatedAt || new Date().toISOString()
+                });
+            }
+
+            function decodeSurveyReflection(row) {
+                var raw = safeJSONParse(row.refleksi, {});
+                var traits = raw && raw.traits ? raw.traits : '';
+                var otherTrait = raw && raw.otherTrait ? raw.otherTrait : '';
+                var note = raw && raw.note ? raw.note : row.refleksi || '';
+                return {
+                    recordKey: raw && raw.recordKey ? raw.recordKey : (row.email || row.nama || '') + '|' + (row.kelas || ''),
+                    kelas: row.kelas || '',
+                    email: row.email || '',
+                    googleName: row.googleName || '',
+                    nama: row.nama || row.googleName || '',
+                    absen: row.absen || '',
+                    traits: traits,
+                    otherTrait: otherTrait,
+                    note: note,
+                    createdAt: row.submittedAt || '',
+                    updatedAt: row.submittedAt || row.updatedAt || row.createdAt || ''
+                };
+            }
+
             function syncSurveyToCloud(payload) {
                 var apiUrl = getApiUrl();
                 if (!apiUrl) return;
                 var body = JSON.stringify({
-                    action: 'saveSurveyIdea',
-                    recordKey: payload.recordKey,
+                    action: 'saveReflection',
+                    sesi: 'survey|' + payload.kelas,
                     kelas: payload.kelas,
                     email: payload.email,
                     googleName: payload.googleName || '',
                     nama: payload.nama || '',
                     absen: payload.absen || '',
-                    traits: payload.traits,
-                    otherTrait: payload.otherTrait || '',
-                    note: payload.note || '',
-                    createdAt: payload.createdAt,
-                    updatedAt: payload.updatedAt
+                    refleksi: encodeSurveyReflection(payload)
                 });
                 fetch(apiUrl, {
                     method: 'POST',
@@ -997,9 +1024,16 @@
             function loadSurveyFromCloud() {
                 var apiUrl = getApiUrl();
                 if (!apiUrl) return Promise.resolve([]);
-                return fetch(apiUrl + '?type=surveyIdeas', { cache: 'no-store' })
+                return fetch(apiUrl + '?type=reflections', { cache: 'no-store' })
                     .then(function (res) { return res.json(); })
-                    .then(function (data) { return Array.isArray(data) ? data : []; })
+                    .then(function (data) {
+                        data = Array.isArray(data) ? data : [];
+                        return data.filter(function (row) {
+                            return String(row.sesi || '').indexOf('survey|') === 0;
+                        }).map(function (row) {
+                            return decodeSurveyReflection(row);
+                        });
+                    })
                     .catch(function () { return []; });
             }
 
