@@ -742,6 +742,11 @@
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
             }
 
+            function saveProfileToStorage(nextProfile) {
+                profile = Object.assign({}, profile || {}, nextProfile || {});
+                localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+            }
+
             function getApiUrl() {
                 try {
                     if (typeof MOLESH_CONFIG !== 'undefined' && MOLESH_CONFIG.APPS_SCRIPT_URL && MOLESH_CONFIG.APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
@@ -779,6 +784,31 @@
                 return Array.from(map.values()).sort(function (a, b) {
                     return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
                 });
+            }
+
+            function hydrateProfileFromCloud() {
+                var apiUrl = getApiUrl();
+                var email = normalize(getDisplayEmail());
+                if (!apiUrl || !email) return Promise.resolve();
+                if (profile.kelas && profile.nama && profile.absen) return Promise.resolve();
+
+                return fetch(apiUrl + '?type=students', { cache: 'no-store' })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (!Array.isArray(data)) return;
+                        var matched = data.find(function (student) {
+                            return normalize(student.email) === email;
+                        });
+                        if (!matched) return;
+
+                        var nextProfile = {
+                            nama: profile.nama || matched.nama || matched.googleName || '',
+                            kelas: profile.kelas || matched.kelas || '',
+                            absen: profile.absen || matched.absen || ''
+                        };
+                        saveProfileToStorage(nextProfile);
+                    })
+                    .catch(function () { });
             }
 
             function parseTraits(value) {
@@ -991,7 +1021,7 @@
 
             function syncSurveyToCloud(payload) {
                 var apiUrl = getApiUrl();
-                if (!apiUrl) return;
+                if (!apiUrl) return Promise.reject(new Error('URL backend belum disetel.'));
                 var body = JSON.stringify({
                     action: 'saveSurveyIdea',
                     recordKey: payload.recordKey,
@@ -1006,12 +1036,20 @@
                     createdAt: payload.createdAt,
                     updatedAt: payload.updatedAt
                 });
-                fetch(apiUrl, {
+                return fetch(apiUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'text/plain' },
-                    body: body
-                }).catch(function () { });
+                    body: body,
+                    redirect: 'follow'
+                })
+                    .then(function (res) { return res.text(); })
+                    .then(function (text) {
+                        var parsed = safeJSONParse(text, null);
+                        if (parsed && parsed.error) throw new Error(parsed.error);
+                        if (parsed && (parsed.status === 'ok' || parsed.status === 'updated')) return parsed;
+                        if (!text) return { status: 'ok' };
+                        throw new Error('Respon backend tidak dikenali.');
+                    });
             }
 
             function loadSurveyFromCloud() {
@@ -1085,20 +1123,33 @@
                 }
 
                 saveSurveyLocally(payload);
-                syncSurveyToCloud(payload);
                 renderAll();
-                showToast('Survey tersimpan untuk ' + activeClass + '.');
+
+                syncSurveyToCloud(payload)
+                    .then(function () {
+                        loadSurveyFromCloud().then(function (remoteEntries) {
+                            entries = mergeEntries(entries, remoteEntries || []);
+                            setStoredEntries(entries);
+                            renderAll();
+                        });
+                        showToast('Survey tersimpan untuk ' + activeClass + '.');
+                    })
+                    .catch(function (err) {
+                        var reason = err && err.message ? err.message : 'sinkronisasi gagal';
+                        showToast('Survey tersimpan di perangkat, tetapi gagal sinkron ke server: ' + reason, true);
+                    });
             });
 
             document.addEventListener('DOMContentLoaded', function () {
                 profile = readProfile();
-                initSelection();
+                entries = getStoredEntries();
                 renderTraitGrid([]);
-                renderAll();
-
-                loadSurveyFromCloud().then(function (remoteEntries) {
-                    if (!remoteEntries.length) return;
-                    entries = mergeEntries(getStoredEntries(), remoteEntries);
+                hydrateProfileFromCloud().then(function () {
+                    initSelection();
+                    renderAll();
+                    return loadSurveyFromCloud();
+                }).then(function (remoteEntries) {
+                    entries = mergeEntries(entries, remoteEntries || []);
                     setStoredEntries(entries);
                     renderAll();
                 });
