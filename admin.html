@@ -1061,6 +1061,214 @@
             return [];
         }
 
+        function isIsoDateLike(value) {
+            return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value);
+        }
+
+        function isEmailLike(value) {
+            return typeof value === 'string' && /^[^|\s@]+@[^|\s@]+\.[^|\s@]+$/i.test(value.trim());
+        }
+
+        function isClassLike(value) {
+            return typeof value === 'string' && /^(X|XI|XII)\s+[A-Z]/i.test(value.trim());
+        }
+
+        function isRecordKeyLike(value) {
+            return typeof value === 'string' && value.indexOf('|') > -1;
+        }
+
+        function looksLikeTraitString(value) {
+            var traits = parseSurveyTraits(value);
+            if (!traits.length) return false;
+            var allowed = {
+                'AMANAH': true,
+                'KOMPETEN': true,
+                'HARMONI': true,
+                'LOYAL': true,
+                'ADAPTIF': true,
+                'KOLABORATIF': true,
+                'BRAVERY': true,
+                'INTEGRITY': true,
+                'SERVICE EXCELLENT': true,
+                'AGILITY': true
+            };
+            return traits.some(function (trait) {
+                return !!allowed[String(trait || '').toUpperCase()];
+            });
+        }
+
+        function looksLikeSurveyPayload(row) {
+            if (!row || typeof row !== 'object') return false;
+            return !!(row.recordKey || row.kelas || row.email || row.traits || row.otherTrait || row.note || row.createdAt || row.updatedAt);
+        }
+
+        function sanitizeSurveyRecord(record, studentMap) {
+            if (!record) return null;
+
+            var normalized = {
+                recordKey: record.recordKey || '',
+                kelas: record.kelas || '',
+                email: record.email || '',
+                googleName: record.googleName || '',
+                nama: record.nama || '',
+                absen: record.absen || '',
+                traits: record.traits || '',
+                otherTrait: record.otherTrait || '',
+                note: record.note || '',
+                createdAt: record.createdAt || '',
+                updatedAt: record.updatedAt || record.createdAt || ''
+            };
+
+            var key = normalized.recordKey || '';
+            if (!normalized.email && key.indexOf('|') > -1) normalized.email = key.split('|')[0];
+            if (!normalized.kelas && key.indexOf('|') > -1) normalized.kelas = key.split('|').slice(1).join('|');
+
+            var email = (normalized.email || '').toLowerCase();
+            if (email && studentMap[email]) {
+                var student = studentMap[email];
+                normalized.nama = student.nama || normalized.nama;
+                normalized.kelas = student.kelas || normalized.kelas;
+                normalized.absen = student.absen || normalized.absen;
+                normalized.googleName = student.googleName || normalized.googleName;
+            }
+
+            if (String(normalized.recordKey).indexOf('__healthcheck__') === 0 || /@molesh\.local$/i.test(normalized.email || '')) {
+                return null;
+            }
+
+            if (!(normalized.email || normalized.nama || normalized.kelas || normalized.traits || normalized.note || normalized.otherTrait)) {
+                return null;
+            }
+
+            return normalized;
+        }
+
+        function normalizeBrokenSurveyRow(row, studentMap) {
+            if (!row || typeof row !== 'object') return null;
+            var values = Object.values(row).filter(function (value) {
+                return value !== null && value !== undefined && value !== '';
+            });
+            if (!values.length) return null;
+
+            var mapped = {
+                recordKey: '',
+                kelas: '',
+                email: '',
+                googleName: '',
+                nama: '',
+                absen: '',
+                traits: '',
+                otherTrait: '',
+                note: '',
+                createdAt: '',
+                updatedAt: ''
+            };
+
+            var leftovers = [];
+            values.forEach(function (value) {
+                if (!mapped.updatedAt && isIsoDateLike(value)) {
+                    if (!mapped.createdAt) mapped.createdAt = value;
+                    mapped.updatedAt = value;
+                    return;
+                }
+                if (!mapped.recordKey && isRecordKeyLike(value)) {
+                    mapped.recordKey = value;
+                    return;
+                }
+                if (!mapped.email && isEmailLike(value)) {
+                    mapped.email = value;
+                    return;
+                }
+                if (!mapped.kelas && isClassLike(value)) {
+                    mapped.kelas = value;
+                    return;
+                }
+                if (mapped.absen === '' && typeof value === 'number') {
+                    mapped.absen = value;
+                    return;
+                }
+                leftovers.push(value);
+            });
+
+            leftovers.forEach(function (value) {
+                if (!mapped.traits && looksLikeTraitString(value)) {
+                    var traits = parseSurveyTraits(value);
+                    if (traits.length) {
+                        mapped.traits = traits.join(', ');
+                        return;
+                    }
+                }
+                if (!mapped.nama && typeof value === 'string' && !isIsoDateLike(value)) {
+                    mapped.nama = value;
+                    mapped.googleName = value;
+                    return;
+                }
+                if (!mapped.otherTrait && typeof value === 'string') {
+                    mapped.otherTrait = value;
+                    return;
+                }
+                if (!mapped.note && typeof value === 'string') {
+                    mapped.note = value;
+                }
+            });
+
+            return sanitizeSurveyRecord(mapped, studentMap);
+        }
+
+        function normalizeSurveyIdeaRow(row, studentMap) {
+            if (!row || typeof row !== 'object') return null;
+            if (looksLikeSurveyPayload(row)) {
+                return sanitizeSurveyRecord(row, studentMap);
+            }
+            return normalizeBrokenSurveyRow(row, studentMap);
+        }
+
+        function normalizeLegacySurveyReflection(row, studentMap) {
+            if (!row || String(row.sesi || '').indexOf('survey|') !== 0) return null;
+
+            var payload = {};
+            try { payload = JSON.parse(row.refleksi || '{}'); } catch (e) { payload = {}; }
+
+            var normalized = {
+                recordKey: payload.recordKey || ((row.email || '') + '|' + (row.kelas || '')),
+                kelas: row.kelas || String(row.sesi || '').replace(/^survey\|/, ''),
+                email: row.email || '',
+                googleName: row.googleName || '',
+                nama: row.nama || row.googleName || '',
+                absen: row.absen || '',
+                traits: payload.traits || '',
+                otherTrait: payload.otherTrait || '',
+                note: payload.note || row.refleksi || '',
+                createdAt: row.submittedAt || '',
+                updatedAt: payload.updatedAt || row.submittedAt || ''
+            };
+
+            return sanitizeSurveyRecord(normalized, studentMap);
+        }
+
+        function mergeSurveyRecords(primary, fallback) {
+            var map = {};
+            function mergeFilled(base, incoming) {
+                var result = Object.assign({}, base || {});
+                Object.keys(incoming || {}).forEach(function (key) {
+                    var value = incoming[key];
+                    if (value !== '' && value !== null && value !== undefined) {
+                        result[key] = value;
+                    }
+                });
+                return result;
+            }
+            function put(item) {
+                if (!item) return;
+                var key = item.recordKey || [item.email || '', item.kelas || '', item.note || ''].join('|');
+                if (!key) return;
+                map[key] = mergeFilled(map[key], item);
+            }
+            (fallback || []).forEach(put);
+            (primary || []).forEach(put);
+            return Object.keys(map).map(function (key) { return map[key]; });
+        }
+
         function refreshSurveyClassFilter() {
             var select = document.getElementById('filterSurveyClass');
             if (!select) return;
@@ -1082,31 +1290,28 @@
             if (!wrap) return;
             wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat data survey karakter...</p></div>';
 
-            fetch(API_URL + '?type=surveyIdeas')
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    var studentMap = {};
-                    allStudents.forEach(function (s) {
-                        if (s.email) studentMap[s.email.toLowerCase()] = s;
-                    });
+            var studentMap = {};
+            allStudents.forEach(function (s) {
+                if (s.email) studentMap[s.email.toLowerCase()] = s;
+            });
 
-                    data = Array.isArray(data) ? data : [];
+            Promise.all([
+                fetch(API_URL + '?type=surveyIdeas').then(function (r) { return r.json(); }).catch(function () { return []; }),
+                fetch(API_URL + '?type=reflections').then(function (r) { return r.json(); }).catch(function () { return []; })
+            ])
+                .then(function (results) {
+                    var surveyRows = Array.isArray(results[0]) ? results[0] : [];
+                    var reflectionRows = Array.isArray(results[1]) ? results[1] : [];
 
-                    data.forEach(function (r) {
-                        var email = (r.email || '').toLowerCase();
-                        if (studentMap[email]) {
-                            r.nama = studentMap[email].nama || r.nama;
-                            r.kelas = studentMap[email].kelas || r.kelas;
-                            r.absen = studentMap[email].absen || r.absen;
-                            r.googleName = studentMap[email].googleName || r.googleName;
-                        }
-                        r.recordKey = r.recordKey || '';
-                        r.traits = r.traits || '';
-                        r.otherTrait = r.otherTrait || '';
-                        r.note = r.note || '';
-                        r.createdAt = r.createdAt || '';
-                        r.updatedAt = r.updatedAt || r.createdAt || '';
-                    });
+                    var normalizedSurvey = surveyRows.map(function (row) {
+                        return normalizeSurveyIdeaRow(row, studentMap);
+                    }).filter(Boolean);
+
+                    var fallbackSurvey = reflectionRows.map(function (row) {
+                        return normalizeLegacySurveyReflection(row, studentMap);
+                    }).filter(Boolean);
+
+                    var data = mergeSurveyRecords(normalizedSurvey, fallbackSurvey);
 
                     data.sort(function (a, b) {
                         return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
