@@ -317,7 +317,10 @@
         var studentPage = 1;
         var checkinLogPage = 1;
         var refleksiPage = 1;
+        var surveyPage = 1;
         var ITEMS_PER_PAGE = 10;
+        var allSurveyIdeas = [];
+        var _surveyLoaded = false;
 
         /* ── Auth check ── */
         function checkAdmin() {
@@ -481,6 +484,19 @@
             html += '<div id="refStats" style="margin-bottom:14px"></div>';
             html += '<div id="refTableWrap"><div class="empty-state"><div class="empty-icon">📝</div><p>Klik tab ini untuk memuat data refleksi.</p></div></div>';
             html += '</div>'; /* close tabRefleksi */
+
+            /* ── Tab: Survey ── */
+            html += '<div id="tabSurvey" class="tab-content">';
+            var surveyClassOptions = '<option value="">Semua Kelas</option>';
+            kelasList.forEach(function(k){ surveyClassOptions += '<option value="' + k + '">' + k + '</option>'; });
+            html += '<div class="toolbar">' +
+                '<input class="search-input" id="surveySearchInput" type="text" placeholder="🔍 Cari nama, kelas, karakter, atau pendapat..." oninput="filterSurveyIdeas(true)">' +
+                '<select class="filter-select" id="filterSurveyClass" onchange="filterSurveyIdeas(true)">' + surveyClassOptions + '</select>' +
+                '<button class="refresh-btn" onclick="loadSurveyIdeas()">🔄 Refresh</button>' +
+                '<button class="export-btn" onclick="exportSurveyCSV()">📥 Export CSV</button></div>';
+            html += '<div id="surveyStats" style="margin-bottom:14px"></div>';
+            html += '<div id="surveyTableWrap"><div class="empty-state"><div class="empty-icon">🗳️</div><p>Klik tab ini untuk memuat data survey karakter.</p></div></div>';
+            html += '</div>'; /* close tabSurvey */
 
             /* ── Tab: Analisa ── */
             html += '<div id="tabAnalysis" class="tab-content">';
@@ -988,6 +1004,207 @@
             var a = document.createElement('a');
             a.href = url;
             a.download = 'molesh_refleksi_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        /* ══════════════════════════════════════
+           SURVEY MANAGEMENT
+           ══════════════════════════════════════ */
+        function getSurveyClassList() {
+            var set = {};
+            var list = [];
+            allStudents.forEach(function (s) {
+                if (s.kelas && !set[s.kelas]) { set[s.kelas] = true; list.push(s.kelas); }
+            });
+            allSurveyIdeas.forEach(function (s) {
+                if (s.kelas && !set[s.kelas]) { set[s.kelas] = true; list.push(s.kelas); }
+            });
+            return list.sort();
+        }
+
+        function parseSurveyTraits(value) {
+            if (!value) return [];
+            if (Array.isArray(value)) return value;
+            if (typeof value === 'string') {
+                if (value.indexOf('||') > -1) {
+                    return value.split('||').map(function (v) { return v.trim(); }).filter(Boolean);
+                }
+                return value.split(',').map(function (v) { return v.trim(); }).filter(Boolean);
+            }
+            return [];
+        }
+
+        function loadSurveyIdeas() {
+            var wrap = document.getElementById('surveyTableWrap');
+            var stats = document.getElementById('surveyStats');
+            if (!wrap) return;
+            wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat data survey karakter...</p></div>';
+
+            fetch(API_URL + '?type=surveyIdeas')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var studentMap = {};
+                    allStudents.forEach(function (s) {
+                        if (s.email) studentMap[s.email.toLowerCase()] = s;
+                    });
+
+                    data.forEach(function (r) {
+                        var email = (r.email || '').toLowerCase();
+                        if (studentMap[email]) {
+                            r.nama = studentMap[email].nama || r.nama;
+                            r.kelas = studentMap[email].kelas || r.kelas;
+                            r.absen = studentMap[email].absen || r.absen;
+                            r.googleName = studentMap[email].googleName || r.googleName;
+                        }
+                    });
+
+                    data.sort(function (a, b) {
+                        return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+                    });
+
+                    allSurveyIdeas = data;
+                    _surveyLoaded = true;
+                    renderSurveyStats(stats, getFilteredSurveyIdeas());
+                    renderSurveyIdeas(wrap);
+                })
+                .catch(function (err) {
+                    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>Gagal memuat survey: ' + err.message + '</p></div>';
+                });
+        }
+
+        function getFilteredSurveyIdeas() {
+            var q = (document.getElementById('surveySearchInput') || {}).value || '';
+            q = q.toLowerCase();
+            var kelasFilter = (document.getElementById('filterSurveyClass') || {}).value || '';
+
+            return allSurveyIdeas.filter(function (r) {
+                var traitsText = parseSurveyTraits(r.traits).join(' ').toLowerCase();
+                var otherText = (r.otherTrait || '').toLowerCase();
+                var noteText = (r.note || '').toLowerCase();
+                var matchQ = !q || (r.nama || r.googleName || '').toLowerCase().indexOf(q) > -1 ||
+                    (r.email || '').toLowerCase().indexOf(q) > -1 ||
+                    (r.kelas || '').toLowerCase().indexOf(q) > -1 ||
+                    traitsText.indexOf(q) > -1 ||
+                    otherText.indexOf(q) > -1 ||
+                    noteText.indexOf(q) > -1;
+                var matchK = !kelasFilter || (r.kelas || '') === kelasFilter;
+                return matchQ && matchK;
+            });
+        }
+
+        function renderSurveyStats(el, filteredData) {
+            if (!el) return;
+            var source = filteredData || allSurveyIdeas;
+            var total = source.length;
+            var byClass = {};
+            var byTrait = {};
+            source.forEach(function (r) {
+                if (r.kelas) byClass[r.kelas] = (byClass[r.kelas] || 0) + 1;
+                parseSurveyTraits(r.traits).forEach(function (t) {
+                    byTrait[t] = (byTrait[t] || 0) + 1;
+                });
+                if (r.otherTrait) {
+                    byTrait[r.otherTrait] = (byTrait[r.otherTrait] || 0) + 1;
+                }
+            });
+
+            var topClass = '—';
+            var topClassCount = 0;
+            Object.keys(byClass).forEach(function (k) {
+                if (byClass[k] > topClassCount) { topClassCount = byClass[k]; topClass = k; }
+            });
+
+            var topTrait = '—';
+            var topTraitCount = 0;
+            Object.keys(byTrait).forEach(function (k) {
+                if (byTrait[k] > topTraitCount) { topTraitCount = byTrait[k]; topTrait = k; }
+            });
+
+            var html = '<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">' +
+                '<div class="stat"><div class="stat-num">' + total + '</div><div class="stat-label">Total Survey</div></div>' +
+                '<div class="stat"><div class="stat-num">' + topClassCount + '</div><div class="stat-label">Terbanyak di ' + escHtml(topClass) + '</div></div>' +
+                '<div class="stat"><div class="stat-num" style="font-size:1rem">' + escHtml(topTrait) + '</div><div class="stat-label">Karakter dominan</div></div>' +
+                '</div>';
+            el.innerHTML = html;
+        }
+
+        function renderSurveyIdeas(el) {
+            var wrap = document.getElementById('surveyTableWrap');
+            if (el) wrap = el;
+            if (!wrap) return;
+
+            var filtered = getFilteredSurveyIdeas();
+
+            var totalItems = filtered.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            if (surveyPage > totalPages) surveyPage = totalPages;
+
+            var start = (surveyPage - 1) * ITEMS_PER_PAGE;
+            var end = start + ITEMS_PER_PAGE;
+            var paginated = filtered.slice(start, end);
+
+            var html = '<div class="table-wrap"><table class="data-table"><thead><tr>' +
+                '<th>No</th><th>Kelas</th><th>Nama</th><th>Karakter</th><th>Opsi Lain</th><th>Pendapat</th><th>Waktu</th>' +
+                '</tr></thead><tbody>';
+
+            if (!totalItems) {
+                html += '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🗳️</div><p>Belum ada data survey untuk filter ini.</p></div></td></tr>';
+            } else {
+                paginated.forEach(function (r, idx) {
+                    var traits = parseSurveyTraits(r.traits);
+                    html += '<tr>' +
+                        '<td>' + (start + idx + 1) + '</td>' +
+                        '<td><strong>' + (r.kelas || '—') + '</strong></td>' +
+                        '<td><strong>' + (r.nama || r.googleName || '—') + '</strong><div style="font-size:.72rem;color:rgba(255,255,255,.35)">' + (r.email || '—') + '</div></td>' +
+                        '<td style="max-width:240px">' + (traits.length ? traits.map(function (t) { return '<span class="analysis-topic">' + escHtml(t) + '</span>'; }).join(' ') : '—') + '</td>' +
+                        '<td style="max-width:180px">' + (r.otherTrait ? '<span class="analysis-topic">' + escHtml(r.otherTrait) + '</span>' : '—') + '</td>' +
+                        '<td style="max-width:320px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.note || '—') + '</td>' +
+                        '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + escHtml((r.updatedAt || r.createdAt) ? formatDate(r.updatedAt || r.createdAt) : '—') + '</td>' +
+                        '</tr>';
+                });
+            }
+            html += '</tbody></table></div>';
+
+            if (totalItems > 0) {
+                html += '<div class="pagination">' +
+                    '<span class="page-info">Menampilkan ' + (start + 1) + '-' + Math.min(end, totalItems) + ' dari ' + totalItems + ' survey</span>' +
+                    '<div class="page-controls">' +
+                    '<button class="page-btn" onclick="surveyPage=1;filterSurveyIdeas()" ' + (surveyPage === 1 ? 'disabled' : '') + '>Awal</button>' +
+                    '<button class="page-btn" onclick="surveyPage--;filterSurveyIdeas()" ' + (surveyPage === 1 ? 'disabled' : '') + '>Prev</button>' +
+                    '<span class="page-info">Hal ' + surveyPage + ' / ' + totalPages + '</span>' +
+                    '<button class="page-btn" onclick="surveyPage++;filterSurveyIdeas()" ' + (surveyPage === totalPages ? 'disabled' : '') + '>Next</button>' +
+                    '<button class="page-btn" onclick="surveyPage=' + totalPages + ';filterSurveyIdeas()" ' + (surveyPage === totalPages ? 'disabled' : '') + '>Akhir</button>' +
+                    '</div></div>';
+            }
+            wrap.innerHTML = html;
+            renderSurveyStats(document.getElementById('surveyStats'), filtered);
+        }
+
+        function filterSurveyIdeas(resetPage) {
+            if (resetPage) surveyPage = 1;
+            renderSurveyIdeas(document.getElementById('surveyTableWrap'));
+        }
+
+        function exportSurveyCSV() {
+            if (!allSurveyIdeas.length) return;
+            var csv = 'No,Kelas,Nama,Email,Absen,Karakter,Lainnya,Pendapat,Waktu\n';
+            allSurveyIdeas.forEach(function (r, i) {
+                csv += (i + 1) + ',' +
+                    '"' + (r.kelas || '').replace(/"/g, '""') + '",' +
+                    '"' + (r.nama || r.googleName || '').replace(/"/g, '""') + '",' +
+                    '"' + (r.email || '').replace(/"/g, '""') + '",' +
+                    '"' + (r.absen || '').replace(/"/g, '""') + '",' +
+                    '"' + parseSurveyTraits(r.traits).join(' | ').replace(/"/g, '""') + '",' +
+                    '"' + (r.otherTrait || '').replace(/"/g, '""') + '",' +
+                    '"' + (r.note || '').replace(/"/g, '""').replace(/\n/g, ' ') + '",' +
+                    '"' + (r.updatedAt || r.createdAt || '').replace(/"/g, '""') + '"\n';
+            });
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'molesh_survey_karakter_' + new Date().toISOString().slice(0, 10) + '.csv';
             a.click();
             URL.revokeObjectURL(url);
         }
