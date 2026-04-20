@@ -28,6 +28,7 @@ var CHECKIN_SETTINGS_SHEET = 'CheckIn_Settings';
 var CHECKIN_LOG_SHEET = 'CheckIn_Log';
 var REFLECTIONS_SHEET = 'Reflections';
 var SURVEY_SHEET = 'Leadership_Survey';
+var SESSION_LIKES_SHEET = 'Session_Likes';
 var SHEET_ID = '1T0Bu-46xgInjUK1VxE8WeeMJ8V-REsKXET5KdyjWlgo'; // MOLESH Data spreadsheet
 
 /* ── Handle POST (login, saveProfile, checkin actions) ── */
@@ -53,6 +54,8 @@ function doPost(e) {
       return handleSaveReflection(data);
     } else if (data.action === 'saveSurveyIdea') {
       return handleSaveSurveyIdea(data);
+    } else if (data.action === 'toggleSessionLike') {
+      return handleToggleSessionLike(data);
     }
 
     return jsonResponse({ error: 'Unknown action' });
@@ -79,6 +82,8 @@ function doGet(e) {
     return getSheetAsJSON(getOrCreateReflections());
   } else if (type === 'surveyIdeas') {
     return getSheetAsJSON(getOrCreateSurveyIdeas());
+  } else if (type === 'sessionLikes') {
+    return getSessionLikes(e);
   }
   return jsonResponse([]);
 }
@@ -301,6 +306,98 @@ function getOrCreateReflections() {
     sheet.getRange('A1:H1').setFontWeight('bold');
   }
   return sheet;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SESSION LIKES
+   ══════════════════════════════════════════════════════════ */
+
+function getOrCreateSessionLikes() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(SESSION_LIKES_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(SESSION_LIKES_SHEET);
+    sheet.appendRow(['recordKey', 'sesi', 'email', 'googleName', 'nama', 'kelas', 'absen', 'liked', 'updatedAt']);
+    sheet.setFrozenRows(1);
+    sheet.getRange('A1:I1').setFontWeight('bold');
+  }
+  return sheet;
+}
+
+function normalizeEmail_(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isLikedFlag_(value) {
+  if (value === true) return true;
+  var normalized = String(value || '').trim().toLowerCase();
+  return normalized === 'true' || normalized === '1' || normalized === 'yes';
+}
+
+function getSessionLikes(e) {
+  var emailParam = normalizeEmail_(e && e.parameter ? e.parameter.email : '');
+  var sheet = getOrCreateSessionLikes();
+  var data = sheet.getDataRange().getValues();
+  var counts = {};
+  var likedSessions = [];
+
+  for (var i = 1; i < data.length; i++) {
+    var sesi = String(data[i][1] || '').trim();
+    var email = normalizeEmail_(data[i][2]);
+    var liked = isLikedFlag_(data[i][7]);
+
+    if (!sesi || !liked) continue;
+
+    counts[sesi] = (counts[sesi] || 0) + 1;
+    if (emailParam && email === emailParam) {
+      likedSessions.push(sesi);
+    }
+  }
+
+  return jsonResponse({
+    counts: counts,
+    likedSessions: likedSessions
+  });
+}
+
+function handleToggleSessionLike(data) {
+  var email = normalizeEmail_(data.email);
+  var sesi = String(data.sesi || '').trim();
+
+  if (!email) return jsonResponse({ error: 'Email wajib diisi.' });
+  if (!sesi) return jsonResponse({ error: 'Sesi wajib diisi.' });
+
+  var sheet = getOrCreateSessionLikes();
+  var rows = sheet.getDataRange().getValues();
+  var now = new Date().toISOString();
+  var recordKey = 'session_like|' + sesi + '|' + email;
+
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][0] || '') === recordKey) {
+      var row = i + 1;
+      var nextLiked = !isLikedFlag_(rows[i][7]);
+      sheet.getRange(row, 4).setValue(data.googleName || '');
+      sheet.getRange(row, 5).setValue(data.nama || '');
+      sheet.getRange(row, 6).setValue(data.kelas || '');
+      sheet.getRange(row, 7).setValue(data.absen || '');
+      sheet.getRange(row, 8).setValue(nextLiked);
+      sheet.getRange(row, 9).setValue(now);
+      return jsonResponse({ status: 'ok', liked: nextLiked, sesi: sesi });
+    }
+  }
+
+  sheet.appendRow([
+    recordKey,
+    sesi,
+    email,
+    data.googleName || '',
+    data.nama || '',
+    data.kelas || '',
+    data.absen || '',
+    true,
+    now
+  ]);
+  return jsonResponse({ status: 'ok', liked: true, sesi: sesi });
 }
 
 /* ══════════════════════════════════════════════════════════

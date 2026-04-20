@@ -1166,6 +1166,63 @@
             margin-top: 6px
         }
 
+        .session-meta {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .session-like-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .session-like-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            color: rgba(248, 113, 113, .92);
+            font-size: .9rem;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .18s, background .18s, box-shadow .18s, filter .18s;
+        }
+
+        .session-like-btn:hover:not(:disabled) {
+            transform: translateY(-1px) scale(1.04);
+            background: rgba(251, 113, 133, .16);
+            box-shadow: 0 8px 18px rgba(244, 63, 94, .2);
+        }
+
+        .session-like-btn.active {
+            background: linear-gradient(135deg, rgba(251, 113, 133, .24), rgba(244, 63, 94, .34));
+            box-shadow: 0 10px 22px rgba(244, 63, 94, .22);
+            filter: saturate(1.05);
+        }
+
+        .session-like-btn:disabled {
+            cursor: wait;
+            opacity: .7;
+        }
+
+        .session-like-count {
+            min-width: 16px;
+            font-size: .68rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, .7);
+            text-align: right;
+        }
+
         .session-actions {
             display: flex;
             gap: 8px;
@@ -2113,6 +2170,30 @@
         html.theme-light .sign-out-btn {
             border-color: rgba(15, 23, 42, .15);
             color: rgba(31, 41, 55, .7)
+        }
+
+        html.theme-light .session-like-wrap {
+            background: rgba(15, 23, 42, .03);
+            border-color: rgba(15, 23, 42, .08);
+        }
+
+        html.theme-light .session-like-btn {
+            background: rgba(244, 63, 94, .08);
+            color: #e11d48;
+        }
+
+        html.theme-light .session-like-btn:hover:not(:disabled) {
+            background: rgba(244, 63, 94, .14);
+            box-shadow: 0 10px 20px rgba(244, 63, 94, .12);
+        }
+
+        html.theme-light .session-like-btn.active {
+            background: linear-gradient(135deg, rgba(251, 113, 133, .18), rgba(244, 63, 94, .24));
+            box-shadow: 0 10px 18px rgba(244, 63, 94, .14);
+        }
+
+        html.theme-light .session-like-count {
+            color: rgba(31, 41, 55, .72);
         }
 
         html.theme-light .g-btn-alt:hover {
@@ -3149,6 +3230,8 @@
             heroSection.style.display = 'none';
             authSection.style.display = 'none';
             dashboard.classList.remove('hidden');
+            SESSION_LIKES_STATE.liked = {};
+            SESSION_LIKES_STATE.pending = {};
             var fallbackSvg = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#7c3aed"/><text x="50" y="62" text-anchor="middle" fill="white" font-size="40" font-family="sans-serif">' + (user.name ? user.name[0].toUpperCase() : '?') + '</text></svg>');
             userAvatar.src = user.picture || fallbackSvg;
             userAvatar.onerror = function () { this.src = fallbackSvg; };
@@ -3172,6 +3255,7 @@
 
             /* Render sessions with progress */
             renderSessionProgress(user.email);
+            loadSessionLikes(user.email === 'Mode pratinjau' ? '' : user.email);
 
             /* Render commitment history */
             loadCommitmentHistory(user.email);
@@ -3181,6 +3265,12 @@
         }
 
         /* ── Session progress renderer ── */
+        var SESSION_LIKES_STATE = {
+            counts: {},
+            liked: {},
+            pending: {}
+        };
+
         var SESSION_DATA = [
             { num: 1, href: 'presentasi.html', title: 'Fondasi MOLESH', desc: 'Sadar Diri, Peduli Kasih, Beraksi dan Melayani & neuroscience' },
             { num: 2, href: 'sesi2.html', title: 'Deep Dive Sadar Diri', desc: 'Growth mindset & personal branding' },
@@ -3190,6 +3280,125 @@
             { num: 6, href: 'sesi6.html', title: 'Rencana Aksi', desc: 'Personal leadership roadmap 3 bulan' }
         ];
         var COMMITMENT_NOTE = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari orang lain.';
+
+        function getApiUrl() {
+            try {
+                if (typeof MOLESH_CONFIG !== 'undefined' && MOLESH_CONFIG.APPS_SCRIPT_URL && MOLESH_CONFIG.APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
+                    return MOLESH_CONFIG.APPS_SCRIPT_URL;
+                }
+            } catch (e) { }
+            return '';
+        }
+
+        function getSessionLikeCount(sesiNum) {
+            return Number(SESSION_LIKES_STATE.counts[String(sesiNum)] || 0);
+        }
+
+        function isSessionLiked(sesiNum) {
+            return !!SESSION_LIKES_STATE.liked[String(sesiNum)];
+        }
+
+        function updateSessionLikesState(data) {
+            var counts = {};
+            var liked = {};
+            var likedSessions = [];
+
+            if (data && typeof data === 'object' && !Array.isArray(data)) {
+                counts = data.counts || {};
+                likedSessions = Array.isArray(data.likedSessions) ? data.likedSessions : [];
+            }
+
+            Object.keys(counts).forEach(function (key) {
+                counts[String(key)] = Number(counts[key] || 0);
+            });
+
+            likedSessions.forEach(function (sesi) {
+                liked[String(sesi)] = true;
+            });
+
+            SESSION_LIKES_STATE.counts = counts;
+            SESSION_LIKES_STATE.liked = liked;
+        }
+
+        function loadSessionLikes(email) {
+            var apiUrl = getApiUrl();
+            if (!apiUrl) return Promise.resolve();
+
+            var query = apiUrl + '?type=sessionLikes';
+            if (email) query += '&email=' + encodeURIComponent(email);
+
+            return fetch(query, { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    updateSessionLikesState(data);
+                    renderSessionProgress(email || 'Mode pratinjau');
+                })
+                .catch(function () { });
+        }
+
+        function toggleSessionLike(sesiNum) {
+            var rawUser = localStorage.getItem('molesh_user');
+            if (!rawUser) {
+                alert('Silakan login terlebih dahulu untuk memberi like pada sesi.');
+                return;
+            }
+
+            var user = null;
+            try { user = JSON.parse(rawUser); } catch (e) { user = null; }
+            if (!user || !user.email || user.email === 'Mode pratinjau') {
+                alert('Silakan login dengan akun Google untuk memberi like pada sesi.');
+                return;
+            }
+
+            var apiUrl = getApiUrl();
+            if (!apiUrl) {
+                alert('Backend like belum aktif. Cek konfigurasi Apps Script terlebih dahulu.');
+                return;
+            }
+
+            var key = String(sesiNum);
+            if (SESSION_LIKES_STATE.pending[key]) return;
+
+            var profile = {};
+            try { profile = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch (e) { profile = {}; }
+
+            var prevLiked = isSessionLiked(sesiNum);
+            var prevCount = getSessionLikeCount(sesiNum);
+            var nextLiked = !prevLiked;
+
+            SESSION_LIKES_STATE.pending[key] = true;
+            SESSION_LIKES_STATE.liked[key] = nextLiked;
+            SESSION_LIKES_STATE.counts[key] = Math.max(0, prevCount + (nextLiked ? 1 : -1));
+            renderSessionProgress(user.email);
+
+            var payload = JSON.stringify({
+                action: 'toggleSessionLike',
+                sesi: sesiNum,
+                email: user.email,
+                googleName: user.name || '',
+                nama: profile.nama || '',
+                kelas: profile.kelas || '',
+                absen: profile.absen || ''
+            });
+
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: payload
+            }).then(function () {
+                setTimeout(function () {
+                    SESSION_LIKES_STATE.pending[key] = false;
+                    loadSessionLikes(user.email);
+                }, 700);
+            }).catch(function () {
+                SESSION_LIKES_STATE.pending[key] = false;
+                SESSION_LIKES_STATE.liked[key] = prevLiked;
+                SESSION_LIKES_STATE.counts[key] = prevCount;
+                renderSessionProgress(user.email);
+                alert('Gagal menyimpan like sesi. Coba lagi sebentar lagi.');
+            });
+        }
 
         function renderSessionProgress(email) {
             var container = document.getElementById('sessionsContainer');
@@ -3251,6 +3460,12 @@
                 }
                 html += '</div>';
                 html += '</button>';
+                html += '<div class="session-meta">';
+                html += '<div class="session-like-wrap">';
+                html += '<button class="session-like-btn' + (isSessionLiked(s.num) ? ' active' : '') + '" type="button" aria-label="' + (isSessionLiked(s.num) ? 'Batalkan like sesi ' : 'Sukai sesi ') + s.num + '" title="' + (isSessionLiked(s.num) ? 'Batalkan like' : 'Sukai sesi') + '"' + (SESSION_LIKES_STATE.pending[String(s.num)] ? ' disabled' : '') + ' onclick="toggleSessionLike(' + s.num + '); return false;">❤️</button>';
+                html += '<span class="session-like-count">' + getSessionLikeCount(s.num) + '</span>';
+                html += '</div>';
+                html += '</div>';
                 html += '<div class="session-actions">';
                 html += '<a class="s-action-btn s-action-primary" href="' + s.href + '">' + (status === 'belum' ? 'Mulai Sesi' : 'Buka Sesi') + '</a>';
                 if (hasRef) {
@@ -3768,6 +3983,9 @@
             heroSection.style.display = '';
             authSection.style.display = '';
             dashboard.classList.add('hidden');
+            SESSION_LIKES_STATE.counts = {};
+            SESSION_LIKES_STATE.liked = {};
+            SESSION_LIKES_STATE.pending = {};
             try { google.accounts.id.disableAutoSelect(); } catch (e) { }
         }
 
