@@ -48,6 +48,8 @@ function doPost(e) {
       return handleSaveCheckinSetting(data);
     } else if (data.action === 'deleteCheckinSetting') {
       return handleDeleteCheckinSetting(data);
+    } else if (data.action === 'updateCheckinSettingStatus') {
+      return handleUpdateCheckinSettingStatus(data);
     } else if (data.action === 'doCheckin') {
       return handleDoCheckin(data);
     } else if (data.action === 'saveReflection') {
@@ -246,6 +248,24 @@ function handleDeleteCheckinSetting(data) {
     sheet.deleteRow(rowIndex + 1);
     return jsonResponse({ status: 'ok' });
   }
+  return jsonResponse({ error: 'Not found' });
+}
+
+function handleUpdateCheckinSettingStatus(data) {
+  var sheet = getOrCreateCheckinSettings();
+  var ids = sheet.getRange('A:A').getValues().flat();
+  var rowIndex = ids.indexOf(data.id);
+  var nextStatus = String(data.status || '').trim();
+
+  if (nextStatus !== 'aktif' && nextStatus !== 'nonaktif') {
+    return jsonResponse({ error: 'Status tidak valid.' });
+  }
+
+  if (rowIndex > 0) {
+    sheet.getRange(rowIndex + 1, 4).setValue(nextStatus);
+    return jsonResponse({ status: 'ok', id: data.id, nextStatus: nextStatus });
+  }
+
   return jsonResponse({ error: 'Not found' });
 }
 

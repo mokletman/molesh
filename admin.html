@@ -172,6 +172,16 @@
         }
         .ci-status-aktif{background:rgba(34,197,94,.15);color:#4ade80}
         .ci-status-nonaktif{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3)}
+        .ci-toggle{
+            background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.22);
+            border-radius:8px;color:#7dd3fc;font-size:.75rem;font-weight:700;
+            padding:6px 10px;cursor:pointer;transition:all .2s;font-family:inherit;
+        }
+        .ci-toggle:hover{background:rgba(125,211,252,.18);color:#bae6fd}
+        .ci-toggle.unhide{
+            background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.22);color:#4ade80;
+        }
+        .ci-toggle.unhide:hover{background:rgba(34,197,94,.18);color:#86efac}
         .ci-del{
             background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);
             border-radius:8px;color:#fb7185;font-size:.75rem;font-weight:600;
@@ -764,6 +774,19 @@
                 .catch(function(err){ alert('Gagal menghapus: ' + err.message); });
         }
 
+        function updateCheckinSettingStatus(id, currentStatus) {
+            var nextStatus = currentStatus === 'aktif' ? 'nonaktif' : 'aktif';
+            var actionLabel = nextStatus === 'nonaktif' ? 'hide' : 'unhide';
+            if (!confirm('Yakin ingin ' + actionLabel + ' jadwal kehadiran ini?')) return;
+
+            var payload = JSON.stringify({ action: 'updateCheckinSettingStatus', id: id, status: nextStatus });
+            fetch(API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: payload })
+                .then(function(){
+                    setTimeout(function(){ loadCheckinData(); }, 1200);
+                })
+                .catch(function(err){ alert('Gagal mengubah status: ' + err.message); });
+        }
+
         function loadCheckinData() {
             var settingsEl = document.getElementById('ciSettingsList');
             var logEl = document.getElementById('ciLogWrap');
@@ -812,12 +835,15 @@
                     tanggal = tanggal.slice(0,10);
                 }
                 var statusClass = s.status === 'aktif' ? 'ci-status-aktif' : 'ci-status-nonaktif';
+                var toggleClass = s.status === 'aktif' ? 'ci-toggle' : 'ci-toggle unhide';
+                var toggleLabel = s.status === 'aktif' ? 'hide' : 'unhide';
                 var count = logCount[s.id] || 0;
                 html += '<div class="ci-card">' +
                     '<div><div class="ci-date">' + formatTanggal(tanggal) + '</div>' +
                     '<div class="ci-count">' + count + ' siswa kehadiran</div></div>' +
                     '<div class="ci-desc">' + (s.deskripsi || '—') + '</div>' +
                     '<span class="ci-status ' + statusClass + '">' + s.status + '</span>' +
+                    '<button class="' + toggleClass + '" onclick="updateCheckinSettingStatus(\'' + s.id + '\', \'' + s.status + '\')">' + toggleLabel + '</button>' +
                     '<button class="ci-del" onclick="deleteCheckinSetting(\'' + s.id + '\')">🗑️</button>' +
                     '</div>';
             });
