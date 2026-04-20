@@ -1760,6 +1760,10 @@
             margin-bottom: 16px;
         }
 
+        .class-care-section.collapsed .class-care-head {
+            margin-bottom: 0;
+        }
+
         .class-care-title {
             font-size: 1rem;
             font-weight: 800;
@@ -1788,6 +1792,60 @@
             letter-spacing: .3px;
             text-transform: uppercase;
             white-space: nowrap;
+        }
+
+        .class-care-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .class-care-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 999px;
+            padding: 10px 14px;
+            color: #f8fafc;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease;
+        }
+
+        .class-care-toggle:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .14);
+        }
+
+        .class-care-toggle:active {
+            transform: translateY(0);
+        }
+
+        .class-care-toggle::after {
+            content: '▾';
+            font-size: .85rem;
+            line-height: 1;
+            transition: transform .2s ease;
+        }
+
+        .class-care-section.collapsed .class-care-toggle::after {
+            transform: rotate(-90deg);
+        }
+
+        .class-care-body {
+            display: block;
+        }
+
+        .class-care-section.collapsed .class-care-body {
+            display: none;
         }
 
         .class-care-stats {
@@ -2599,6 +2657,10 @@
                 flex-direction: column;
             }
 
+            .class-care-summary {
+                justify-content: flex-start;
+            }
+
             .commitment-item-time {
                 text-align: left;
             }
@@ -2976,6 +3038,12 @@
 
         html.theme-light .class-care-pill {
             color: #0369a1;
+        }
+
+        html.theme-light .class-care-toggle {
+            background: rgba(255, 255, 255, .84);
+            border-color: rgba(15, 23, 42, .08);
+            color: #0f172a;
         }
 
         html.theme-light .class-care-stat-label {
@@ -4393,6 +4461,40 @@
             return sesi ? sesi.title : 'Sesi ' + num;
         }
 
+        function getClassCareCollapseKey(email) {
+            return 'molesh_classcare_collapsed_' + String(email || '');
+        }
+
+        function isClassCareCollapsed(email) {
+            try {
+                return localStorage.getItem(getClassCareCollapseKey(email)) !== 'open';
+            } catch (e) {
+                return true;
+            }
+        }
+
+        function setClassCareCollapsed(email, collapsed) {
+            try {
+                localStorage.setItem(getClassCareCollapseKey(email), collapsed ? 'collapsed' : 'open');
+            } catch (e) { }
+        }
+
+        function toggleClassCareSection() {
+            var raw = localStorage.getItem('molesh_user');
+            if (!raw) return;
+
+            try {
+                var user = JSON.parse(raw);
+                if (!user.email || user.email === 'Mode pratinjau') return;
+                var section = document.getElementById('classCareSection');
+                if (!section) return;
+                var collapsed = section.classList.toggle('collapsed');
+                setClassCareCollapsed(user.email, collapsed);
+                var toggleText = document.getElementById('classCareToggleText');
+                if (toggleText) toggleText.textContent = collapsed ? 'Buka' : 'Tutup';
+            } catch (e) { }
+        }
+
         function showClassCareMessage(title, message, pillText) {
             var section = document.getElementById('classCareSection');
             if (!section) return;
@@ -4424,12 +4526,17 @@
             }
 
             CLASS_CARE_STATE.members = payload.members.slice();
+            var collapsed = isClassCareCollapsed(payload.userEmail);
 
             var html = '';
             html += '<div class="class-care-head">';
             html += '<div><div class="class-care-title">🤝 Teman Sekelas yang Sudah Join</div><div class="class-care-subtitle">Pantau progres profil dan refleksi teman di ' + escapeHtml(payload.className) + ' supaya kalian bisa saling peduli, menyemangati, dan mengingatkan untuk tetap konsisten.</div></div>';
+            html += '<div class="class-care-summary">';
             html += '<div class="class-care-pill">Kelas ' + escapeHtml(payload.className) + '</div>';
+            html += '<button class="class-care-toggle" type="button" onclick="toggleClassCareSection()"><span id="classCareToggleText">' + (collapsed ? 'Buka' : 'Tutup') + '</span></button>';
             html += '</div>';
+            html += '</div>';
+            html += '<div class="class-care-body">';
             html += '<div class="class-care-stats">';
             html += '<div class="class-care-stat"><div class="class-care-stat-label">Sudah Join</div><div class="class-care-stat-value">' + payload.stats.joined + '</div></div>';
             html += '<div class="class-care-stat"><div class="class-care-stat-label">Profil Lengkap</div><div class="class-care-stat-value">' + payload.stats.completeProfiles + '</div></div>';
@@ -4477,8 +4584,10 @@
             });
 
             html += '</div>';
+            html += '</div>';
             section.innerHTML = html;
             section.classList.add('show');
+            section.classList.toggle('collapsed', collapsed);
         }
 
         function loadClassCareBoard(user) {
@@ -4566,6 +4675,7 @@
 
                 renderClassCareBoard({
                     className: activeClass,
+                    userEmail: user.email,
                     stats: {
                         joined: members.length,
                         completeProfiles: members.filter(function (member) { return member.isProfileComplete; }).length,
