@@ -110,6 +110,74 @@
         }
         .setting-btn:hover{background:rgba(251,191,36,.2);color:#fde68a}
 
+        .admin-fold{
+            margin-top:14px;
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:18px;
+            overflow:hidden;
+        }
+        .admin-fold-head{
+            display:flex;align-items:center;justify-content:space-between;gap:12px;
+            padding:16px 18px;
+        }
+        .admin-fold-title{
+            font-size:.95rem;
+            font-weight:800;
+            color:#e2e8f0;
+        }
+        .admin-fold-subtitle{
+            font-size:.72rem;
+            color:rgba(255,255,255,.38);
+            margin-top:4px;
+        }
+        .admin-fold-toggle{
+            display:inline-flex;align-items:center;gap:8px;
+            background:rgba(125,211,252,.08);
+            border:1px solid rgba(125,211,252,.18);
+            border-radius:999px;
+            color:#7dd3fc;
+            font-family:inherit;
+            font-size:.78rem;
+            font-weight:700;
+            padding:8px 14px;
+            cursor:pointer;
+            transition:all .2s;
+        }
+        .admin-fold-toggle:hover{background:rgba(125,211,252,.15);color:#bae6fd}
+        .admin-fold-toggle .fold-icon{
+            display:inline-block;
+            transition:transform .24s ease;
+        }
+        .admin-fold.collapsed .admin-fold-toggle .fold-icon{
+            transform:rotate(-90deg);
+        }
+        .admin-fold-body{
+            max-height:1200px;
+            overflow:hidden;
+            transition:max-height .32s ease, opacity .22s ease;
+            opacity:1;
+        }
+        .admin-fold.collapsed .admin-fold-body{
+            max-height:0;
+            opacity:0;
+        }
+        .admin-fold-body-inner{
+            padding:0 18px 18px;
+        }
+        .admin-fold-scroll{
+            max-height:min(54vh, 560px);
+            overflow:auto;
+            padding-right:4px;
+        }
+        .admin-fold-scroll::-webkit-scrollbar{
+            width:8px;
+        }
+        .admin-fold-scroll::-webkit-scrollbar-thumb{
+            background:rgba(255,255,255,.12);
+            border-radius:999px;
+        }
+
         /* Tab bar */
         .tab-bar{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;flex-wrap:wrap}
         .tab-btn{
@@ -172,16 +240,6 @@
         }
         .ci-status-aktif{background:rgba(34,197,94,.15);color:#4ade80}
         .ci-status-nonaktif{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3)}
-        .ci-toggle{
-            background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.22);
-            border-radius:8px;color:#7dd3fc;font-size:.75rem;font-weight:700;
-            padding:6px 10px;cursor:pointer;transition:all .2s;font-family:inherit;
-        }
-        .ci-toggle:hover{background:rgba(125,211,252,.18);color:#bae6fd}
-        .ci-toggle.unhide{
-            background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.22);color:#4ade80;
-        }
-        .ci-toggle.unhide:hover{background:rgba(34,197,94,.18);color:#86efac}
         .ci-del{
             background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);
             border-radius:8px;color:#fb7185;font-size:.75rem;font-weight:600;
@@ -484,9 +542,20 @@
             html += '<div class="toolbar">' +
                 '<button class="setting-btn" onclick="openCheckinModal()">➕ Tambah Jadwal Kehadiran</button>' +
                 '<button class="refresh-btn" onclick="loadCheckinData()">🔄 Refresh</button></div>';
-            html += '<div id="ciSettingsList"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat jadwal kehadiran...</p></div></div>';
-            html += '<h3 style="margin-top:24px;font-size:.95rem;color:#e2e8f0">📝 Log Kehadiran Siswa</h3>';
-            html += '<div id="ciLogWrap" style="margin-top:10px"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat log...</p></div></div>';
+            html += '<div class="admin-fold" id="ciSettingsSection">' +
+                '<div class="admin-fold-head">' +
+                '<div><div class="admin-fold-title">📅 Jadwal Kehadiran</div><div class="admin-fold-subtitle">Buka/tutup daftar agar halaman admin tetap ringkas.</div></div>' +
+                '<button class="admin-fold-toggle" type="button" onclick="toggleFoldSection(\'ciSettingsSection\')"><span class="fold-icon">▾</span><span class="fold-label">Hide</span></button>' +
+                '</div>' +
+                '<div class="admin-fold-body"><div class="admin-fold-body-inner"><div class="admin-fold-scroll"><div id="ciSettingsList"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat jadwal kehadiran...</p></div></div></div></div></div>' +
+                '</div>';
+            html += '<div class="admin-fold collapsed" id="ciLogSection">' +
+                '<div class="admin-fold-head">' +
+                '<div><div class="admin-fold-title">📝 Log Kehadiran Siswa</div><div class="admin-fold-subtitle">Collapse default supaya data panjang tidak memenuhi layar.</div></div>' +
+                '<button class="admin-fold-toggle" type="button" onclick="toggleFoldSection(\'ciLogSection\')"><span class="fold-icon">▾</span><span class="fold-label">Unhide</span></button>' +
+                '</div>' +
+                '<div class="admin-fold-body"><div class="admin-fold-body-inner"><div class="admin-fold-scroll"><div id="ciLogWrap"><div class="empty-state"><div class="empty-icon">⏳</div><p>Memuat log...</p></div></div></div></div></div>' +
+                '</div>';
             html += '</div>'; /* close tabCheckin */
 
             /* ── Tab: Refleksi ── */
@@ -531,6 +600,7 @@
             html += '</div>'; /* close tabAnalysis */
 
             panel.innerHTML = html;
+            initFoldSections();
 
             filterTable(true);
             /* Auto-load kehadiran data */
@@ -647,6 +717,45 @@
             btn.classList.add('active');
             var tab = document.getElementById(tabId);
             if (tab) tab.classList.add('active');
+            if (tabId === 'tabCheckin') {
+                setTimeout(function() {
+                    refreshFoldSection('ciSettingsSection');
+                    refreshFoldSection('ciLogSection');
+                }, 30);
+            }
+        }
+
+        function setFoldSectionState(sectionId, expanded) {
+            var section = document.getElementById(sectionId);
+            if (!section) return;
+            var body = section.querySelector('.admin-fold-body');
+            var label = section.querySelector('.fold-label');
+            section.classList.toggle('collapsed', !expanded);
+            if (body) {
+                body.style.maxHeight = expanded ? body.scrollHeight + 'px' : '0px';
+            }
+            if (label) {
+                label.textContent = expanded ? 'Hide' : 'Unhide';
+            }
+        }
+
+        function refreshFoldSection(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (!section || section.classList.contains('collapsed')) return;
+            var body = section.querySelector('.admin-fold-body');
+            if (body) body.style.maxHeight = body.scrollHeight + 'px';
+        }
+
+        function toggleFoldSection(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (!section) return;
+            var expanded = section.classList.contains('collapsed');
+            setFoldSectionState(sectionId, expanded);
+        }
+
+        function initFoldSections() {
+            setFoldSectionState('ciSettingsSection', true);
+            setFoldSectionState('ciLogSection', false);
         }
 
         function openSurveyTab() {
@@ -774,19 +883,6 @@
                 .catch(function(err){ alert('Gagal menghapus: ' + err.message); });
         }
 
-        function updateCheckinSettingStatus(id, currentStatus) {
-            var nextStatus = currentStatus === 'aktif' ? 'nonaktif' : 'aktif';
-            var actionLabel = nextStatus === 'nonaktif' ? 'hide' : 'unhide';
-            if (!confirm('Yakin ingin ' + actionLabel + ' jadwal kehadiran ini?')) return;
-
-            var payload = JSON.stringify({ action: 'updateCheckinSettingStatus', id: id, status: nextStatus });
-            fetch(API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: payload })
-                .then(function(){
-                    setTimeout(function(){ loadCheckinData(); }, 1200);
-                })
-                .catch(function(err){ alert('Gagal mengubah status: ' + err.message); });
-        }
-
         function loadCheckinData() {
             var settingsEl = document.getElementById('ciSettingsList');
             var logEl = document.getElementById('ciLogWrap');
@@ -798,6 +894,7 @@
                 .then(function(data){
                     ciSettings = data;
                     renderCheckinSettings(settingsEl);
+                    refreshFoldSection('ciSettingsSection');
                 })
                 .catch(function(){ settingsEl.innerHTML = '<div class="empty-state"><p>❌ Gagal memuat settings</p></div>'; });
 
@@ -807,6 +904,7 @@
                 .then(function(data){
                     ciLogs = data;
                     renderCheckinLog(logEl);
+                    refreshFoldSection('ciLogSection');
                 })
                 .catch(function(){ logEl.innerHTML = '<div class="empty-state"><p>❌ Gagal memuat log</p></div>'; });
         }
@@ -835,15 +933,12 @@
                     tanggal = tanggal.slice(0,10);
                 }
                 var statusClass = s.status === 'aktif' ? 'ci-status-aktif' : 'ci-status-nonaktif';
-                var toggleClass = s.status === 'aktif' ? 'ci-toggle' : 'ci-toggle unhide';
-                var toggleLabel = s.status === 'aktif' ? 'hide' : 'unhide';
                 var count = logCount[s.id] || 0;
                 html += '<div class="ci-card">' +
                     '<div><div class="ci-date">' + formatTanggal(tanggal) + '</div>' +
                     '<div class="ci-count">' + count + ' siswa kehadiran</div></div>' +
                     '<div class="ci-desc">' + (s.deskripsi || '—') + '</div>' +
                     '<span class="ci-status ' + statusClass + '">' + s.status + '</span>' +
-                    '<button class="' + toggleClass + '" onclick="updateCheckinSettingStatus(\'' + s.id + '\', \'' + s.status + '\')">' + toggleLabel + '</button>' +
                     '<button class="ci-del" onclick="deleteCheckinSetting(\'' + s.id + '\')">🗑️</button>' +
                     '</div>';
             });
