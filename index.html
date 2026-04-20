@@ -693,8 +693,23 @@
             min-height: 2.8em;
         }
 
+        .dash-quote {
+            font-size: .65rem;
+            font-style: italic;
+            opacity: .7;
+            margin-top: 4px;
+            color: #c4b5fd;
+            line-height: 1.45;
+            text-shadow: 0 0 0 rgba(196, 181, 253, 0);
+            transition: text-shadow .25s ease, opacity .25s ease;
+        }
+
         .text-swap {
             animation: textSwap .45s ease;
+        }
+
+        .dash-quote.text-swap {
+            animation: quoteGlowSwap .72s cubic-bezier(.22, 1, .36, 1);
         }
 
         @keyframes authOrbit {
@@ -751,6 +766,26 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes quoteGlowSwap {
+            0% {
+                opacity: 0;
+                transform: translateY(8px) scale(.985);
+                text-shadow: 0 0 0 rgba(196, 181, 253, 0);
+            }
+
+            42% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                text-shadow: 0 0 14px rgba(196, 181, 253, .55), 0 0 28px rgba(125, 211, 252, .2);
+            }
+
+            100% {
+                opacity: .7;
+                transform: translateY(0) scale(1);
+                text-shadow: 0 0 0 rgba(196, 181, 253, 0);
             }
         }
 
@@ -2247,6 +2282,10 @@
             color: rgba(109, 40, 217, .82);
         }
 
+        html.theme-light .dash-quote {
+            color: rgba(109, 40, 217, .82);
+        }
+
         html.theme-light .auth-visual__node--self {
             color: #b45309;
         }
@@ -2831,7 +2870,8 @@
             .auth-visual__orbit,
             .auth-visual__ring,
             .auth-visual__node,
-            .text-swap {
+            .text-swap,
+            .dash-quote.text-swap {
                 animation: none !important;
             }
         }
@@ -2957,7 +2997,7 @@
                 <div class="user-info">
                     <div class="user-name" id="userName"></div>
                     <div class="user-email" id="userEmail"></div>
-                    <div id="dashQuote" style="font-size: 0.65rem; font-style: italic; opacity: 0.6; margin-top: 4px; color: #c4b5fd;"></div>
+                    <div id="dashQuote" class="dash-quote"></div>
                 </div>
             </div>
             <div class="user-actions" id="userActions">
@@ -3151,7 +3191,7 @@
             var loginQuote = document.getElementById('loginQuote');
             var dashQuote = document.getElementById('dashQuote');
             if (loginQuote) refreshTextSwap(loginQuote, '"' + quote + '"');
-            if (dashQuote) dashQuote.textContent = '"' + quote + '"';
+            if (dashQuote) refreshTextSwap(dashQuote, '"' + quote + '"');
         }
 
         function cycleLeadershipWord() {
