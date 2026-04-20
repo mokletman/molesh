@@ -1733,6 +1733,300 @@
             color: #b91c1c;
         }
 
+        .class-care-section {
+            display: none;
+            margin: 0 0 22px;
+            padding: 20px;
+            border-radius: 24px;
+            text-align: left;
+            background:
+                radial-gradient(circle at top left, rgba(34, 197, 94, .14), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(125, 211, 252, .14), transparent 38%),
+                linear-gradient(145deg, rgba(8, 47, 73, .68), rgba(15, 23, 42, .76));
+            border: 1px solid rgba(74, 222, 128, .18);
+            box-shadow: 0 18px 34px rgba(2, 8, 23, .18);
+        }
+
+        .class-care-section.show {
+            display: block;
+            animation: fadein .35s ease both;
+        }
+
+        .class-care-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .class-care-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #dcfce7;
+        }
+
+        .class-care-subtitle {
+            font-size: .76rem;
+            color: rgba(226, 232, 240, .74);
+            line-height: 1.55;
+            margin-top: 4px;
+            max-width: 420px;
+        }
+
+        .class-care-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: #bfdbfe;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .class-care-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .class-care-stat {
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .class-care-stat-label {
+            font-size: .68rem;
+            font-weight: 700;
+            color: rgba(226, 232, 240, .62);
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .class-care-stat-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-top: 6px;
+        }
+
+        .class-care-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .classmate-card {
+            padding: 16px;
+            border-radius: 20px;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+        }
+
+        .classmate-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .classmate-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #22c55e, #06b6d4);
+            color: #ecfeff;
+            font-size: .9rem;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(6, 182, 212, .16);
+        }
+
+        .classmate-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .classmate-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .classmate-name {
+            font-size: .88rem;
+            font-weight: 800;
+            color: #f8fafc;
+            line-height: 1.35;
+        }
+
+        .classmate-self {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(125, 211, 252, .14);
+            border: 1px solid rgba(125, 211, 252, .22);
+            color: #bae6fd;
+            font-size: .58rem;
+            font-weight: 800;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+        }
+
+        .classmate-meta {
+            font-size: .72rem;
+            color: rgba(226, 232, 240, .62);
+            line-height: 1.45;
+            margin-top: 4px;
+        }
+
+        .classmate-join {
+            margin-top: 6px;
+            font-size: .68rem;
+            color: #86efac;
+            font-weight: 700;
+        }
+
+        .classmate-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .classmate-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: .62rem;
+            font-weight: 800;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .08);
+            color: rgba(226, 232, 240, .84);
+        }
+
+        .classmate-tag.good {
+            background: rgba(34, 197, 94, .14);
+            border-color: rgba(74, 222, 128, .2);
+            color: #bbf7d0;
+        }
+
+        .classmate-tag.warn {
+            background: rgba(250, 204, 21, .14);
+            border-color: rgba(250, 204, 21, .2);
+            color: #fde68a;
+        }
+
+        .classmate-tag.info {
+            background: rgba(125, 211, 252, .12);
+            border-color: rgba(125, 211, 252, .16);
+            color: #bae6fd;
+        }
+
+        .classmate-reflection {
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, .36);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .classmate-reflection-label {
+            font-size: .64rem;
+            font-weight: 800;
+            color: #c4b5fd;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .classmate-reflection-title {
+            margin-top: 6px;
+            font-size: .75rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .classmate-reflection-text {
+            margin-top: 6px;
+            font-size: .76rem;
+            line-height: 1.65;
+            color: rgba(226, 232, 240, .82);
+            min-height: 3.2em;
+        }
+
+        .classmate-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .classmate-note {
+            font-size: .66rem;
+            color: rgba(226, 232, 240, .54);
+            line-height: 1.5;
+        }
+
+        .classmate-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 36px;
+            padding: 9px 12px;
+            border: 1px solid rgba(125, 211, 252, .2);
+            border-radius: 12px;
+            background: rgba(125, 211, 252, .1);
+            color: #cffafe;
+            font-size: .7rem;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease;
+        }
+
+        .classmate-btn:hover {
+            transform: translateY(-1px);
+            background: rgba(125, 211, 252, .16);
+            border-color: rgba(125, 211, 252, .32);
+        }
+
+        .classmate-btn:disabled {
+            opacity: .52;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .class-care-empty {
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, .32);
+            border: 1px dashed rgba(148, 163, 184, .24);
+            color: rgba(226, 232, 240, .76);
+            font-size: .8rem;
+            line-height: 1.65;
+        }
+
         .op-bar {
             width: 100%;
             height: 8px;
@@ -2307,14 +2601,24 @@
                 grid-template-columns: 1fr
             }
 
+            .class-care-stats,
+            .class-care-list {
+                grid-template-columns: 1fr;
+            }
+
             .session-actions {
                 flex-direction: column;
             }
 
             .commitment-header,
-            .commitment-item-top {
+            .commitment-item-top,
+            .classmate-actions {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .class-care-head {
+                flex-direction: column;
             }
 
             .commitment-item-time {
@@ -2659,6 +2963,98 @@
 
         html.theme-light .commitment-note strong {
             color: #b91c1c;
+        }
+
+        html.theme-light .class-care-section {
+            background:
+                radial-gradient(circle at top left, rgba(220, 252, 231, .92), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(224, 242, 254, .94), transparent 38%),
+                linear-gradient(145deg, rgba(255, 255, 255, .96), rgba(240, 249, 255, .96));
+            border-color: rgba(14, 165, 233, .14);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, .08);
+        }
+
+        html.theme-light .class-care-title,
+        html.theme-light .classmate-name,
+        html.theme-light .class-care-stat-value,
+        html.theme-light .classmate-reflection-title {
+            color: #0f172a;
+        }
+
+        html.theme-light .class-care-subtitle,
+        html.theme-light .classmate-meta,
+        html.theme-light .classmate-note,
+        html.theme-light .class-care-empty {
+            color: rgba(30, 41, 59, .68);
+        }
+
+        html.theme-light .class-care-pill,
+        html.theme-light .class-care-stat,
+        html.theme-light .classmate-card,
+        html.theme-light .classmate-reflection {
+            background: rgba(255, 255, 255, .82);
+            border-color: rgba(15, 23, 42, .08);
+        }
+
+        html.theme-light .class-care-pill {
+            color: #0369a1;
+        }
+
+        html.theme-light .class-care-stat-label {
+            color: rgba(30, 41, 59, .56);
+        }
+
+        html.theme-light .classmate-self {
+            background: rgba(14, 165, 233, .1);
+            border-color: rgba(14, 165, 233, .18);
+            color: #0369a1;
+        }
+
+        html.theme-light .classmate-join {
+            color: #15803d;
+        }
+
+        html.theme-light .classmate-tag {
+            background: rgba(15, 23, 42, .04);
+            border-color: rgba(15, 23, 42, .08);
+            color: rgba(30, 41, 59, .82);
+        }
+
+        html.theme-light .classmate-tag.good {
+            background: rgba(34, 197, 94, .12);
+            border-color: rgba(34, 197, 94, .16);
+            color: #15803d;
+        }
+
+        html.theme-light .classmate-tag.warn {
+            background: rgba(245, 158, 11, .12);
+            border-color: rgba(245, 158, 11, .16);
+            color: #b45309;
+        }
+
+        html.theme-light .classmate-tag.info {
+            background: rgba(14, 165, 233, .1);
+            border-color: rgba(14, 165, 233, .14);
+            color: #0369a1;
+        }
+
+        html.theme-light .classmate-reflection-label {
+            color: #6d28d9;
+        }
+
+        html.theme-light .classmate-reflection-text {
+            color: rgba(30, 41, 59, .82);
+        }
+
+        html.theme-light .classmate-btn {
+            background: rgba(14, 165, 233, .08);
+            border-color: rgba(14, 165, 233, .14);
+            color: #0f766e;
+        }
+
+        html.theme-light .classmate-btn:hover {
+            background: rgba(14, 165, 233, .12);
+            border-color: rgba(14, 165, 233, .2);
         }
 
         html.theme-light .footer-link {
@@ -3271,6 +3667,8 @@
 
             <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
 
+            <div id="classCareSection" class="class-care-section" aria-live="polite"></div>
+
             <div class="overall-progress" id="overallProgress">
                 <div style="display:flex;align-items:center;justify-content:space-between">
                     <span class="op-label">Progress Keseluruhan</span>
@@ -3696,6 +4094,9 @@
             /* Render commitment history */
             loadCommitmentHistory(user.email);
 
+            /* Render classmate care board */
+            loadClassCareBoard(user);
+
             /* Render achievement badges */
             renderBadges(user.email);
         }
@@ -3716,6 +4117,9 @@
             { num: 6, href: 'sesi6.html', title: 'Rencana Aksi', desc: 'Personal leadership roadmap 3 bulan' }
         ];
         var COMMITMENT_NOTE = 'Menjadi pribadi yang lebih baik dari hari kemarin, bukan dari orang lain.';
+        var CLASS_CARE_STATE = {
+            members: []
+        };
 
         function getApiUrl() {
             try {
@@ -3991,6 +4395,279 @@
                 .replace(/'/g, '&#39;');
         }
 
+        function normalizeText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function formatShortDate(value) {
+            if (!value) return '-';
+            try {
+                var date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    return date.toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
+            } catch (e) { }
+            return String(value);
+        }
+
+        function formatPeerReflectionDate(value) {
+            if (!value) return '';
+            try {
+                var date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    return date.toLocaleString('id-ID', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            } catch (e) { }
+            return String(value);
+        }
+
+        function getMemberInitials(name) {
+            var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+            if (!parts.length) return 'ML';
+            if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+
+        function getSessionTitleByNum(num) {
+            var sesi = SESSION_DATA.find(function (item) { return String(item.num) === String(num); });
+            return sesi ? sesi.title : 'Sesi ' + num;
+        }
+
+        function summarizeReflection(text, limit) {
+            var clean = String(text || '').replace(/\s+/g, ' ').trim();
+            if (!clean) return 'Belum ada refleksi yang dibagikan.';
+            if (clean.length <= limit) return clean;
+            return clean.slice(0, Math.max(0, limit - 1)).trim() + '…';
+        }
+
+        function showClassCareMessage(title, message, pillText) {
+            var section = document.getElementById('classCareSection');
+            if (!section) return;
+            CLASS_CARE_STATE.members = [];
+            var html = '';
+            html += '<div class="class-care-head">';
+            html += '<div><div class="class-care-title">' + escapeHtml(title) + '</div><div class="class-care-subtitle">' + escapeHtml(message) + '</div></div>';
+            if (pillText) html += '<div class="class-care-pill">' + escapeHtml(pillText) + '</div>';
+            html += '</div>';
+            html += '<div class="class-care-empty">' + escapeHtml(message) + '</div>';
+            section.innerHTML = html;
+            section.classList.add('show');
+        }
+
+        function renderClassCareBoard(payload) {
+            var section = document.getElementById('classCareSection');
+            if (!section) return;
+
+            if (!payload || !payload.className) {
+                section.classList.remove('show');
+                section.innerHTML = '';
+                CLASS_CARE_STATE.members = [];
+                return;
+            }
+
+            if (!payload.members || !payload.members.length) {
+                showClassCareMessage('🤝 Teman Sekelas Belum Terdeteksi', 'Belum ada teman dengan kelas yang sama dan profil lengkap di dashboard ini. Ajak teman sekelas login dan lengkapi profil supaya kalian bisa saling mengingatkan refleksi.', payload.className);
+                return;
+            }
+
+            CLASS_CARE_STATE.members = payload.members.slice();
+
+            var html = '';
+            html += '<div class="class-care-head">';
+            html += '<div><div class="class-care-title">🤝 Teman Sekelas yang Sudah Join</div><div class="class-care-subtitle">Pantau progres profil dan refleksi teman di ' + escapeHtml(payload.className) + ' supaya kalian bisa saling peduli, menyemangati, dan mengingatkan untuk tetap konsisten.</div></div>';
+            html += '<div class="class-care-pill">Kelas ' + escapeHtml(payload.className) + '</div>';
+            html += '</div>';
+            html += '<div class="class-care-stats">';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Sudah Join</div><div class="class-care-stat-value">' + payload.stats.joined + '</div></div>';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Profil Lengkap</div><div class="class-care-stat-value">' + payload.stats.completeProfiles + '</div></div>';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Refleksi Terkirim</div><div class="class-care-stat-value">' + payload.stats.totalReflections + '</div></div>';
+            html += '</div>';
+            html += '<div class="class-care-list">';
+
+            payload.members.forEach(function (member, idx) {
+                var latestText = member.latestReflection
+                    ? summarizeReflection(member.latestReflection.refleksi, 170)
+                    : 'Belum ada refleksi yang dikirim. Teman ini bisa diingatkan untuk mulai menulis setelah menyelesaikan sesi.';
+                var latestTitle = member.latestReflection
+                    ? 'Refleksi terbaru • Sesi ' + member.latestReflection.sesi + ' · ' + getSessionTitleByNum(member.latestReflection.sesi)
+                    : 'Belum ada refleksi terbaru';
+                var reflectionButton = member.reflectionCount
+                    ? '<button class="classmate-btn" type="button" onclick="showPeerReflectionModal(' + idx + ')">Lihat ' + member.reflectionCount + ' refleksi</button>'
+                    : '<button class="classmate-btn" type="button" disabled>Belum ada refleksi</button>';
+
+                html += '<article class="classmate-card">';
+                html += '<div class="classmate-top">';
+                html += '<div class="classmate-avatar">' + escapeHtml(getMemberInitials(member.displayName)) + '</div>';
+                html += '<div class="classmate-info">';
+                html += '<div class="classmate-name-row">';
+                html += '<div class="classmate-name">' + escapeHtml(member.displayName) + '</div>';
+                if (member.isSelf) html += '<span class="classmate-self">Kamu</span>';
+                html += '</div>';
+                html += '<div class="classmate-meta">' + escapeHtml(member.className) + (member.absen ? ' • Absen ' + escapeHtml(member.absen) : '') + '</div>';
+                html += '<div class="classmate-join">Join sejak ' + escapeHtml(formatShortDate(member.firstLogin)) + '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="classmate-tags">';
+                html += '<span class="classmate-tag ' + (member.isProfileComplete ? 'good' : 'warn') + '">' + (member.isProfileComplete ? 'Profil siap' : 'Profil belum lengkap') + '</span>';
+                html += '<span class="classmate-tag info">' + member.reflectionCount + '/6 refleksi</span>';
+                html += '<span class="classmate-tag ' + (member.reflectionCount > 0 ? 'good' : 'warn') + '">' + (member.latestReflection ? 'Terakhir S' + member.latestReflection.sesi : 'Belum refleksi') + '</span>';
+                html += '</div>';
+                html += '<div class="classmate-reflection">';
+                html += '<div class="classmate-reflection-label">Preview Refleksi</div>';
+                html += '<div class="classmate-reflection-title">' + escapeHtml(latestTitle) + '</div>';
+                html += '<div class="classmate-reflection-text">' + escapeHtml(latestText) + '</div>';
+                html += '</div>';
+                html += '<div class="classmate-actions">';
+                html += '<div class="classmate-note">' + escapeHtml(member.reflectionCount ? 'Gunakan insight ini untuk saling menguatkan dan follow up progresnya.' : 'Cocok untuk saling mengingatkan agar mulai menulis refleksi setelah belajar.') + '</div>';
+                html += reflectionButton;
+                html += '</div>';
+                html += '</article>';
+            });
+
+            html += '</div>';
+            section.innerHTML = html;
+            section.classList.add('show');
+        }
+
+        function loadClassCareBoard(user) {
+            var section = document.getElementById('classCareSection');
+            if (!section) return;
+
+            if (!user || !user.email || user.email === 'Mode pratinjau') {
+                section.classList.remove('show');
+                section.innerHTML = '';
+                CLASS_CARE_STATE.members = [];
+                return;
+            }
+
+            var profile = {};
+            try { profile = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch (e) { profile = {}; }
+            var activeClass = String(profile.kelas || '').trim();
+            if (!activeClass) {
+                showClassCareMessage('🧭 Lengkapi Kelas untuk Melihat Teman Join', 'Isi kelas di profil terlebih dahulu supaya dashboard bisa menampilkan teman sekelas yang sudah join beserta progres refleksinya.', 'Profil belum lengkap');
+                CLASS_CARE_STATE.members = [];
+                return;
+            }
+
+            var apiUrl = getApiUrl();
+            if (!apiUrl) {
+                showClassCareMessage('⚙️ Board Kelas Belum Aktif', 'Konfigurasi backend belum aktif, jadi daftar teman sekelas dan refleksinya belum bisa dimuat.', activeClass);
+                CLASS_CARE_STATE.members = [];
+                return;
+            }
+
+            Promise.all([
+                fetch(apiUrl + '?type=students', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+                fetch(apiUrl + '?type=reflections', { cache: 'no-store' }).then(function (r) { return r.json(); })
+            ]).then(function (results) {
+                var students = Array.isArray(results[0]) ? results[0] : [];
+                var reflections = Array.isArray(results[1]) ? results[1] : [];
+                var reflectionMap = {};
+                var members = [];
+                var classKey = normalizeText(activeClass);
+
+                reflections.forEach(function (entry) {
+                    var emailKey = normalizeText(entry.email);
+                    if (!emailKey) return;
+                    if (!reflectionMap[emailKey]) reflectionMap[emailKey] = [];
+                    reflectionMap[emailKey].push(entry);
+                });
+
+                Object.keys(reflectionMap).forEach(function (emailKey) {
+                    reflectionMap[emailKey].sort(function (a, b) {
+                        return new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0);
+                    });
+                });
+
+                students.forEach(function (student) {
+                    var studentClass = String(student.kelas || '').trim();
+                    if (!studentClass || normalizeText(studentClass) !== classKey) return;
+
+                    var emailKey = normalizeText(student.email);
+                    var studentReflections = reflectionMap[emailKey] || [];
+                    var displayName = String(student.nama || student.googleName || student.email || 'Mokleter').trim();
+
+                    members.push({
+                        email: student.email || '',
+                        displayName: displayName,
+                        className: studentClass,
+                        absen: student.absen || '',
+                        firstLogin: student.firstLogin || student.lastLogin || '',
+                        isProfileComplete: !!(student.nama && student.kelas && student.absen),
+                        reflectionCount: studentReflections.length,
+                        latestReflection: studentReflections.length ? studentReflections[0] : null,
+                        reflections: studentReflections.map(function (entry) {
+                            return {
+                                sesi: entry.sesi,
+                                refleksi: entry.refleksi || '',
+                                submittedAt: entry.submittedAt || ''
+                            };
+                        }),
+                        isSelf: normalizeText(student.email) === normalizeText(user.email)
+                    });
+                });
+
+                members.sort(function (a, b) {
+                    var absenA = parseInt(a.absen, 10);
+                    var absenB = parseInt(b.absen, 10);
+                    if (a.isSelf && !b.isSelf) return -1;
+                    if (!a.isSelf && b.isSelf) return 1;
+                    if ((isNaN(absenA) ? 9999 : absenA) !== (isNaN(absenB) ? 9999 : absenB)) {
+                        return (isNaN(absenA) ? 9999 : absenA) - (isNaN(absenB) ? 9999 : absenB);
+                    }
+                    return a.displayName.localeCompare(b.displayName, 'id');
+                });
+
+                renderClassCareBoard({
+                    className: activeClass,
+                    stats: {
+                        joined: members.length,
+                        completeProfiles: members.filter(function (member) { return member.isProfileComplete; }).length,
+                        totalReflections: members.reduce(function (total, member) { return total + member.reflectionCount; }, 0)
+                    },
+                    members: members
+                });
+            }).catch(function () {
+                showClassCareMessage('📡 Data Kelas Belum Bisa Dimuat', 'Terjadi kendala saat mengambil data teman sekelas. Coba refresh halaman beberapa saat lagi.', activeClass);
+                CLASS_CARE_STATE.members = [];
+            });
+        }
+
+        function showPeerReflectionModal(memberIndex) {
+            var member = CLASS_CARE_STATE.members[memberIndex];
+            if (!member || !member.reflections || !member.reflections.length) return;
+
+            var modal = document.getElementById('insightModal');
+            modal.classList.remove('modal-commit');
+            modal.classList.add('modal-reflection');
+            currentReflectionSession = null;
+            setModalStandardMode();
+
+            var detail = member.reflections.map(function (entry) {
+                var header = 'Sesi ' + entry.sesi + ' • ' + getSessionTitleByNum(entry.sesi);
+                var meta = entry.submittedAt ? 'Dikirim ' + formatPeerReflectionDate(entry.submittedAt) : '';
+                var body = String(entry.refleksi || '').trim();
+                return header + (meta ? '\n' + meta : '') + '\n\n' + body;
+            }).join('\n\n──────────\n\n');
+
+            document.getElementById('mTitle').textContent = 'Refleksi ' + member.displayName;
+            document.getElementById('mIcon').textContent = '🤝';
+            document.getElementById('mDesc').hidden = false;
+            document.getElementById('mDesc').style.display = 'block';
+            document.getElementById('mDesc').textContent = detail;
+            document.getElementById('mBtn').textContent = 'TUTUP';
+            modal.classList.add('active');
+        }
+
         function normalizeCommitmentEntry(entry) {
             return {
                 checkinId: entry.checkinId || entry.id || '',
@@ -4251,6 +4928,7 @@
                     saveBtn.textContent = 'Perbaiki dan Simpan';
                     renderSessionProgress(user.email);
                     renderBadges(user.email);
+                    loadClassCareBoard(user);
                 };
 
                 if (!apiUrl || apiUrl === 'YOUR_APPS_SCRIPT_URL') {
@@ -4427,6 +5105,12 @@
             SESSION_LIKES_STATE.counts = {};
             SESSION_LIKES_STATE.liked = {};
             SESSION_LIKES_STATE.pending = {};
+            CLASS_CARE_STATE.members = [];
+            var classCareSection = document.getElementById('classCareSection');
+            if (classCareSection) {
+                classCareSection.classList.remove('show');
+                classCareSection.innerHTML = '';
+            }
             try { google.accounts.id.disableAutoSelect(); } catch (e) { }
         }
 
