@@ -92,7 +92,7 @@ function doGet(e) {
 function getSheetAsJSON(sheet) {
   var data = sheet.getDataRange().getValues();
   if (data.length <= 1) return jsonResponse([]);
-  var headers = data[0];
+  var headers = data[0].map(function(h) { return String(h || '').trim(); });
   var result = [];
   for (var i = 1; i < data.length; i++) {
     var obj = {};
@@ -469,7 +469,12 @@ function handleSaveReflection(data) {
   // Prevent duplicate (same email + sesi) — update existing
   var allData = sheet.getDataRange().getValues();
   for (var i = 1; i < allData.length; i++) {
-    if (String(allData[i][0]) == String(data.sesi) && allData[i][1] === data.email) {
+    var sSesi  = String(allData[i][0]).trim();
+    var sEmail = String(allData[i][1]).trim().toLowerCase();
+    var dSesi  = String(data.sesi || '').trim();
+    var dEmail = String(data.email || '').trim().toLowerCase();
+
+    if (sSesi === dSesi && sEmail === dEmail) {
       var row = i + 1;
       sheet.getRange(row, 7).setValue(data.refleksi || '');
       sheet.getRange(row, 8).setValue(new Date().toISOString());

@@ -1117,8 +1117,11 @@
             } else {
                     paginated.forEach(function(r, idx){
                         var i = start + idx;
-                        var isEdited = r.isEdited === true || r.isEdited === 'TRUE' || r.isEdited === 'true' || r.isEdited === 1;
-                        html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '">' +
+                        var isEdited = r.isEdited === true || 
+                                       String(r.isEdited).toUpperCase() === 'TRUE' || 
+                                       r.isEdited === 1 || 
+                                       r.isEdited === '1';
+                        html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '" title="Debug isEdited: ' + r.isEdited + '">' +
                             '<td>' + (i+1) + '</td>' +
                             '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
                             '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
