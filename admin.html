@@ -1115,19 +1115,20 @@
             if (totalItems === 0) {
                 html = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data refleksi.</p></div></td></tr>';
             } else {
-                paginated.forEach(function(r, idx){
-                    var i = start + idx;
-                    html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '">' +
-                        '<td>' + (i+1) + '</td>' +
-                        '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
-                        '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
-                        '<td>' + (r.kelas||'—') + '</td>' +
-                        '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
-                        '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
-                        '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + (r.submittedAt ? formatDate(r.submittedAt) : '—') + '</td>' +
-                        '<td style="text-align:center">' + (r.isEdited ? '<span class="badge-edited">Edited</span>' : '<span style="color:rgba(255,255,255,.15)">Original</span>') + '</td>' +
-                        '</tr>';
-                });
+                    paginated.forEach(function(r, idx){
+                        var i = start + idx;
+                        var isEdited = r.isEdited === true || r.isEdited === 'TRUE' || r.isEdited === 'true' || r.isEdited === 1;
+                        html += '<tr data-sesi="' + (r.sesi||'') + '" data-nama="' + (r.nama||r.googleName||'').toLowerCase() + '" data-email="' + (r.email||'').toLowerCase() + '">' +
+                            '<td>' + (i+1) + '</td>' +
+                            '<td style="text-align:center;font-weight:700;color:#c4b5fd">' + (r.sesi||'—') + '</td>' +
+                            '<td><strong>' + (r.nama||r.googleName||'—') + '</strong></td>' +
+                            '<td>' + (r.kelas||'—') + '</td>' +
+                            '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
+                            '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
+                            '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + (r.submittedAt ? formatDate(r.submittedAt) : '—') + '</td>' +
+                            '<td style="text-align:center">' + (isEdited ? '<span class="badge-edited">Edited</span>' : '<span style="color:rgba(255,255,255,.15)">Original</span>') + '</td>' +
+                            '</tr>';
+                    });
             }
             tbody.innerHTML = html;
             
@@ -1150,6 +1151,7 @@
             if (!allReflections.length) return;
             var csv = 'No,Sesi,Nama,Kelas,Absen,Refleksi,Waktu,Status\n';
             allReflections.forEach(function(r, i){
+                var isEdited = r.isEdited === true || r.isEdited === 'TRUE' || r.isEdited === 'true' || r.isEdited === 1;
                 csv += (i+1) + ',' +
                     (r.sesi||'') + ',' +
                     '"' + (r.nama||r.googleName||'').replace(/"/g,'""') + '",' +
@@ -1157,7 +1159,7 @@
                     (r.absen||'') + ',' +
                     '"' + (r.refleksi||'').replace(/"/g,'""').replace(/\n/g,' ') + '",' +
                     '"' + (r.submittedAt||'') + '",' +
-                    '"' + (r.isEdited ? 'Edited' : 'Original') + '"\n';
+                    '"' + (isEdited ? 'Edited' : 'Original') + '"\n';
             });
             var blob = new Blob([csv], {type:'text/csv'});
             var url = URL.createObjectURL(blob);
