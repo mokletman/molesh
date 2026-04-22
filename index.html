@@ -3590,12 +3590,9 @@
     <!-- ═══════════ PUBLIC HERO ═══════════ -->
     <section class="hero" id="heroSection">
         <div class="hero-icon">🎓</div>
-        <span class="hero-tag">Leadership &amp; Softskill</span>
         <h1>Moklet Leadership</h1>
-        <p class="hero-tagline">Get Ready to Become <em>A Global Digitalent!</em></p>
-        <p class="hero-desc">Kurikulum <strong class="accent-lead">Leadership</strong> &amp; <strong
-                class="accent-soft">Softskill</strong> untuk siswa RPL, TKJ &amp; PG SMK Telkom Malang — 6 sesi,
-            ringkas, praktis.</p>
+        <p class="hero-tagline"><em>A Global Digitalent!</em></p>
+        <p class="hero-desc">Kurikulum Leadership & Softskill ringkas untuk SMK Telkom Malang.</p>
 
         <div class="pills">
             <span class="pill">💡 Sadar Diri</span>
@@ -3607,53 +3604,46 @@
             <div class="feat">
                 <div class="feat-emoji">🧠</div>
                 <div class="feat-title">Neuroscience</div>
-                <div class="feat-desc">Materi berbasis cara kerja otak</div>
+                <div class="feat-desc">Berbasis otak</div>
             </div>
             <div class="feat">
                 <div class="feat-emoji">🎮</div>
                 <div class="feat-title">Interaktif</div>
-                <div class="feat-desc">Quiz, roleplay &amp; aktivitas langsung</div>
+                <div class="feat-desc">Roleplay & aktivitas</div>
             </div>
             <div class="feat">
                 <div class="feat-emoji">🚀</div>
                 <div class="feat-title">Actionable</div>
-                <div class="feat-desc">Tantangan nyata tiap sesi</div>
+                <div class="feat-desc">Tantangan nyata</div>
             </div>
         </div>
         <div class="heritage-card">
-            <span class="heritage-tag">Global Mindset x Future Class</span>
-            <p class="heritage-note">Visual materi memadukan motif tradisional Nusantara dengan gaya modern supaya siswa
-                merasa dekat dengan akar budaya sekaligus siap menghadapi dunia teknologi.</p>
+            <span class="heritage-tag">Global Mindset</span>
+            <p class="heritage-note">Visual tradisional x modern.</p>
             <div class="roadmap-flow" role="img" aria-label="Infografis alur 6 sesi moklet leadership">
                 <div class="roadmap-item">
                     <span class="roadmap-step">S1</span>
-                    <div class="roadmap-copy"><strong>Fondasi MOLESH</strong><small>Sadar Diri, Peduli Kasih, Beraksi dan Melayani +
-                            neuroscience dasar</small></div>
+                    <div class="roadmap-copy"><strong>Fondasi MOLESH</strong><small>Sadar Diri, Peduli Kasih, Beraksi & Melayani.</small></div>
                 </div>
                 <div class="roadmap-item">
                     <span class="roadmap-step">S2</span>
-                    <div class="roadmap-copy"><strong>Deep Dive Sadar Diri</strong><small>Mindset, SWOT, dan personal
-                            roadmap</small></div>
+                    <div class="roadmap-copy"><strong>Deep Dive Sadar Diri</strong><small>Mindset, SWOT, Roadmap.</small></div>
                 </div>
                 <div class="roadmap-item">
                     <span class="roadmap-step">S3</span>
-                    <div class="roadmap-copy"><strong>Deep Dive Peduli Kasih</strong><small>Empati tim, feedback,
-                            psychological safety</small></div>
+                    <div class="roadmap-copy"><strong>Deep Dive Peduli Kasih</strong><small>Empati, Feedback, Safety.</small></div>
                 </div>
                 <div class="roadmap-item">
                     <span class="roadmap-step">S4</span>
-                    <div class="roadmap-copy"><strong>Deep Dive Beraksi dan Melayani</strong><small>Etika digital, aksi
-                            keputusan, pelayanan tim, dan dampak berbasis data</small></div>
+                    <div class="roadmap-copy"><strong>Deep Dive Beraksi</strong><small>Etika, Aksi, Dampak.</small></div>
                 </div>
                 <div class="roadmap-item">
                     <span class="roadmap-step">S5</span>
-                    <div class="roadmap-copy"><strong>Lead Tim</strong><small>Situational leadership dan resolusi
-                            konflik</small></div>
+                    <div class="roadmap-copy"><strong>Lead Tim</strong><small>Leadership & Konflik.</small></div>
                 </div>
                 <div class="roadmap-item">
                     <span class="roadmap-step">S6</span>
-                    <div class="roadmap-copy"><strong>Execute Roadmap</strong><small>Komitmen aksi 3 bulan dan
-                            presentasi publik</small></div>
+                    <div class="roadmap-copy"><strong>Execute Roadmap</strong><small>Aksi & Presentasi.</small></div>
                 </div>
             </div>
         </div>
@@ -4564,21 +4554,17 @@
                 if (member.isSelf) html += '<span class="classmate-self">Kamu</span>';
                 html += '</div>';
                 html += '<div class="classmate-meta">' + escapeHtml(member.className) + (member.absen ? ' • Absen ' + escapeHtml(member.absen) : '') + '</div>';
-                html += '<div class="classmate-join">Join sejak ' + escapeHtml(formatShortDate(member.firstLogin)) + '</div>';
+                html += '<div class="classmate-join">' + escapeHtml(formatShortDate(member.firstLogin)) + '</div>';
                 html += '</div>';
                 html += '</div>';
                 html += '<div class="classmate-tags">';
-                html += '<span class="classmate-tag ' + (member.isProfileComplete ? 'good' : 'warn') + '">' + (member.isProfileComplete ? 'Profil siap' : 'Profil belum lengkap') + '</span>';
-                html += '<span class="classmate-tag info">' + member.reflectionCount + '/6 refleksi</span>';
-                html += '<span class="classmate-tag ' + (member.reflectionCount > 0 ? 'good' : 'warn') + '">' + (member.latestReflection ? 'Terakhir S' + member.latestReflection.sesi : 'Belum refleksi') + '</span>';
+                html += '<span class="classmate-tag ' + (member.isProfileComplete ? 'good' : 'warn') + '">' + (member.isProfileComplete ? 'Profil OK' : 'Profil !') + '</span>';
+                html += '<span class="classmate-tag info">' + member.reflectionCount + '/6 Sesi</span>';
+                html += '<span class="classmate-tag ' + (member.reflectionCount > 0 ? 'good' : 'warn') + '">' + (member.latestReflection ? 'S' + member.latestReflection.sesi : 'Belum Ada') + '</span>';
                 html += '</div>';
                 html += '<div class="classmate-reflection">';
-                html += '<div class="classmate-reflection-label">Status Refleksi</div>';
                 html += '<div class="classmate-reflection-title">' + escapeHtml(latestTitle) + '</div>';
                 html += '<div class="classmate-reflection-text">' + latestMeta + '</div>';
-                html += '</div>';
-                html += '<div class="classmate-actions">';
-                html += '<div class="classmate-note">' + escapeHtml(member.reflectionCount ? 'Isi refleksi disembunyikan. Yang tampil hanya progres agar teman sekelas tetap bisa saling peduli dan mengingatkan.' : 'Belum ada refleksi yang masuk, jadi teman ini bisa diingatkan dengan cara yang suportif.') + '</div>';
                 html += '</div>';
                 html += '</article>';
             });
