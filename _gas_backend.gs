@@ -304,6 +304,12 @@ function getOrCreateReflections() {
     sheet.appendRow(['sesi', 'email', 'googleName', 'nama', 'kelas', 'absen', 'refleksi', 'submittedAt', 'isEdited']);
     sheet.setFrozenRows(1);
     sheet.getRange('A1:I1').setFontWeight('bold');
+  } else {
+    /* Ensure header has 'isEdited' if it was created before this feature */
+    var lastCol = sheet.getLastColumn();
+    if (lastCol < 9) {
+      sheet.getRange(1, 9).setValue('isEdited').setFontWeight('bold');
+    }
   }
   return sheet;
 }
