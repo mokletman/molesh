@@ -301,9 +301,9 @@ function getOrCreateReflections() {
   var sheet = ss.getSheetByName(REFLECTIONS_SHEET);
   if (!sheet) {
     sheet = ss.insertSheet(REFLECTIONS_SHEET);
-    sheet.appendRow(['sesi', 'email', 'googleName', 'nama', 'kelas', 'absen', 'refleksi', 'submittedAt']);
+    sheet.appendRow(['sesi', 'email', 'googleName', 'nama', 'kelas', 'absen', 'refleksi', 'submittedAt', 'isEdited']);
     sheet.setFrozenRows(1);
-    sheet.getRange('A1:H1').setFontWeight('bold');
+    sheet.getRange('A1:I1').setFontWeight('bold');
   }
   return sheet;
 }
@@ -467,6 +467,7 @@ function handleSaveReflection(data) {
       var row = i + 1;
       sheet.getRange(row, 7).setValue(data.refleksi || '');
       sheet.getRange(row, 8).setValue(new Date().toISOString());
+      sheet.getRange(row, 9).setValue(true);
       return jsonResponse({ status: 'updated' });
     }
   }
@@ -474,7 +475,7 @@ function handleSaveReflection(data) {
   sheet.appendRow([
     data.sesi || '', data.email || '', data.googleName || '',
     data.nama || '', data.kelas || '', data.absen || '',
-    data.refleksi || '', now
+    data.refleksi || '', now, false
   ]);
   return jsonResponse({ status: 'ok' });
 }

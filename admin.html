@@ -363,6 +363,18 @@
         .sentiment-pos { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
         .sentiment-neu { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); }
         .sentiment-neg { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.25); }
+        .badge-edited {
+            font-size: .62rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: rgba(251, 191, 36, .15);
+            color: #f59e0b;
+            border: 1px solid rgba(251, 191, 36, .3);
+            margin-left: 4px;
+            vertical-align: middle;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -1059,7 +1071,7 @@
             if (el) wrap = el;
             if (!wrap) return;
             var html = '<div class="table-wrap"><table class="data-table" id="refTable"><thead><tr>' +
-                '<th>No</th><th>Sesi</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Refleksi</th><th>Waktu</th>' +
+                '<th>No</th><th>Sesi</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Refleksi</th><th>Waktu</th><th>Status</th>' +
                 '</tr></thead><tbody id="refTableBody"></tbody></table></div>';
             html += '<div id="refPagination"></div>';
             wrap.innerHTML = html;
@@ -1113,6 +1125,7 @@
                         '<td style="text-align:center">' + (r.absen||'—') + '</td>' +
                         '<td style="max-width:280px;font-size:.78rem;line-height:1.5;color:#cbd5e1">' + escHtml(r.refleksi||'—') + '</td>' +
                         '<td style="font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap">' + (r.submittedAt ? formatDate(r.submittedAt) : '—') + '</td>' +
+                        '<td style="text-align:center">' + (r.isEdited ? '<span class="badge-edited">Edited</span>' : '<span style="color:rgba(255,255,255,.15)">Original</span>') + '</td>' +
                         '</tr>';
                 });
             }
@@ -1135,16 +1148,16 @@
 
         function exportReflCSV() {
             if (!allReflections.length) return;
-            var csv = 'No,Sesi,Nama,Kelas,Absen,Refleksi,Waktu\n';
+            var csv = 'No,Sesi,Nama,Kelas,Absen,Refleksi,Waktu,Status\n';
             allReflections.forEach(function(r, i){
                 csv += (i+1) + ',' +
                     (r.sesi||'') + ',' +
                     '"' + (r.nama||r.googleName||'').replace(/"/g,'""') + '",' +
-
                     '"' + (r.kelas||'') + '",' +
                     (r.absen||'') + ',' +
                     '"' + (r.refleksi||'').replace(/"/g,'""').replace(/\n/g,' ') + '",' +
-                    '"' + (r.submittedAt||'') + '"\n';
+                    '"' + (r.submittedAt||'') + '",' +
+                    '"' + (r.isEdited ? 'Edited' : 'Original') + '"\n';
             });
             var blob = new Blob([csv], {type:'text/csv'});
             var url = URL.createObjectURL(blob);
