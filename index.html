@@ -78,21 +78,19 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 18px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, .12);
-            background: linear-gradient(135deg, rgba(15, 23, 42, .46), rgba(30, 41, 59, .26));
-            box-shadow: 0 16px 38px rgba(2, 6, 23, .22);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            padding: 0;
         }
 
         .landing-brand__logo {
             display: block;
-            width: min(100%, 220px);
+            width: min(100%, 360px);
             height: auto;
-            opacity: .92;
-            filter: brightness(0) saturate(0) invert(1);
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .landing-brand__logo--light {
+            display: none;
         }
 
         .theme-toggle:hover {
@@ -2745,15 +2743,12 @@
             border-color: rgba(15, 23, 42, .15)
         }
 
-        html.theme-light .landing-brand__shell {
-            border-color: rgba(14, 116, 144, .12);
-            background: linear-gradient(135deg, rgba(255, 255, 255, .88), rgba(240, 249, 255, .7));
-            box-shadow: 0 18px 38px rgba(14, 116, 144, .12);
+        html.theme-light .landing-brand__logo--dark {
+            display: none;
         }
 
-        html.theme-light .landing-brand__logo {
-            opacity: 1;
-            filter: none;
+        html.theme-light .landing-brand__logo--light {
+            display: block;
         }
 
         html.theme-light .hero h1 {
@@ -3600,7 +3595,8 @@
     <section class="auth-section" id="authSection" style="margin-top: 36px; margin-bottom: -16px; max-width: 380px;">
         <div class="landing-brand" aria-label="Identitas Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
             <div class="landing-brand__shell">
-                <img class="landing-brand__logo" src="assets/moklet-partners-logo.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
+                <img class="landing-brand__logo landing-brand__logo--dark" src="assets/moklet-partners-logo-dark.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi putih">
+                <img class="landing-brand__logo landing-brand__logo--light" src="assets/moklet-partners-logo-light.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi warna asli">
             </div>
         </div>
         <div class="auth-card auth-card--leadership" style="padding: 18px 20px; border-radius: 16px;">
