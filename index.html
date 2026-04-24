@@ -59,9 +59,11 @@
             color: #f8fafc;
             border-radius: 999px;
             font-family: inherit;
-            font-size: .78rem;
+            font-size: 1rem;
             font-weight: 700;
-            padding: 9px 14px;
+            min-width: 52px;
+            min-height: 52px;
+            padding: 10px;
             cursor: pointer;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -931,6 +933,20 @@
 
         .dashboard.hidden {
             display: none
+        }
+
+        .dashboard-brand {
+            display: flex;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+
+        .dashboard-brand .landing-brand__shell {
+            opacity: .82;
+        }
+
+        .dashboard-brand .landing-brand__logo {
+            width: min(100%, 210px);
         }
 
         .user-bar {
@@ -2780,8 +2796,10 @@
             .theme-toggle {
                 top: 12px;
                 right: 12px;
-                padding: 8px 12px;
-                font-size: .74rem
+                min-width: 46px;
+                min-height: 46px;
+                padding: 8px;
+                font-size: .96rem
             }
         }
 
@@ -3669,7 +3687,7 @@
 </head>
 
 <body>
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Aktifkan tema terang">☀️ Light</button>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Aktifkan tema terang" title="Aktifkan tema terang">☀️</button>
     <div class="kawung-layer"></div>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -3762,6 +3780,12 @@
 
     <!-- ═══════════ DASHBOARD (after login) ═══════════ -->
     <section class="dashboard hidden" id="dashboard">
+        <div class="dashboard-brand" aria-label="Identitas Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
+            <div class="landing-brand__shell">
+                <img class="landing-brand__logo landing-brand__logo--dark" src="assets/moklet-partners-logo-dark.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi putih">
+                <img class="landing-brand__logo landing-brand__logo--light" src="assets/moklet-partners-logo-light.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi warna asli">
+            </div>
+        </div>
         <div class="user-bar" id="userBar">
             <div class="user-bar-top">
                 <!-- Avatar + Bell wrapper -->
@@ -4030,8 +4054,9 @@
             try { localStorage.setItem('molesh_theme', isLight ? 'light' : 'dark'); } catch (e) { }
 
             if (themeToggle) {
-                themeToggle.textContent = isLight ? '\u{1F319} Dark' : '\u2600\uFE0F Light';
+                themeToggle.textContent = isLight ? '\u{1F319}' : '\u2600\uFE0F';
                 themeToggle.setAttribute('aria-label', isLight ? 'Aktifkan tema gelap' : 'Aktifkan tema terang');
+                themeToggle.title = isLight ? 'Aktifkan tema gelap' : 'Aktifkan tema terang';
             }
 
             var metaTheme = document.querySelector('meta[name="theme-color"]');
