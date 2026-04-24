@@ -68,6 +68,33 @@
             transition: all .2s ease;
         }
 
+        .landing-brand {
+            display: flex;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
+
+        .landing-brand__shell {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: linear-gradient(135deg, rgba(15, 23, 42, .46), rgba(30, 41, 59, .26));
+            box-shadow: 0 16px 38px rgba(2, 6, 23, .22);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .landing-brand__logo {
+            display: block;
+            width: min(100%, 220px);
+            height: auto;
+            opacity: .92;
+            filter: brightness(0) saturate(0) invert(1);
+        }
+
         .theme-toggle:hover {
             transform: translateY(-1px);
             background: rgba(30, 41, 59, .75)
@@ -2718,6 +2745,17 @@
             border-color: rgba(15, 23, 42, .15)
         }
 
+        html.theme-light .landing-brand__shell {
+            border-color: rgba(14, 116, 144, .12);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .88), rgba(240, 249, 255, .7));
+            box-shadow: 0 18px 38px rgba(14, 116, 144, .12);
+        }
+
+        html.theme-light .landing-brand__logo {
+            opacity: 1;
+            filter: none;
+        }
+
         html.theme-light .hero h1 {
             background: linear-gradient(90deg, #1f2937 20%, #0e7490);
             -webkit-background-clip: text;
@@ -3559,7 +3597,12 @@
     <div class="kawung-orb kawung-orb-right" aria-hidden="true"></div>
 
     <!-- ═══════════ SIGN-IN SECTION ═══════════ -->
-    <section class="auth-section" id="authSection" style="margin-top: 52px; margin-bottom: -16px; max-width: 380px;">
+    <section class="auth-section" id="authSection" style="margin-top: 36px; margin-bottom: -16px; max-width: 380px;">
+        <div class="landing-brand" aria-label="Identitas Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
+            <div class="landing-brand__shell">
+                <img class="landing-brand__logo" src="assets/moklet-partners-logo.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
+            </div>
+        </div>
         <div class="auth-card auth-card--leadership" style="padding: 18px 20px; border-radius: 16px;">
             <h2 class="auth-title">🔐 Masuk untuk Belajar</h2>
             <p class="auth-subtitle">Sign in dengan Google untuk akses 6 sesi MOLESH.</p>
