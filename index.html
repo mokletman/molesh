@@ -71,7 +71,7 @@
         .landing-brand {
             display: flex;
             justify-content: center;
-            margin: 0 auto 18px;
+            margin: 0 auto 12px;
         }
 
         .landing-brand__shell {
@@ -79,11 +79,12 @@
             align-items: center;
             justify-content: center;
             padding: 0;
+            opacity: .9;
         }
 
         .landing-brand__logo {
             display: block;
-            width: min(100%, 360px);
+            width: min(100%, 280px);
             height: auto;
             user-select: none;
             -webkit-user-drag: none;
@@ -2672,13 +2673,17 @@
             }
 
             .landing-intro {
-                margin-bottom: 16px;
+                margin-bottom: 14px;
             }
 
             .landing-intro__desc {
                 font-size: .9rem;
                 line-height: 1.55;
                 max-width: 320px;
+            }
+
+            .landing-brand__logo {
+                width: min(100%, 220px);
             }
 
             .auth-card,
@@ -2806,6 +2811,10 @@
 
         html.theme-light .landing-brand__logo--light {
             display: block;
+        }
+
+        html.theme-light .landing-brand__shell {
+            opacity: .96;
         }
 
         html.theme-light .landing-intro__title {
