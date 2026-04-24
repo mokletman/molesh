@@ -93,6 +93,48 @@
             display: none;
         }
 
+        .landing-intro {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto 18px;
+            text-align: center;
+            animation: pop .7s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        .landing-intro__title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff 30%, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing-intro__tagline {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .72);
+            margin-bottom: 8px;
+        }
+
+        .landing-intro__tagline em {
+            font-style: normal;
+            background: linear-gradient(90deg, #c4b5fd, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing-intro__desc {
+            max-width: 660px;
+            margin: 0 auto;
+            font-size: .98rem;
+            line-height: 1.65;
+            color: rgba(255, 255, 255, .56);
+        }
+
         .theme-toggle:hover {
             transform: translateY(-1px);
             background: rgba(30, 41, 59, .75)
@@ -220,7 +262,7 @@
             width: 100%;
             max-width: 640px;
             text-align: center;
-            padding: 48px 0 0;
+            padding: 32px 0 0;
             animation: pop .7s cubic-bezier(.22, 1, .36, 1) both;
         }
 
@@ -716,6 +758,9 @@
             margin-bottom: 14px;
             line-height: 1.4;
             min-height: 2.8em;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform, opacity;
         }
 
         .dash-quote {
@@ -2616,12 +2661,24 @@
         }
 
         @media(max-width:480px) {
-            .hero h1 {
+            .hero h1,
+            .landing-intro__title {
                 font-size: 1.8rem
             }
 
-            .hero-tagline {
+            .hero-tagline,
+            .landing-intro__tagline {
                 font-size: 1rem
+            }
+
+            .landing-intro {
+                margin-bottom: 16px;
+            }
+
+            .landing-intro__desc {
+                font-size: .9rem;
+                line-height: 1.55;
+                max-width: 320px;
             }
 
             .auth-card,
@@ -2749,6 +2806,26 @@
 
         html.theme-light .landing-brand__logo--light {
             display: block;
+        }
+
+        html.theme-light .landing-intro__title {
+            background: linear-gradient(90deg, #1f2937 20%, #0e7490);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        html.theme-light .landing-intro__tagline {
+            color: rgba(17, 24, 39, .78);
+        }
+
+        html.theme-light .landing-intro__tagline em {
+            background: linear-gradient(90deg, #6d28d9, #0e7490);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        html.theme-light .landing-intro__desc {
+            color: rgba(31, 41, 55, .72);
         }
 
         html.theme-light .hero h1 {
@@ -3592,14 +3669,19 @@
     <div class="kawung-orb kawung-orb-right" aria-hidden="true"></div>
 
     <!-- ═══════════ SIGN-IN SECTION ═══════════ -->
-    <section class="auth-section" id="authSection" style="margin-top: 36px; margin-bottom: -16px; max-width: 380px;">
+    <section class="auth-section" id="authSection" style="margin-top: 36px; margin-bottom: -16px; max-width: 720px;">
         <div class="landing-brand" aria-label="Identitas Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
             <div class="landing-brand__shell">
                 <img class="landing-brand__logo landing-brand__logo--dark" src="assets/moklet-partners-logo-dark.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi putih">
                 <img class="landing-brand__logo landing-brand__logo--light" src="assets/moklet-partners-logo-light.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi warna asli">
             </div>
         </div>
-        <div class="auth-card auth-card--leadership" style="padding: 18px 20px; border-radius: 16px;">
+        <div class="landing-intro">
+            <h1 class="landing-intro__title">Moklet Leadership</h1>
+            <p class="landing-intro__tagline"><em>A Global Digitalent!</em></p>
+            <p class="landing-intro__desc">Kurikulum Leadership &amp; Softskill ringkas untuk SMK Telkom Malang.</p>
+        </div>
+        <div class="auth-card auth-card--leadership" style="max-width: 380px; margin: 0 auto; padding: 18px 20px; border-radius: 16px;">
             <h2 class="auth-title">🔐 Masuk untuk Belajar</h2>
             <p class="auth-subtitle">Sign in dengan Google untuk akses 6 sesi MOLESH.</p>
             <div class="auth-visual" aria-hidden="true">
@@ -3628,11 +3710,6 @@
 
     <!-- ═══════════ PUBLIC HERO ═══════════ -->
     <section class="hero" id="heroSection">
-        <div class="hero-icon">🎓</div>
-        <h1>Moklet Leadership</h1>
-        <p class="hero-tagline"><em>A Global Digitalent!</em></p>
-        <p class="hero-desc">Kurikulum Leadership & Softskill ringkas untuk SMK Telkom Malang.</p>
-
         <div class="pills">
             <span class="pill">💡 Sadar Diri</span>
             <span class="pill">🤝 Peduli Kasih</span>
@@ -3899,8 +3976,11 @@
             if (!el) return;
             el.classList.remove('text-swap');
             el.textContent = text;
-            void el.offsetWidth;
-            el.classList.add('text-swap');
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    el.classList.add('text-swap');
+                });
+            });
         }
 
         function displayRandomQuote(idx) {
@@ -3935,6 +4015,18 @@
 
             if (!leadershipWordTimer) {
                 leadershipWordTimer = setInterval(cycleLeadershipWord, 2200);
+            }
+        }
+
+        function stopLeadershipMotion() {
+            if (quoteRotationTimer) {
+                clearInterval(quoteRotationTimer);
+                quoteRotationTimer = null;
+            }
+
+            if (leadershipWordTimer) {
+                clearInterval(leadershipWordTimer);
+                leadershipWordTimer = null;
             }
         }
 
@@ -5163,6 +5255,18 @@
         /* ── Init ── */
         initThemeToggle();
         startLeadershipMotion();
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                stopLeadershipMotion();
+                return;
+            }
+            startLeadershipMotion();
+        });
+
+        window.addEventListener('pageshow', function () {
+            startLeadershipMotion();
+        });
 
         if (!checkSession()) {
             waitForGIS();
