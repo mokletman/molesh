@@ -966,7 +966,9 @@
 
             function renderSummary() {
                 var targetClass = viewClass || activeClass;
-                var filtered = entries.filter(function (item) { return item.kelas === targetClass; });
+                var filtered = entries.filter(function (item) { 
+                    return normalize(item.kelas) === normalize(targetClass); 
+                });
                 document.getElementById('classTotal').textContent = String(filtered.length);
                 document.getElementById('resultCountBadge').textContent = filtered.length + ' masukan';
                 document.getElementById('resultSubtitle').textContent = targetClass
@@ -1033,8 +1035,8 @@
                 var targetClass = viewClass || activeClass;
                 var html = '';
                 classes.forEach(function (c) {
-                    var isActive = (c === targetClass) ? ' active' : '';
-                    var count = entries.filter(function(item){ return item.kelas === c; }).length;
+                    var isActive = (normalize(c) === normalize(targetClass)) ? ' active' : '';
+                    var count = entries.filter(function(item){ return normalize(item.kelas) === normalize(c); }).length;
                     html += '<button class="class-chip' + isActive + '" onclick="setViewClass(\'' + c + '\')">' + c + ' <small>(' + count + ')</small></button>';
                 });
                 nav.innerHTML = html;
@@ -1051,7 +1053,9 @@
             function renderResults() {
                 var list = document.getElementById('resultList');
                 var targetClass = viewClass || activeClass;
-                var filtered = entries.filter(function (item) { return item.kelas === targetClass; });
+                var filtered = entries.filter(function (item) { 
+                    return normalize(item.kelas) === normalize(targetClass); 
+                });
                 
                 if (!targetClass) {
                     list.innerHTML = '<div class="empty-state">Pilih kelas di atas untuk melihat aspirasi.</div>';
@@ -1354,15 +1358,19 @@
                 entries = getStoredEntries();
                 renderTraitGrid([]);
                 
-                fetchStudents().then(function () {
+                fetchStudents().then(function (students) {
+                    console.log('Loaded students:', (students || []).length);
                     hydrateProfileFromCloud();
                     initSelection();
                     renderAll();
                     return loadSurveyFromCloud();
                 }).then(function (remoteEntries) {
+                    console.log('Loaded survey entries:', (remoteEntries || []).length);
                     entries = mergeEntries(entries, remoteEntries || []);
                     setStoredEntries(entries);
                     renderAll();
+                }).catch(function(err) {
+                    console.error('Initialization error:', err);
                 });
             });
         })();
