@@ -232,6 +232,12 @@
             display:flex;align-items:center;gap:14px;
             background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
             border-radius:14px;padding:14px 16px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .ci-card:hover{
+            background:rgba(255,255,255,.09);
+            border-color:rgba(255,255,255,.15);
+            transform:translateY(-2px);
         }
         .ci-card .ci-date{font-size:.9rem;font-weight:700;color:#e2e8f0;white-space:nowrap}
         .ci-card .ci-desc{flex:1;font-size:.78rem;color:rgba(255,255,255,.4);min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -955,12 +961,12 @@
                 }
                 var statusClass = s.status === 'aktif' ? 'ci-status-aktif' : 'ci-status-nonaktif';
                 var count = logCount[s.id] || 0;
-                html += '<div class="ci-card">' +
+                html += '<div class="ci-card" onclick="showCheckinDetail(\'' + s.id + '\')">' +
                     '<div><div class="ci-date">' + formatTanggal(tanggal) + '</div>' +
                     '<div class="ci-count">' + count + ' siswa kehadiran</div></div>' +
                     '<div class="ci-desc">' + (s.deskripsi || '—') + '</div>' +
                     '<span class="ci-status ' + statusClass + '">' + s.status + '</span>' +
-                    '<button class="ci-del" onclick="deleteCheckinSetting(\'' + s.id + '\')">🗑️</button>' +
+                    '<button class="ci-del" onclick="event.stopPropagation(); deleteCheckinSetting(\'' + s.id + '\')">🗑️</button>' +
                     '</div>';
             });
             html += '</div>';
@@ -1012,6 +1018,43 @@
                     '</div></div>';
             }
             logEl.innerHTML = html;
+        }
+
+        function showCheckinDetail(checkinId) {
+            var setting = ciSettings.find(function(s){ return s.id === checkinId; });
+            if (!setting) return;
+
+            var filtered = ciLogs.filter(function(l){ return l.checkinId === checkinId; });
+            var modal = document.getElementById('ciDetailModal');
+            var title = document.getElementById('ciDetailTitle');
+            var list = document.getElementById('ciDetailList');
+
+            title.innerHTML = '👥 Daftar Kehadiran<div style="font-size:.8rem;font-weight:400;color:rgba(255,255,255,.4);margin-top:4px">' + 
+                              formatTanggal(setting.tanggal) + ' — ' + (setting.deskripsi || 'Kehadiran Siswa') + '</div>';
+
+            if (!filtered.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada siswa yang check-in.</p></div>';
+            } else {
+                var html = '<div class="table-wrap"><table class="data-table"><thead><tr>' +
+                           '<th>No</th><th>Nama / Email</th><th>Kelas</th><th>Absen</th><th>Waktu</th></tr></thead><tbody>';
+                filtered.forEach(function(l, i){
+                    html += '<tr>' +
+                        '<td>' + (i + 1) + '</td>' +
+                        '<td><div style="font-weight:700">' + (l.nama || l.googleName || '—') + '</div>' +
+                        '<div style="font-size:.7rem;color:rgba(255,255,255,.3)">' + (l.email || '') + '</div></td>' +
+                        '<td style="font-weight:600;color:#c4b5fd">' + (l.kelas || '—') + '</td>' +
+                        '<td style="text-align:center">' + (l.absen || '—') + '</td>' +
+                        '<td style="font-size:.7rem;color:rgba(255,255,255,.3)">' + (l.checkinTime ? formatDate(l.checkinTime).split(' ')[1] : '—') + '</td>' +
+                        '</tr>';
+                });
+                html += '</tbody></table></div>';
+                list.innerHTML = html;
+            }
+            modal.classList.add('show');
+        }
+
+        function closeCheckinDetail() {
+            document.getElementById('ciDetailModal').classList.remove('show');
         }
 
         /* ══════════════════════════════════════
@@ -2027,6 +2070,19 @@
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeCheckinModal()">Batal</button>
                 <button class="btn-primary" onclick="saveCheckinSetting()">💾 Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kehadiran Detail Modal -->
+    <div class="modal-overlay" id="ciDetailModal">
+        <div class="modal" style="max-width:700px">
+            <h3 id="ciDetailTitle">👥 Daftar Kehadiran</h3>
+            <div id="ciDetailList" style="margin:20px 0; max-height:450px; overflow:auto">
+                <!-- List injected -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeCheckinDetail()">Tutup</button>
             </div>
         </div>
     </div>
