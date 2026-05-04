@@ -13,5 +13,5 @@ var MOLESH_CONFIG = {
      * Cara setup: lihat file _gas_backend.gs
      * Setelah deploy, paste URL di sini (ganti 'YOUR_APPS_SCRIPT_URL')
      */
-    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbypCUyDgiO6EvhiIuy1mi5qq1TZv9dEbK58KgVJrWn3JLO_qdGSBxE-7xbdZzGa-uWAsA/exec'
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzGZfH6LErtm7-K6pCIqvpw2WRH-Gg51LWeaxd0Uzh1GsELQ8QSNorSFAf-s4BrE3tUjA/exec'
 };
