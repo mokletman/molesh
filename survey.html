@@ -1246,7 +1246,41 @@
                 if (!apiUrl) return Promise.resolve([]);
                 return fetch(apiUrl + '?type=surveyIdeas', { cache: 'no-store' })
                     .then(function (res) { return res.json(); })
-                    .then(function (data) { return Array.isArray(data) ? data : []; })
+                    .then(function (data) { 
+                        if (!Array.isArray(data)) return [];
+                        /* Heuristic mapping for cases where headers might be wrong/missing in sheet */
+                        return data.map(function(item) {
+                            var mapped = {
+                                recordKey: item.recordKey || '',
+                                kelas: item.kelas || '',
+                                email: item.email || '',
+                                googleName: item.googleName || '',
+                                nama: item.nama || '',
+                                absen: item.absen || '',
+                                traits: item.traits || '',
+                                otherTrait: item.otherTrait || '',
+                                note: item.note || '',
+                                createdAt: item.createdAt || '',
+                                updatedAt: item.updatedAt || ''
+                            };
+                            
+                            /* If standard keys are missing, try to find them by content/synonyms */
+                            var keys = Object.keys(item);
+                            keys.forEach(function(k) {
+                                var val = String(item[k] || '');
+                                var keyLower = k.toLowerCase();
+                                
+                                if (!mapped.kelas && (keyLower.indexOf('rpl') > -1 || keyLower.indexOf('tkj') > -1 || keyLower.indexOf('kelas') > -1)) mapped.kelas = val;
+                                if (!mapped.email && val.indexOf('@') > -1) mapped.email = val;
+                                if (!mapped.nama && (keyLower.indexOf('nama') > -1 || keyLower.indexOf('health check') > -1 || keyLower.indexOf('google') > -1)) mapped.nama = val;
+                                if (!mapped.traits && (val.indexOf(',') > -1 || keyLower.indexOf('integrity') > -1)) mapped.traits = val;
+                                if (!mapped.note && (keyLower.indexOf('check') > -1 || keyLower.indexOf('pendapat') > -1 || keyLower.indexOf('aspirasi') > -1)) mapped.note = val;
+                                if (!mapped.recordKey && val.indexOf('|') > -1) mapped.recordKey = val;
+                            });
+                            
+                            return mapped;
+                        });
+                    })
                     .catch(function () { return []; });
             }
 

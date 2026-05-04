@@ -413,14 +413,31 @@ function handleToggleSessionLike(data) {
 function getOrCreateSurveyIdeas() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName(SURVEY_SHEET);
+  var headers = [
+    'recordKey', 'kelas', 'email', 'googleName', 'nama', 'absen',
+    'traits', 'otherTrait', 'note', 'createdAt', 'updatedAt'
+  ];
   if (!sheet) {
     sheet = ss.insertSheet(SURVEY_SHEET);
-    sheet.appendRow([
-      'recordKey', 'kelas', 'email', 'googleName', 'nama', 'absen',
-      'traits', 'otherTrait', 'note', 'createdAt', 'updatedAt'
-    ]);
+    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
     sheet.getRange('A1:K1').setFontWeight('bold');
+  } else {
+    // Check if headers match, if not, fix them to ensure JSON mapping works
+    var currentHeaders = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+    var match = true;
+    for (var i = 0; i < headers.length; i++) {
+      if (String(currentHeaders[i] || '').trim() !== headers[i]) {
+        match = false;
+        break;
+      }
+    }
+    if (!match) {
+      // If headers are totally different (like the 'Health Check' ones we saw), 
+      // we'll insert a new header row at the top to fix future mapping.
+      // But for now, let's just overwrite the first row if it's clearly not our headers.
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+    }
   }
   return sheet;
 }
