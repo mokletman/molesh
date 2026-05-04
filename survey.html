@@ -1023,7 +1023,7 @@
                 var classSet = {};
                 if (activeClass) classSet[activeClass] = true;
                 entries.forEach(function (item) {
-                    if (item.kelas) classSet[item.kelas] = true;
+                    if (item.kelas && item.kelas.indexOf('@') === -1) classSet[item.kelas] = true;
                 });
 
                 var classes = Object.keys(classSet).sort();
@@ -1270,9 +1270,21 @@
                                 var val = String(item[k] || '');
                                 var keyLower = k.toLowerCase();
                                 
-                                if (!mapped.kelas && (keyLower.indexOf('rpl') > -1 || keyLower.indexOf('tkj') > -1 || keyLower.indexOf('kelas') > -1)) mapped.kelas = val;
-                                if (!mapped.email && val.indexOf('@') > -1) mapped.email = val;
-                                if (!mapped.nama && (keyLower.indexOf('nama') > -1 || keyLower.indexOf('health check') > -1 || keyLower.indexOf('google') > -1)) mapped.nama = val;
+                                if (!mapped.kelas && (keyLower.indexOf('rpl') > -1 || keyLower.indexOf('tkj') > -1 || keyLower.indexOf('kelas') > -1)) {
+                                    /* If value is 'email|class', take the class part */
+                                    if (val.indexOf('|') > -1) {
+                                        mapped.kelas = val.split('|').pop().trim();
+                                    } else if (val.indexOf('@') === -1) {
+                                        mapped.kelas = val;
+                                    }
+                                }
+                                if (!mapped.email && val.indexOf('@') > -1) {
+                                    if (val.indexOf('|') > -1) mapped.email = val.split('|')[0].trim();
+                                    else mapped.email = val;
+                                }
+                                if (!mapped.nama && (keyLower.indexOf('nama') > -1 || keyLower.indexOf('health check') > -1 || keyLower.indexOf('google') > -1)) {
+                                    if (val.indexOf('@') === -1) mapped.nama = val;
+                                }
                                 if (!mapped.traits && (val.indexOf(',') > -1 || keyLower.indexOf('integrity') > -1)) mapped.traits = val;
                                 if (!mapped.note && (keyLower.indexOf('check') > -1 || keyLower.indexOf('pendapat') > -1 || keyLower.indexOf('aspirasi') > -1)) mapped.note = val;
                                 if (!mapped.recordKey && val.indexOf('|') > -1) mapped.recordKey = val;
