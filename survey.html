@@ -674,7 +674,8 @@
                             <div class="section-subtitle" id="resultSubtitle">Pilih kelas untuk melihat resume masukan.</div>
                         </div>
                         <div class="result-badge" id="resultCountBadge">0 masukan</div>
-                    </div>
+                    <button onclick="refreshData()" style="background:none; border:none; color:#93c5fd; font-size:1.1rem; cursor:pointer; padding:4px; display:flex; align-items:center; opacity:0.6; transition:opacity 0.2s" title="Refresh Data">🔄</button>
+                </div>
 
                     <div class="class-nav" id="classNav" style="margin-bottom: 20px;">
                         <!-- Class chips injected here -->
@@ -1256,8 +1257,29 @@
                 renderResults();
             }
 
+            function refreshData() {
+                showToast('Memperbarui data...');
+                fetchStudents().then(function () {
+                    hydrateProfileFromCloud();
+                    initSelection();
+                    renderAll();
+                    return loadSurveyFromCloud();
+                }).then(function (remoteEntries) {
+                    entries = mergeEntries(entries, remoteEntries || []);
+                    setStoredEntries(entries);
+                    renderAll();
+                    showToast('Data diperbarui.');
+                }).catch(function(err){
+                    showToast('Gagal memperbarui: ' + err.message, true);
+                });
+            }
+
+            window.refreshData = refreshData;
+
             function initSelection() {
-                activeClass = profile.kelas || '';
+                if (!activeClass) {
+                    activeClass = profile.kelas || '';
+                }
                 profileKey = buildRecordKey();
             }
 
