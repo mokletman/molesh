@@ -704,6 +704,7 @@
                         <!-- Student participation chips -->
                     </div>
                     
+                    <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
                         <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
                         Kesimpulan Karakter Kelas
                         <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
@@ -713,8 +714,12 @@
                     </div>
 
                     <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+                        Simpulan Aspirasi Siswa
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+                    </div>
 
-                    <div class="result-list" id="resultList"></div>
+                    <div id="resultList" style="background:rgba(255,255,255,0.02); border-radius:18px; padding:4px 0;"></div>
                 </div>
             </aside>
         </section>
@@ -1048,37 +1053,31 @@
                 var filtered = entries.filter(function (item) { return item.kelas === targetClass; });
                 
                 if (!targetClass) {
-                    list.innerHTML = '<div class="empty-state">Lengkapi profil atau pilih kelas di atas untuk melihat data.</div>';
+                    list.innerHTML = '<div class="empty-state">Pilih kelas di atas untuk melihat aspirasi.</div>';
                     renderSummary();
                     return;
                 }
                 if (!filtered.length) {
-                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ' + targetClass + '. Jadilah orang pertama yang mengisi survey karakter leader!</div>';
+                    list.innerHTML = '<div class="empty-state">Belum ada aspirasi untuk kelas ' + targetClass + '.</div>';
                     renderSummary();
                     return;
                 }
 
-                var html = '';
+                var html = '<ul style="list-style:none; padding:0; margin:0;">';
                 filtered.forEach(function (item) {
-                    var traits = parseTraits(item.traits);
-                    html += '<article class="result-card">';
-                    html += '<div class="result-top">';
-                    html += '<div><div class="result-name">' + escapeHtml(item.nama || 'Anonim') + '</div><div class="result-meta">' + escapeHtml(item.kelas || '-') + (item.absen ? ' • Absen ' + escapeHtml(item.absen) : '') + '</div></div>';
-                    html += '<div class="result-time">' + formatTime(item.updatedAt || item.createdAt) + '</div>';
-                    html += '</div>';
-                    if (traits.length) {
-                        html += '<div class="pill-row">';
-                        traits.forEach(function (trait) {
-                            html += '<span class="pill">' + escapeHtml(trait) + '</span>';
-                        });
-                        html += '</div>';
+                    if (item.note && item.note !== '-') {
+                        html += '<li style="padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.84rem; line-height:1.6; color:rgba(255,255,255,0.7)">';
+                        html += '<span style="color:#7dd3fc; margin-right:8px">"</span>' + escapeHtml(item.note) + '<span style="color:#7dd3fc; margin-left:4px">"</span>';
+                        html += '<div style="font-size:0.68rem; color:rgba(255,255,255,0.25); margin-top:6px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px"> — Seseorang dari ' + escapeHtml(item.kelas) + '</div>';
+                        html += '</li>';
                     }
-                    if (item.otherTrait) {
-                        html += '<div class="result-note"><strong>Lainnya:</strong> ' + escapeHtml(item.otherTrait) + '</div>';
-                    }
-                    html += '<div class="result-note"><strong>Pendapat:</strong> ' + escapeHtml(item.note || '-') + '</div>';
-                    html += '</article>';
                 });
+                html += '</ul>';
+                
+                if (html === '<ul style="list-style:none; padding:0; margin:0;"></ul>') {
+                    html = '<div class="empty-state">Semua teman sekelas memilih karakter tanpa menyertakan pendapat tertulis.</div>';
+                }
+
                 list.innerHTML = html;
                 renderSummary();
             }
