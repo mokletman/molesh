@@ -654,11 +654,16 @@
             <aside class="card">
                 <div class="result-head">
                     <div>
-                        <div class="section-title">Data Per Kelas</div>
-                        <div class="section-subtitle" id="resultSubtitle">Masukan terbaru yang sudah masuk.</div>
+                        <div class="section-title">Resume Karakter Per Kelas</div>
+                        <div class="section-subtitle" id="resultSubtitle">Pilih kelas untuk melihat resume masukan.</div>
                     </div>
                     <div class="result-badge" id="resultCountBadge">0 masukan</div>
                 </div>
+
+                <div class="class-nav" id="classNav" style="margin-bottom: 20px;">
+                    <!-- Class chips injected here -->
+                </div>
+
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-num" id="classTotal">0</div>
@@ -703,6 +708,7 @@
 
             var entries = [];
             var activeClass = '';
+            var viewClass = '';
             var profile = {};
             var profileKey = '';
 
@@ -909,12 +915,13 @@
             }
 
             function renderSummary() {
-                var filtered = entries.filter(function (item) { return item.kelas === activeClass; });
+                var targetClass = viewClass || activeClass;
+                var filtered = entries.filter(function (item) { return item.kelas === targetClass; });
                 document.getElementById('classTotal').textContent = String(filtered.length);
                 document.getElementById('resultCountBadge').textContent = filtered.length + ' masukan';
-                document.getElementById('resultSubtitle').textContent = activeClass
-                    ? (filtered.length ? 'Masukan terbaru untuk kelas ' + activeClass + '.' : 'Belum ada masukan untuk kelas ' + activeClass + '.')
-                    : 'Kelas profil belum tersedia.';
+                document.getElementById('resultSubtitle').textContent = targetClass
+                    ? (filtered.length ? 'Masukan terbaru untuk kelas ' + targetClass + '.' : 'Belum ada masukan untuk kelas ' + targetClass + '.')
+                    : 'Pilih kelas atau lengkapi profil.';
 
                 var counts = {};
                 filtered.forEach(function (item) {
@@ -934,16 +941,53 @@
                 document.getElementById('latestAt').textContent = filtered[0] ? formatTime(filtered[0].updatedAt || filtered[0].createdAt) : '-';
             }
 
+            function renderClassNav() {
+                var nav = document.getElementById('classNav');
+                if (!nav) return;
+
+                /* Get all unique classes from entries + user's own class */
+                var classSet = {};
+                if (activeClass) classSet[activeClass] = true;
+                entries.forEach(function (item) {
+                    if (item.kelas) classSet[item.kelas] = true;
+                });
+
+                var classes = Object.keys(classSet).sort();
+                if (classes.length === 0) {
+                    nav.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.2)">Belum ada data kelas yang masuk.</div>';
+                    return;
+                }
+
+                var targetClass = viewClass || activeClass;
+                var html = '';
+                classes.forEach(function (c) {
+                    var isActive = (c === targetClass) ? ' active' : '';
+                    var count = entries.filter(function(item){ return item.kelas === c; }).length;
+                    html += '<button class="class-chip' + isActive + '" onclick="setViewClass(\'' + c + '\')">' + c + ' <small>(' + count + ')</small></button>';
+                });
+                nav.innerHTML = html;
+            }
+
+            function setViewClass(c) {
+                viewClass = c;
+                renderClassNav();
+                renderResults();
+            }
+
+            window.setViewClass = setViewClass;
+
             function renderResults() {
                 var list = document.getElementById('resultList');
-                var filtered = entries.filter(function (item) { return item.kelas === activeClass; });
-                if (!activeClass) {
-                    list.innerHTML = '<div class="empty-state">Lengkapi kelas di profil dulu agar survey langsung terhubung ke kelasmu dan datanya bisa tampil di sini.</div>';
+                var targetClass = viewClass || activeClass;
+                var filtered = entries.filter(function (item) { return item.kelas === targetClass; });
+                
+                if (!targetClass) {
+                    list.innerHTML = '<div class="empty-state">Lengkapi profil atau pilih kelas di atas untuk melihat data.</div>';
                     renderSummary();
                     return;
                 }
                 if (!filtered.length) {
-                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ini. Jadilah orang pertama yang mengisi survey karakter leader di ' + activeClass + '.</div>';
+                    list.innerHTML = '<div class="empty-state">Belum ada input untuk kelas ' + targetClass + '. Jadilah orang pertama yang mengisi survey karakter leader!</div>';
                     renderSummary();
                     return;
                 }
@@ -1066,6 +1110,7 @@
                 updateActiveClassPanel();
                 fillDraftForSelectedClass();
                 setFormAvailability();
+                renderClassNav();
                 renderResults();
             }
 
