@@ -826,31 +826,35 @@
                 });
             }
 
-            function hydrateProfileFromCloud() {
+            function fetchStudents() {
                 var apiUrl = getApiUrl();
-                var email = normalize(getDisplayEmail());
-                if (!apiUrl || !email) return Promise.resolve();
-                if (profile.kelas && profile.nama && profile.absen) return Promise.resolve();
-
+                if (!apiUrl) return Promise.resolve([]);
                 return fetch(apiUrl + '?type=students', { cache: 'no-store' })
                     .then(function (res) { return res.json(); })
                     .then(function (data) {
-                        if (!Array.isArray(data)) return;
+                        if (!Array.isArray(data)) return [];
                         allStudents = data;
-                        var email = normalize(getDisplayEmail());
-                        var matched = data.find(function (student) {
-                            return normalize(student.email) === email;
-                        });
-                        if (!matched) return;
-
-                        var nextProfile = {
-                            nama: profile.nama || matched.nama || matched.googleName || '',
-                            kelas: profile.kelas || matched.kelas || '',
-                            absen: profile.absen || matched.absen || ''
-                        };
-                        saveProfileToStorage(nextProfile);
+                        return data;
                     })
-                    .catch(function () { });
+                    .catch(function () { return []; });
+            }
+
+            function hydrateProfileFromCloud() {
+                var email = normalize(getDisplayEmail());
+                if (!allStudents.length || !email) return Promise.resolve();
+                if (profile.kelas && profile.nama && profile.absen) return Promise.resolve();
+
+                var matched = allStudents.find(function (student) {
+                    return normalize(student.email) === email;
+                });
+                if (!matched) return;
+
+                var nextProfile = {
+                    nama: profile.nama || matched.nama || matched.googleName || '',
+                    kelas: profile.kelas || matched.kelas || '',
+                    absen: profile.absen || matched.absen || ''
+                };
+                saveProfileToStorage(nextProfile);
             }
 
             function parseTraits(value) {
@@ -1302,7 +1306,9 @@
                 profile = readProfile();
                 entries = getStoredEntries();
                 renderTraitGrid([]);
-                hydrateProfileFromCloud().then(function () {
+                
+                fetchStudents().then(function () {
+                    hydrateProfileFromCloud();
                     initSelection();
                     renderAll();
                     return loadSurveyFromCloud();
