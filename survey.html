@@ -651,34 +651,58 @@
                 </div>
             </form>
 
-            <aside class="card">
-                <div class="result-head">
-                    <div>
-                        <div class="section-title">Resume Karakter Per Kelas</div>
-                        <div class="section-subtitle" id="resultSubtitle">Pilih kelas untuk melihat resume masukan.</div>
+            <aside>
+                <!-- Box Isian Pribadi -->
+                <div class="card" id="personalCard" style="margin-bottom:16px; border-color: rgba(124, 58, 237, 0.3);">
+                    <div class="result-head">
+                        <div>
+                            <div class="section-title" style="color: #c4b5fd;">Masukan Pribadi Anda</div>
+                            <div class="section-subtitle">Data yang baru saja Anda simpan.</div>
+                        </div>
+                        <div id="personalStatusBadge"></div>
                     </div>
-                    <div class="result-badge" id="resultCountBadge">0 masukan</div>
+                    <div id="personalInputBox">
+                        <!-- User's own input injected here -->
+                    </div>
                 </div>
 
-                <div class="class-nav" id="classNav" style="margin-bottom: 20px;">
-                    <!-- Class chips injected here -->
-                </div>
+                <!-- Hasil Dari 1 Kelas -->
+                <div class="card">
+                    <div class="result-head">
+                        <div>
+                            <div class="section-title">Resume Karakter Per Kelas</div>
+                            <div class="section-subtitle" id="resultSubtitle">Pilih kelas untuk melihat resume masukan.</div>
+                        </div>
+                        <div class="result-badge" id="resultCountBadge">0 masukan</div>
+                    </div>
 
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-num" id="classTotal">0</div>
-                        <div class="stat-label">Masukan di kelas ini</div>
+                    <div class="class-nav" id="classNav" style="margin-bottom: 20px;">
+                        <!-- Class chips injected here -->
                     </div>
-                    <div class="stat">
-                        <div class="stat-num" id="topTrait">-</div>
-                        <div class="stat-label">Karakter paling sering dipilih</div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-num" id="classTotal">0</div>
+                            <div class="stat-label">Masukan di kelas ini</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num" id="topTrait">-</div>
+                            <div class="stat-label">Karakter paling sering dipilih</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num" id="latestAt">-</div>
+                            <div class="stat-label">Input terakhir</div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <div class="stat-num" id="latestAt">-</div>
-                        <div class="stat-label">Input terakhir</div>
+                    
+                    <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+                        Daftar Masukan Kelas
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
                     </div>
+
+                    <div class="result-list" id="resultList"></div>
                 </div>
-                <div class="result-list" id="resultList"></div>
             </aside>
         </section>
 
@@ -1026,6 +1050,43 @@
                     .replace(/'/g, '&#39;');
             }
 
+            function renderPersonalInput() {
+                var box = document.getElementById('personalInputBox');
+                var badge = document.getElementById('personalStatusBadge');
+                var targetClass = viewClass || activeClass;
+                
+                var myInput = entries.find(function (item) {
+                    return normalize(item.recordKey) === normalize(profileKey) && normalize(item.kelas) === normalize(targetClass);
+                });
+
+                if (!myInput) {
+                    badge.innerHTML = '<span class="result-badge" style="background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.3); border-color:transparent">BELUM MENGISI</span>';
+                    box.innerHTML = '<div class="empty-state" style="padding: 15px; font-size: 0.8rem;">Anda belum memberikan masukan untuk kelas ' + (targetClass || '...') + ' ini.</div>';
+                    return;
+                }
+
+                badge.innerHTML = '<span class="result-badge">SUDAH TERISI</span>';
+                var traits = parseTraits(myInput.traits);
+                var html = '<article class="result-card" style="background:rgba(124,58,237,0.05); border-color:rgba(124,58,237,0.15)">';
+                html += '<div class="result-top">';
+                html += '<div><div class="result-name">' + escapeHtml(myInput.nama || 'Anda') + '</div><div class="result-meta">Absen ' + escapeHtml(myInput.absen || '-') + '</div></div>';
+                html += '<div class="result-time">' + formatTime(myInput.updatedAt || myInput.createdAt) + '</div>';
+                html += '</div>';
+                if (traits.length) {
+                    html += '<div class="pill-row">';
+                    traits.forEach(function (trait) {
+                        html += '<span class="pill" style="background:rgba(124,58,237,0.15); color:#c4b5fd">' + escapeHtml(trait) + '</span>';
+                    });
+                    html += '</div>';
+                }
+                if (myInput.otherTrait) {
+                    html += '<div class="result-note"><strong>Lainnya:</strong> ' + escapeHtml(myInput.otherTrait) + '</div>';
+                }
+                html += '<div class="result-note"><strong>Pendapat:</strong> ' + escapeHtml(myInput.note || '-') + '</div>';
+                html += '</article>';
+                box.innerHTML = html;
+            }
+
             function fillDraftForSelectedClass() {
                 var draft = entries.find(function (item) {
                     return normalize(item.kelas) === normalize(activeClass) && normalize(entryKey(item)) === normalize(profileKey);
@@ -1111,6 +1172,7 @@
                 fillDraftForSelectedClass();
                 setFormAvailability();
                 renderClassNav();
+                renderPersonalInput();
                 renderResults();
             }
 
