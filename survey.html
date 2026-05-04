@@ -704,11 +704,15 @@
                         <!-- Student participation chips -->
                     </div>
                     
-                    <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
                         <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
-                        Daftar Masukan Kelas
+                        Kesimpulan Karakter Kelas
                         <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
                     </div>
+                    <div id="traitDistribution" style="margin-bottom: 24px; background:rgba(255,255,255,0.03); border-radius:18px; padding:18px; border:1px solid rgba(255,255,255,0.05)">
+                        <!-- Trait bars injected here -->
+                    </div>
+
+                    <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
 
                     <div class="result-list" id="resultList"></div>
                 </div>
@@ -960,25 +964,47 @@
                 document.getElementById('classTotal').textContent = String(filtered.length);
                 document.getElementById('resultCountBadge').textContent = filtered.length + ' masukan';
                 document.getElementById('resultSubtitle').textContent = targetClass
-                    ? (filtered.length ? 'Masukan terbaru untuk kelas ' + targetClass + '.' : 'Belum ada masukan untuk kelas ' + targetClass + '.')
+                    ? (filtered.length ? 'Rangkuman karakter untuk kelas ' + targetClass + '.' : 'Belum ada data untuk kelas ' + targetClass + '.')
                     : 'Pilih kelas atau lengkapi profil.';
 
                 var counts = {};
+                var totalTraits = 0;
                 filtered.forEach(function (item) {
-                    parseTraits(item.traits).forEach(function (trait) {
+                    var traits = parseTraits(item.traits);
+                    traits.forEach(function (trait) {
                         counts[trait] = (counts[trait] || 0) + 1;
+                        totalTraits++;
                     });
                 });
-                var topTrait = '-';
-                var topCount = 0;
-                Object.keys(counts).forEach(function (key) {
-                    if (counts[key] > topCount) {
-                        topCount = counts[key];
-                        topTrait = key;
-                    }
-                });
-                document.getElementById('topTrait').textContent = topTrait;
+
+                var sortedTraits = Object.keys(counts).map(function(key){
+                    return { name: key, count: counts[key] };
+                }).sort(function(a, b){ return b.count - a.count; });
+
+                /* Render top trait in stats box */
+                document.getElementById('topTrait').textContent = sortedTraits[0] ? sortedTraits[0].name : '-';
                 document.getElementById('latestAt').textContent = filtered[0] ? formatTime(filtered[0].updatedAt || filtered[0].createdAt) : '-';
+
+                /* Render detailed distribution bars */
+                var distEl = document.getElementById('traitDistribution');
+                if (distEl) {
+                    if (!filtered.length) {
+                        distEl.innerHTML = '<div style="text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.2)">Belum ada data distribusi.</div>';
+                    } else {
+                        var html = '';
+                        sortedTraits.forEach(function(t){
+                            var pct = Math.round((t.count / filtered.length) * 100);
+                            var barPct = Math.min(100, Math.round((t.count / filtered.length) * 100));
+                            html += '<div style="margin-bottom:12px last-child:0">';
+                            html += '  <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#e2e8f0; margin-bottom:4px"><span>' + t.name + '</span><span style="color:#93c5fd">' + pct + '%</span></div>';
+                            html += '  <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden">';
+                            html += '    <div style="height:100%; width:' + barPct + '%; background:linear-gradient(90deg, #7c3aed, #06b6d4); border-radius:3px"></div>';
+                            html += '  </div>';
+                            html += '</div>';
+                        });
+                        distEl.innerHTML = html;
+                    }
+                }
             }
 
             function renderClassNav() {
