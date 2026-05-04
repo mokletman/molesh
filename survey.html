@@ -694,6 +694,15 @@
                             <div class="stat-label">Input terakhir</div>
                         </div>
                     </div>
+
+                    <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+                        Status Partisipasi Kelas
+                        <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
+                    </div>
+                    <div id="participationList" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px;">
+                        <!-- Student participation chips -->
+                    </div>
                     
                     <div style="font-size: .75rem; font-weight: 800; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;">
                         <span style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></span>
@@ -731,6 +740,7 @@
             ];
 
             var entries = [];
+            var allStudents = [];
             var activeClass = '';
             var viewClass = '';
             var profile = {};
@@ -826,6 +836,8 @@
                     .then(function (res) { return res.json(); })
                     .then(function (data) {
                         if (!Array.isArray(data)) return;
+                        allStudents = data;
+                        var email = normalize(getDisplayEmail());
                         var matched = data.find(function (student) {
                             return normalize(student.email) === email;
                         });
@@ -1050,6 +1062,44 @@
                     .replace(/'/g, '&#39;');
             }
 
+            function renderParticipationList() {
+                var el = document.getElementById('participationList');
+                if (!el) return;
+                var targetClass = viewClass || activeClass;
+                if (!targetClass) {
+                    el.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.2)">Pilih kelas untuk melihat partisipasi.</div>';
+                    return;
+                }
+
+                var classStudents = allStudents.filter(function(s){ return normalize(s.kelas) === normalize(targetClass); });
+                var submissions = entries.filter(function(item){ return normalize(item.kelas) === normalize(targetClass); });
+                
+                if (!classStudents.length) {
+                    el.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.2)">Data siswa kelas ini belum tersedia.</div>';
+                    return;
+                }
+
+                /* Sort by absen */
+                classStudents.sort(function(a, b){ return (parseInt(a.absen)||0) - (parseInt(b.absen)||0); });
+
+                var html = '';
+                classStudents.forEach(function(s){
+                    var hasFilled = submissions.some(function(sub){ 
+                        return normalize(sub.email) === normalize(s.email) || normalize(sub.nama) === normalize(s.nama);
+                    });
+                    var dotStyle = hasFilled ? 'background:#4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4)' : 'background:rgba(255,255,255,0.1)';
+                    var textColor = hasFilled ? '#fff' : 'rgba(255,255,255,0.3)';
+                    var bgColor = hasFilled ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.03)';
+                    var borderColor = hasFilled ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.05)';
+
+                    html += '<div title="' + escapeHtml(s.nama) + '" style="display:flex; align-items:center; gap:6px; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:700; ' +
+                            'background:' + bgColor + '; border:1px solid ' + borderColor + '; color:' + textColor + '; transition:all 0.2s">' +
+                            '<span style="width:6px; height:6px; border-radius:50%; ' + dotStyle + '"></span>' +
+                            (s.absen ? s.absen + '. ' : '') + (s.nama ? s.nama.split(' ')[0] : '???') + '</div>';
+                });
+                el.innerHTML = html;
+            }
+
             function renderPersonalInput() {
                 var box = document.getElementById('personalInputBox');
                 var badge = document.getElementById('personalStatusBadge');
@@ -1173,6 +1223,7 @@
                 setFormAvailability();
                 renderClassNav();
                 renderPersonalInput();
+                renderParticipationList();
                 renderResults();
             }
 
