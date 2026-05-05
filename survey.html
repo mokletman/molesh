@@ -965,7 +965,7 @@
             }
 
             function renderSummary() {
-                var targetClass = viewClass || activeClass;
+                var targetClass = activeClass;
                 var filtered = entries.filter(function (item) { 
                     return normalize(item.kelas) === normalize(targetClass); 
                 });
@@ -1019,31 +1019,22 @@
                 var nav = document.getElementById('classNav');
                 if (!nav) return;
 
-                /* Get all unique classes from entries + user's own class */
-                var classSet = {};
-                if (activeClass) classSet[activeClass] = true;
-                entries.forEach(function (item) {
-                    if (item.kelas && item.kelas.indexOf('@') === -1) classSet[item.kelas] = true;
-                });
-
-                var classes = Object.keys(classSet).sort();
-                if (classes.length === 0) {
-                    nav.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.2)">Belum ada data kelas yang masuk.</div>';
+                /* Privacy: only the user's own class is viewable. */
+                if (!activeClass) {
+                    nav.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.35)">Lengkapi kelas di profil untuk melihat data partisipasi kelasmu.</div>';
                     return;
                 }
 
-                var targetClass = viewClass || activeClass;
-                var html = '';
-                classes.forEach(function (c) {
-                    var isActive = (normalize(c) === normalize(targetClass)) ? ' active' : '';
-                    var count = entries.filter(function(item){ return normalize(item.kelas) === normalize(c); }).length;
-                    html += '<button class="class-chip' + isActive + '" onclick="setViewClass(\'' + c + '\')">' + c + ' <small>(' + count + ')</small></button>';
-                });
-                nav.innerHTML = html;
+                viewClass = activeClass;
+                var count = entries.filter(function(item){ return normalize(item.kelas) === normalize(activeClass); }).length;
+                nav.innerHTML = '<button class="class-chip active" type="button" disabled aria-pressed="true">' +
+                    escapeHtml(activeClass) + ' <small>(' + count + ')</small></button>';
             }
 
             function setViewClass(c) {
-                viewClass = c;
+                /* Locked to the user's own class — ignore any other target. */
+                if (!activeClass || normalize(c) !== normalize(activeClass)) return;
+                viewClass = activeClass;
                 renderClassNav();
                 renderResults();
             }
@@ -1052,7 +1043,7 @@
 
             function renderResults() {
                 var list = document.getElementById('resultList');
-                var targetClass = viewClass || activeClass;
+                var targetClass = activeClass;
                 var filtered = entries.filter(function (item) { 
                     return normalize(item.kelas) === normalize(targetClass); 
                 });
@@ -1099,9 +1090,9 @@
             function renderParticipationList() {
                 var el = document.getElementById('participationList');
                 if (!el) return;
-                var targetClass = viewClass || activeClass;
+                var targetClass = activeClass;
                 if (!targetClass) {
-                    el.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.2)">Pilih kelas untuk melihat partisipasi.</div>';
+                    el.innerHTML = '<div style="font-size:0.75rem; color:rgba(255,255,255,0.35)">Lengkapi kelas di profil untuk melihat partisipasi kelasmu.</div>';
                     return;
                 }
 
@@ -1137,7 +1128,7 @@
             function renderPersonalInput() {
                 var box = document.getElementById('personalInputBox');
                 var badge = document.getElementById('personalStatusBadge');
-                var targetClass = viewClass || activeClass;
+                var targetClass = activeClass;
                 
                 var myInput = entries.find(function (item) {
                     return normalize(item.recordKey) === normalize(profileKey) && normalize(item.kelas) === normalize(targetClass);
