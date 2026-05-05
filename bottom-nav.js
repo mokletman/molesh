@@ -149,18 +149,25 @@
         '': 'beranda',
         'index.html': 'beranda',
         'materi.html': 'materi',
-        'presentasi.html': 'materi',
-        'sesi1.html': 'materi',
-        'sesi2.html': 'materi',
-        'sesi3.html': 'materi',
-        'sesi4.html': 'materi',
-        'sesi5.html': 'materi',
-        'sesi6.html': 'materi',
         'teman.html': 'teman',
         'mentor.html': 'mentor',
         'profil.html': 'profil',
         'survey.html': 'profil',
         'manajemen.html': 'profil'
+    };
+
+    /* Slide-presentation pages own the entire viewport (height:100vh,
+       fixed prev/next buttons). Injecting the top bar + bottom nav
+       there clips the slide content, so opt them out of the app shell. */
+    var SKIP_PAGES = {
+        'presentasi.html': true,
+        'sesi1.html': true,
+        'sesi2.html': true,
+        'sesi3.html': true,
+        'sesi4.html': true,
+        'sesi5.html': true,
+        'sesi6.html': true,
+        'admin.html': true
     };
 
     var items = [
@@ -174,6 +181,9 @@
     function inject() {
         if (document.getElementById(NAV_ID) && document.getElementById(TOP_ID)) return;
 
+        var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+        if (SKIP_PAGES[path]) return;
+
         if (!document.getElementById(STYLE_ID)) {
             var style = document.createElement('style');
             style.id = STYLE_ID;
@@ -181,7 +191,6 @@
             document.head.appendChild(style);
         }
 
-        var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
         var current = pageMap[path] || '';
 
         /* Top bar */
