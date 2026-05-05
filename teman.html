@@ -418,16 +418,13 @@
 
             var profile = {};
             try { profile = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch (e) {}
-            var activeClass = String(profile.kelas || '').trim();
-            if (!activeClass) {
-                var s = document.getElementById('classCareSection');
-                s.innerHTML = '<div class="empty-state"><strong>🧭 Lengkapi Kelasmu</strong>Isi kelas di profil supaya daftar teman sekelas bisa muncul di sini.<br><a class="empty-cta" href="profil.html">→ Lengkapi Profil</a></div>';
-                return;
-            }
+            var profileClass = String(profile.kelas || '').trim();
+            var profileEmail = normalizeText(profile.email || '');
+            var userEmail = normalizeText(rawUser.email);
 
             var apiUrl = getApiUrl();
             if (!apiUrl) {
-                renderEmpty('⚙️ Board Kelas Belum Aktif', 'Konfigurasi backend belum aktif, daftar teman sekelas belum bisa dimuat.', activeClass);
+                renderEmpty('⚙️ Board Kelas Belum Aktif', 'Konfigurasi backend belum aktif, daftar teman sekelas belum bisa dimuat.', profileClass || '-');
                 return;
             }
 
@@ -437,6 +434,21 @@
             ]).then(function (results) {
                 var students = Array.isArray(results[0]) ? results[0] : [];
                 var reflections = Array.isArray(results[1]) ? results[1] : [];
+
+                /* Cloud is the source of truth for the signed-in user's
+                   class. Local profile may belong to a different account
+                   that previously logged in on this browser. */
+                var meInCloud = students.find(function (s) {
+                    return normalizeText(s.email) === userEmail;
+                });
+                var activeClass = String((meInCloud && meInCloud.kelas) || (profileEmail === userEmail ? profileClass : '') || '').trim();
+
+                if (!activeClass) {
+                    var s2 = document.getElementById('classCareSection');
+                    s2.innerHTML = '<div class="empty-state"><strong>🧭 Lengkapi Kelasmu</strong>Isi kelas di profil supaya daftar teman sekelas bisa muncul di sini.<br><a class="empty-cta" href="profil.html">→ Lengkapi Profil</a></div>';
+                    return;
+                }
+
                 var reflectionMap = {};
                 var classKey = normalizeText(activeClass);
 

@@ -852,19 +852,26 @@
             function hydrateProfileFromCloud() {
                 var email = normalize(getDisplayEmail());
                 if (!allStudents.length || !email) return Promise.resolve();
-                if (profile.kelas && profile.nama && profile.absen) return Promise.resolve();
 
                 var matched = allStudents.find(function (student) {
                     return normalize(student.email) === email;
                 });
-                if (!matched) return;
+                if (!matched) return Promise.resolve();
 
+                /* Cloud is the source of truth: if the local profile belongs
+                   to a different account or the cloud kelas/absen has changed,
+                   overwrite so the participation list follows the signed-in
+                   user, not whoever last used this browser. */
+                var profileEmail = normalize(profile.email || '');
+                var sameUser = !profileEmail || profileEmail === email;
                 var nextProfile = {
-                    nama: profile.nama || matched.nama || matched.googleName || '',
-                    kelas: profile.kelas || matched.kelas || '',
-                    absen: profile.absen || matched.absen || ''
+                    email: matched.email || email,
+                    nama: (sameUser && profile.nama) ? profile.nama : (matched.nama || matched.googleName || profile.nama || ''),
+                    kelas: matched.kelas || (sameUser ? (profile.kelas || '') : ''),
+                    absen: matched.absen || (sameUser ? (profile.absen || '') : '')
                 };
                 saveProfileToStorage(nextProfile);
+                return Promise.resolve();
             }
 
             function parseTraits(value) {
@@ -1318,9 +1325,11 @@
             window.refreshData = refreshData;
 
             function initSelection() {
-                if (!activeClass) {
-                    activeClass = profile.kelas || '';
-                }
+                /* Always re-derive from the freshly hydrated profile so a
+                   different signed-in user doesn't inherit the previous
+                   browser session's class. */
+                activeClass = profile.kelas || '';
+                viewClass = activeClass;
                 profileKey = buildRecordKey();
             }
 
