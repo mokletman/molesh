@@ -45,11 +45,12 @@
         '  box-shadow: 0 2px 12px rgba(0, 0, 0, .25);' +
         '}' +
         '#' + TOP_ID + ' .mtb-logo {' +
-        '  width: 34px; height: 34px;' +
+        '  min-width: 56px; height: 32px;' +
+        '  padding: 0 10px;' +
         '  border-radius: 10px;' +
         '  background: linear-gradient(135deg, #7c3aed, #06b6d4);' +
         '  display: flex; align-items: center; justify-content: center;' +
-        '  color: #fff; font-weight: 800; font-size: .82rem;' +
+        '  color: #fff; font-weight: 800; font-size: .78rem;' +
         '  letter-spacing: .5px;' +
         '  box-shadow: 0 4px 12px rgba(124, 58, 237, .35);' +
         '  flex-shrink: 0;' +
@@ -147,6 +148,7 @@
     var pageMap = {
         '': 'beranda',
         'index.html': 'beranda',
+        'materi.html': 'materi',
         'presentasi.html': 'materi',
         'sesi2.html': 'materi',
         'sesi3.html': 'materi',
@@ -161,11 +163,11 @@
     };
 
     var items = [
-        { page: 'beranda', href: 'index.html',      icon: '🏠', label: 'Beranda' },
-        { page: 'materi',  href: 'presentasi.html', icon: '📚', label: 'Materi'  },
-        { page: 'teman',   href: 'teman.html',      icon: '🤝', label: 'Teman'   },
-        { page: 'mentor',  href: 'mentor.html',     icon: '🤖', label: 'Mentor'  },
-        { page: 'profil',  href: 'profil.html',     icon: '👤', label: 'Profil'  }
+        { page: 'beranda', href: 'index.html',  icon: '🏠', label: 'Beranda' },
+        { page: 'materi',  href: 'materi.html', icon: '📚', label: 'Materi'  },
+        { page: 'teman',   href: 'teman.html',  icon: '🤝', label: 'Teman'   },
+        { page: 'mentor',  href: 'mentor.html', icon: '🤖', label: 'Mentor'  },
+        { page: 'profil',  href: 'profil.html', icon: '👤', label: 'Profil'  }
     ];
 
     function inject() {
@@ -187,7 +189,7 @@
             top.id = TOP_ID;
             top.setAttribute('role', 'banner');
             top.innerHTML =
-                '<div class="mtb-logo" aria-hidden="true">ML</div>' +
+                '<div class="mtb-logo" aria-hidden="true">MoLeSH</div>' +
                 '<div class="mtb-text">' +
                 '  <div class="mtb-title">Moklet Leadership</div>' +
                 '  <div class="mtb-sub">SMK Telkom Malang</div>' +

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi — Infografis 6 Sesi MOLESH</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            background: #0b0b1a; color: #e2e8f0;
+            padding: 24px; overflow-x: hidden; position: relative;
+            transition: background .25s ease, color .25s ease;
+        }
+
+        .theme-toggle {
+            position: fixed; top: 12px; right: 12px; z-index: 3;
+            border: 1px solid rgba(255, 255, 255, .15);
+            background: rgba(15, 23, 42, .58); color: #f8fafc;
+            border-radius: 999px; font-family: inherit; font-size: .74rem;
+            font-weight: 700; padding: 8px 12px; cursor: pointer;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            transition: all .2s ease;
+        }
+        .theme-toggle:hover { transform: translateY(-1px); background: rgba(30, 41, 59, .76); }
+
+        .blob { position: fixed; border-radius: 50%; filter: blur(100px); opacity: .4; z-index: 0; pointer-events: none; }
+        .blob-1 { width: 480px; height: 480px; background: #7c3aed; top: -15%; left: -10%; animation: drift 10s ease-in-out infinite alternate; }
+        .blob-2 { width: 360px; height: 360px; background: #06b6d4; bottom: -10%; right: -8%; animation: drift 12s ease-in-out infinite alternate-reverse; }
+        .blob-3 { width: 260px; height: 260px; background: #f59e0b; top: 40%; left: 55%; animation: drift 14s ease-in-out infinite alternate; }
+        @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 20px) scale(1.08); } }
+        @keyframes fadein { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+        .back-btn {
+            position: relative; z-index: 2;
+            align-self: flex-start;
+            display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; color: rgba(255, 255, 255, .55);
+            font-size: .82rem; font-weight: 600;
+            padding: 8px 14px; border-radius: 10px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: all .2s; margin-bottom: 16px;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, .1); color: #e2e8f0; }
+        .back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-shell {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 760px;
+            animation: fadein .4s both;
+        }
+
+        .page-header { text-align: center; margin-bottom: 26px; }
+        .page-header h1 {
+            font-size: 1.7rem; font-weight: 800;
+            background: linear-gradient(90deg, #fff 30%, #7dd3fc);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .page-header p {
+            font-size: .88rem;
+            color: rgba(226, 232, 240, .6);
+            line-height: 1.55;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .sesi-card {
+            margin-bottom: 18px;
+            padding: 22px;
+            border-radius: 22px;
+            background: linear-gradient(145deg, rgba(15, 23, 42, .76), rgba(8, 47, 73, .68));
+            border: 1px solid rgba(125, 211, 252, .18);
+            box-shadow: 0 14px 30px rgba(2, 8, 23, .25);
+        }
+
+        .sesi-head {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .sesi-num {
+            width: 44px; height: 44px; border-radius: 14px;
+            display: grid; place-items: center;
+            background: linear-gradient(135deg, #fde68a, #f59e0b);
+            color: #08111f; font-size: 1rem; font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, .14);
+            flex-shrink: 0;
+        }
+        .sesi-title {
+            font-size: 1.05rem; font-weight: 800; color: #f8fafc;
+            line-height: 1.3;
+        }
+        .sesi-desc {
+            font-size: .8rem; color: rgba(226, 232, 240, .68);
+            line-height: 1.5; margin-top: 4px;
+        }
+        .sesi-info { flex: 1; min-width: 0; }
+
+        .session-flow-title {
+            font-size: .72rem; font-weight: 700; letter-spacing: 1.2px;
+            text-transform: uppercase; color: #93c5fd; margin-bottom: 10px;
+        }
+        .session-flow-track { display: flex; flex-direction: column; gap: 10px; }
+        .flow-step {
+            position: relative; display: flex; align-items: flex-start; gap: 12px;
+            padding: 11px 12px; border-radius: 12px;
+            background: rgba(15, 118, 110, .13);
+            border: 1px solid rgba(125, 211, 252, .16);
+        }
+        .flow-step::after {
+            content: ''; position: absolute; left: 18px; top: 100%;
+            width: 2px; height: 10px;
+            background: linear-gradient(180deg, rgba(251, 191, 36, .65), rgba(125, 211, 252, .05));
+        }
+        .flow-step:last-child::after { display: none; }
+        .flow-no {
+            width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%;
+            display: grid; place-items: center;
+            font-size: .78rem; font-weight: 800; color: #08111f;
+            background: linear-gradient(135deg, #fde68a, #f59e0b);
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, .22);
+        }
+        .flow-body strong { display: block; font-size: .92rem; color: #f8fafc; line-height: 1.3; }
+        .flow-body small { display: block; font-size: .76rem; color: rgba(226, 232, 240, .7); line-height: 1.45; margin-top: 2px; }
+
+        .sesi-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 16px; padding: 11px 18px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff; text-decoration: none;
+            font-size: .8rem; font-weight: 800; letter-spacing: .3px;
+            text-transform: uppercase;
+            transition: transform .15s ease, box-shadow .15s ease;
+            box-shadow: 0 8px 20px rgba(124, 58, 237, .25);
+        }
+        .sesi-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(124, 58, 237, .35); }
+        .sesi-cta svg { width: 14px; height: 14px; fill: currentColor; }
+
+        .footer {
+            margin-top: 24px; font-size: .72rem;
+            color: rgba(226, 232, 240, .42); text-align: center;
+        }
+
+        /* ── Light theme ── */
+        html.theme-light body { background: #f4f7fb; color: #111827; }
+        html.theme-light .blob { opacity: .18; }
+        html.theme-light .theme-toggle { background: rgba(255, 255, 255, .9); color: #0f172a; border-color: rgba(15, 23, 42, .15); }
+        html.theme-light .back-btn { background: rgba(255, 255, 255, .8); border-color: rgba(15, 23, 42, .1); color: rgba(31, 41, 55, .7); }
+        html.theme-light .back-btn:hover { background: #fff; color: #0f172a; }
+        html.theme-light .page-header h1 {
+            background: linear-gradient(90deg, #1f2937 20%, #0e7490);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .page-header p { color: rgba(31, 41, 55, .65); }
+        html.theme-light .sesi-card { background: rgba(255, 255, 255, .92); border-color: rgba(15, 23, 42, .08); }
+        html.theme-light .sesi-title { color: #0f172a; }
+        html.theme-light .sesi-desc { color: rgba(31, 41, 55, .65); }
+        html.theme-light .session-flow-title { color: #0e7490; }
+        html.theme-light .flow-step { background: rgba(15, 118, 110, .08); border-color: rgba(15, 118, 110, .18); }
+        html.theme-light .flow-body strong { color: #111827; }
+        html.theme-light .flow-body small { color: rgba(31, 41, 55, .65); }
+        html.theme-light .footer { color: rgba(31, 41, 55, .55); }
+
+        @media (max-width: 480px) {
+            body { padding: 18px 14px; }
+            .sesi-card { padding: 18px; border-radius: 18px; }
+            .page-header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Aktifkan tema terang">☀️ Light</button>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <a class="back-btn" href="index.html">
+        <svg viewBox="0 0 20 20"><path d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"/></svg>
+        Kembali
+    </a>
+
+    <main class="page-shell">
+        <header class="page-header">
+            <h1>📚 Materi MOLESH</h1>
+            <p>Infografis alur dari 6 sesi Moklet Leadership — Sadar Diri, Peduli Kasih, Beraksi dan Melayani.</p>
+        </header>
+
+        <!-- Sesi 1 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">1</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Fondasi MOLESH</div>
+                    <div class="sesi-desc">Sadar Diri, Peduli Kasih, Beraksi dan Melayani &amp; neuroscience dasar.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 1</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Sadar Diri</strong><small>Kenali emosi, nilai, dan arah tujuan pribadi</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Peduli Kasih</strong><small>Latih empati aktif dalam komunikasi dan kerja tim</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Beraksi dan Melayani</strong><small>Ambil tindakan kecil yang membantu tim dan sekitar</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Ritme Harian</strong><small>Ulangi refleksi, dukungan, dan tindakan nyata</small></div></div>
+            </div>
+            <a class="sesi-cta" href="presentasi.html">
+                Buka Sesi 1
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <!-- Sesi 2 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">2</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Deep Dive Sadar Diri</div>
+                    <div class="sesi-desc">Growth mindset, debugging mindset &amp; Personal SWOT.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 2</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Kenali Diri</strong><small>Audit potensi dan hambatan pribadi</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Ubah Mindset</strong><small>Ganti "tidak bisa" menjadi "belum bisa"</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Susun SWOT</strong><small>Petakan strength, weakness, opportunity, threat</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Roadmap Diri</strong><small>Tulis aksi 3 bulan ke depan</small></div></div>
+            </div>
+            <a class="sesi-cta" href="sesi2.html">
+                Buka Sesi 2
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <!-- Sesi 3 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">3</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Deep Dive Peduli Kasih</div>
+                    <div class="sesi-desc">Kolaborasi tim, sandwich feedback &amp; psychological safety.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 3</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Dengarkan Dulu</strong><small>Pahami konteks rekan sebelum menilai</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Apresiasi Spesifik</strong><small>Bangun trust dan psychological safety</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Feedback Sandwich</strong><small>Saran jelas tanpa menjatuhkan tim</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Sinkron Sprint</strong><small>Set aksi lanjut yang disepakati bersama</small></div></div>
+            </div>
+            <a class="sesi-cta" href="sesi3.html">
+                Buka Sesi 3
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <!-- Sesi 4 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">4</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Deep Dive Beraksi dan Melayani</div>
+                    <div class="sesi-desc">Etika digital, fail fast &amp; data-driven decisions.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 4</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Baca Risiko</strong><small>Identifikasi dampak teknis dan sosial</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Pilih yang Etis</strong><small>Beraksi untuk melayani dengan menolak shortcut yang salah</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Validasi Data</strong><small>Gunakan log, metrik, dan fakta lapangan</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Putuskan Cepat</strong><small>Jalankan keputusan dan evaluasi hasil</small></div></div>
+            </div>
+            <a class="sesi-cta" href="sesi4.html">
+                Buka Sesi 4
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <!-- Sesi 5 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">5</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Kepemimpinan Organisasi</div>
+                    <div class="sesi-desc">Situational leadership &amp; conflict resolution.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 5</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Sadar Diri &amp; Situasi</strong><small>Cek level kesiapan anggota, emosi, dan target</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Peduli Kasih pada Tim</strong><small>Dengar hambatan, beban, dan kebutuhan dukungan</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Pilih Gaya</strong><small>Directing, coaching, supporting, delegating</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Tuntaskan Konflik</strong><small>Pause, listen, reframe, solve dengan tegas</small></div></div>
+            </div>
+            <a class="sesi-cta" href="sesi5.html">
+                Buka Sesi 5
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <!-- Sesi 6 -->
+        <article class="sesi-card">
+            <div class="sesi-head">
+                <div class="sesi-num">6</div>
+                <div class="sesi-info">
+                    <div class="sesi-title">Rencana Aksi</div>
+                    <div class="sesi-desc">Personal leadership roadmap 3 bulan &amp; eksekusi konsisten.</div>
+                </div>
+            </div>
+            <div class="session-flow-title">Infografis Alur Sesi 6</div>
+            <div class="session-flow-track">
+                <div class="flow-step"><span class="flow-no">1</span><div class="flow-body"><strong>Review Sesi 1-5</strong><small>Tarik insight inti dari perjalanan MOLESH</small></div></div>
+                <div class="flow-step"><span class="flow-no">2</span><div class="flow-body"><strong>Rancang 3 Bulan</strong><small>Tujuan Sadar Diri, Peduli Kasih, dan Beraksi dan Melayani yang terukur</small></div></div>
+                <div class="flow-step"><span class="flow-no">3</span><div class="flow-body"><strong>Komitmen Publik</strong><small>Presentasikan agar ada accountability</small></div></div>
+                <div class="flow-step"><span class="flow-no">4</span><div class="flow-body"><strong>Eksekusi Konsisten</strong><small>Ulangi micro-action hingga jadi kebiasaan</small></div></div>
+            </div>
+            <a class="sesi-cta" href="sesi6.html">
+                Buka Sesi 6
+                <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+            </a>
+        </article>
+
+        <p class="footer">© 2026 Moklet Leadership • SMK Telkom Malang</p>
+    </main>
+
+    <script src="bottom-nav.js" defer></script>
+    <script>
+        (function () {
+            var btn = document.getElementById('themeToggle');
+            if (!btn) return;
+            var saved = localStorage.getItem('molesh_theme');
+            if (saved === 'light') document.documentElement.classList.add('theme-light');
+            updateBtn();
+            btn.addEventListener('click', function () {
+                var on = document.documentElement.classList.toggle('theme-light');
+                localStorage.setItem('molesh_theme', on ? 'light' : 'dark');
+                updateBtn();
+            });
+            function updateBtn() {
+                var on = document.documentElement.classList.contains('theme-light');
+                btn.textContent = on ? '🌙 Dark' : '☀️ Light';
+                btn.setAttribute('aria-label', on ? 'Aktifkan tema gelap' : 'Aktifkan tema terang');
+            }
+        })();
+    </script>
+</body>
+</html>
