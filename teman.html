@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teman Sekelas — Moklet Leadership</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            background: #0b0b1a; color: #e2e8f0;
+            padding: 24px; overflow-x: hidden; position: relative;
+            transition: background .25s ease, color .25s ease;
+        }
+
+        .theme-toggle {
+            position: fixed; top: 12px; right: 12px; z-index: 3;
+            border: 1px solid rgba(255, 255, 255, .15);
+            background: rgba(15, 23, 42, .58); color: #f8fafc;
+            border-radius: 999px; font-family: inherit; font-size: .74rem;
+            font-weight: 700; padding: 8px 12px; cursor: pointer;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            transition: all .2s ease;
+        }
+        .theme-toggle:hover { transform: translateY(-1px); background: rgba(30, 41, 59, .76); }
+
+        .blob { position: fixed; border-radius: 50%; filter: blur(100px); opacity: .4; z-index: 0; pointer-events: none; }
+        .blob-1 { width: 480px; height: 480px; background: #22c55e; top: -15%; left: -10%; animation: drift 10s ease-in-out infinite alternate; }
+        .blob-2 { width: 360px; height: 360px; background: #06b6d4; bottom: -10%; right: -8%; animation: drift 12s ease-in-out infinite alternate-reverse; }
+        .blob-3 { width: 260px; height: 260px; background: #7c3aed; top: 40%; left: 55%; animation: drift 14s ease-in-out infinite alternate; }
+        @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 20px) scale(1.08); } }
+        @keyframes fadein { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+        .back-btn {
+            position: relative; z-index: 2;
+            align-self: flex-start;
+            display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; color: rgba(255, 255, 255, .55);
+            font-size: .82rem; font-weight: 600;
+            padding: 8px 14px; border-radius: 10px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: all .2s; margin-bottom: 16px;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, .1); color: #e2e8f0; }
+        .back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .page-shell {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 720px;
+            animation: fadein .4s both;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff 30%, #7dd3fc);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .page-header p {
+            font-size: .85rem;
+            color: rgba(226, 232, 240, .58);
+            line-height: 1.5;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* ── Class care card ── */
+        .class-care-section {
+            margin: 0 0 22px;
+            padding: 22px;
+            border-radius: 24px;
+            text-align: left;
+            background:
+                radial-gradient(circle at top left, rgba(34, 197, 94, .14), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(125, 211, 252, .14), transparent 38%),
+                linear-gradient(145deg, rgba(8, 47, 73, .68), rgba(15, 23, 42, .76));
+            border: 1px solid rgba(74, 222, 128, .18);
+            box-shadow: 0 18px 34px rgba(2, 8, 23, .18);
+            animation: fadein .35s ease both;
+        }
+
+        .class-care-head {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .class-care-title { font-size: 1.05rem; font-weight: 800; color: #dcfce7; }
+        .class-care-subtitle {
+            font-size: .78rem; color: rgba(226, 232, 240, .74);
+            line-height: 1.55; margin-top: 4px; max-width: 460px;
+        }
+        .class-care-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 999px;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: #bfdbfe; font-size: .68rem; font-weight: 800;
+            letter-spacing: .3px; text-transform: uppercase; white-space: nowrap;
+        }
+
+        .class-care-stats {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; margin-bottom: 18px;
+        }
+        .class-care-stat {
+            padding: 14px; border-radius: 16px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+        .class-care-stat-label {
+            font-size: .66rem; font-weight: 700; color: rgba(226, 232, 240, .62);
+            text-transform: uppercase; letter-spacing: .7px;
+        }
+        .class-care-stat-value {
+            font-size: 1.3rem; font-weight: 800; color: #f8fafc; margin-top: 6px;
+        }
+
+        .class-care-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .classmate-card {
+            padding: 16px; border-radius: 20px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+        }
+        .classmate-top { display: flex; align-items: flex-start; gap: 12px; }
+        .classmate-avatar {
+            width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
+            display: grid; place-items: center; overflow: hidden;
+            background: linear-gradient(135deg, #22c55e, #06b6d4);
+            color: #ecfeff; font-size: .9rem; font-weight: 800;
+            box-shadow: 0 10px 24px rgba(6, 182, 212, .16);
+        }
+        .classmate-avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        .classmate-info { flex: 1; min-width: 0; }
+        .classmate-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .classmate-name { font-size: .9rem; font-weight: 800; color: #f8fafc; line-height: 1.35; }
+        .classmate-self {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 8px; border-radius: 999px;
+            background: rgba(125, 211, 252, .14);
+            border: 1px solid rgba(125, 211, 252, .22);
+            color: #bae6fd; font-size: .58rem; font-weight: 800;
+            letter-spacing: .4px; text-transform: uppercase;
+        }
+        .classmate-meta { font-size: .72rem; color: rgba(226, 232, 240, .62); line-height: 1.45; margin-top: 4px; }
+        .classmate-join { margin-top: 6px; font-size: .68rem; color: #86efac; font-weight: 700; }
+
+        .classmate-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .classmate-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 10px; border-radius: 999px;
+            font-size: .62rem; font-weight: 800;
+            letter-spacing: .3px; text-transform: uppercase;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .08);
+            color: rgba(226, 232, 240, .84);
+        }
+        .classmate-tag.good { background: rgba(34, 197, 94, .14); border-color: rgba(74, 222, 128, .2); color: #bbf7d0; }
+        .classmate-tag.warn { background: rgba(250, 204, 21, .14); border-color: rgba(250, 204, 21, .2); color: #fde68a; }
+        .classmate-tag.info { background: rgba(125, 211, 252, .12); border-color: rgba(125, 211, 252, .16); color: #bae6fd; }
+
+        .classmate-reflection {
+            margin-top: 14px; padding: 14px; border-radius: 16px;
+            background: rgba(15, 23, 42, .36);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+        .classmate-reflection-title { font-size: .78rem; font-weight: 700; color: #f8fafc; }
+        .classmate-reflection-text {
+            margin-top: 6px; font-size: .76rem; line-height: 1.6;
+            color: rgba(226, 232, 240, .82); min-height: 1.5em;
+        }
+
+        .empty-state {
+            padding: 28px 22px;
+            border-radius: 18px;
+            text-align: center;
+            background: rgba(255, 255, 255, .04);
+            border: 1px dashed rgba(255, 255, 255, .12);
+            color: rgba(226, 232, 240, .68);
+            font-size: .85rem;
+            line-height: 1.6;
+        }
+        .empty-state strong { display: block; font-size: .98rem; color: #f8fafc; margin-bottom: 6px; }
+        .empty-state .empty-cta {
+            display: inline-block; margin-top: 14px;
+            padding: 10px 18px; border-radius: 999px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff; text-decoration: none;
+            font-size: .78rem; font-weight: 800; letter-spacing: .3px;
+        }
+
+        .footer {
+            margin-top: 24px; font-size: .72rem;
+            color: rgba(226, 232, 240, .42); text-align: center;
+        }
+
+        /* ── Light theme ── */
+        html.theme-light body { background: #f4f7fb; color: #111827; }
+        html.theme-light .blob { opacity: .18; }
+        html.theme-light .theme-toggle { background: rgba(255, 255, 255, .9); color: #0f172a; border-color: rgba(15, 23, 42, .15); }
+        html.theme-light .back-btn { background: rgba(255, 255, 255, .8); border-color: rgba(15, 23, 42, .1); color: rgba(31, 41, 55, .7); }
+        html.theme-light .back-btn:hover { background: #fff; color: #0f172a; }
+        html.theme-light .page-header h1 {
+            background: linear-gradient(90deg, #1f2937 20%, #0e7490);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .page-header p { color: rgba(31, 41, 55, .6); }
+        html.theme-light .class-care-section {
+            background: linear-gradient(145deg, rgba(220, 252, 231, .9), rgba(224, 242, 254, .9));
+            border-color: rgba(34, 197, 94, .25);
+        }
+        html.theme-light .class-care-title { color: #064e3b; }
+        html.theme-light .class-care-subtitle { color: rgba(15, 23, 42, .65); }
+        html.theme-light .class-care-pill { background: rgba(255, 255, 255, .9); border-color: rgba(15, 23, 42, .12); color: #075985; }
+        html.theme-light .class-care-stat { background: rgba(255, 255, 255, .85); border-color: rgba(15, 23, 42, .1); }
+        html.theme-light .class-care-stat-label { color: rgba(15, 23, 42, .55); }
+        html.theme-light .class-care-stat-value { color: #0f172a; }
+        html.theme-light .classmate-card { background: rgba(255, 255, 255, .9); border-color: rgba(15, 23, 42, .1); }
+        html.theme-light .classmate-name { color: #0f172a; }
+        html.theme-light .classmate-meta { color: rgba(15, 23, 42, .6); }
+        html.theme-light .classmate-reflection { background: rgba(248, 250, 252, .9); border-color: rgba(15, 23, 42, .08); }
+        html.theme-light .classmate-reflection-title { color: #0f172a; }
+        html.theme-light .classmate-reflection-text { color: rgba(15, 23, 42, .72); }
+        html.theme-light .empty-state { background: rgba(255, 255, 255, .8); border-color: rgba(15, 23, 42, .12); color: rgba(15, 23, 42, .65); }
+        html.theme-light .empty-state strong { color: #0f172a; }
+        html.theme-light .footer { color: rgba(31, 41, 55, .55); }
+
+        @media (max-width: 480px) {
+            body { padding: 18px 14px; }
+            .class-care-section { padding: 18px; border-radius: 20px; }
+            .class-care-stats { grid-template-columns: 1fr; }
+            .class-care-list { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Aktifkan tema terang">☀️ Light</button>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <a class="back-btn" href="index.html">
+        <svg viewBox="0 0 20 20"><path d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"/></svg>
+        Kembali
+    </a>
+
+    <main class="page-shell">
+        <header class="page-header">
+            <h1>🤝 Teman Sekelas</h1>
+            <p>Pantau progres profil dan refleksi teman sekelasmu — saling peduli, semangati, dan ingatkan supaya konsisten.</p>
+        </header>
+
+        <section id="classCareSection" class="class-care-section">
+            <div class="empty-state">
+                <strong>Memuat data teman sekelas…</strong>
+                Tunggu sebentar, kami sedang menyiapkan daftarnya.
+            </div>
+        </section>
+
+        <p class="footer">© 2026 Moklet Leadership • SMK Telkom Malang</p>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="bottom-nav.js" defer></script>
+    <script>
+        /* ── Theme toggle (mirrors index.html) ── */
+        (function () {
+            var btn = document.getElementById('themeToggle');
+            if (!btn) return;
+            var saved = localStorage.getItem('molesh_theme');
+            if (saved === 'light') document.documentElement.classList.add('theme-light');
+            updateBtn();
+            btn.addEventListener('click', function () {
+                var on = document.documentElement.classList.toggle('theme-light');
+                localStorage.setItem('molesh_theme', on ? 'light' : 'dark');
+                updateBtn();
+            });
+            function updateBtn() {
+                var on = document.documentElement.classList.contains('theme-light');
+                btn.textContent = on ? '🌙 Dark' : '☀️ Light';
+                btn.setAttribute('aria-label', on ? 'Aktifkan tema gelap' : 'Aktifkan tema terang');
+            }
+        })();
+
+        /* ── Helpers ── */
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+        function normalizeText(value) { return String(value || '').trim().toLowerCase(); }
+        function formatShortDate(value) {
+            if (!value) return '-';
+            try {
+                var d = new Date(value);
+                if (!isNaN(d.getTime())) {
+                    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                }
+            } catch (e) {}
+            return String(value);
+        }
+        function getMemberInitials(name) {
+            var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+            if (!parts.length) return 'ML';
+            if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        var SESSION_TITLES = {
+            1: 'Fondasi MOLESH', 2: 'Deep Dive Sadar Diri', 3: 'Deep Dive Peduli Kasih',
+            4: 'Deep Dive Beraksi dan Melayani', 5: 'Kepemimpinan Organisasi', 6: 'Rencana Aksi'
+        };
+        function getSessionTitleByNum(num) { return SESSION_TITLES[num] || ('Sesi ' + num); }
+
+        function getApiUrl() {
+            try {
+                if (typeof MOLESH_CONFIG !== 'undefined' && MOLESH_CONFIG.APPS_SCRIPT_URL && MOLESH_CONFIG.APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
+                    return MOLESH_CONFIG.APPS_SCRIPT_URL;
+                }
+            } catch (e) {}
+            return '';
+        }
+
+        /* ── Render ── */
+        function renderEmpty(title, message, pillText) {
+            var section = document.getElementById('classCareSection');
+            var html = '';
+            html += '<div class="class-care-head">';
+            html += '<div><div class="class-care-title">' + escapeHtml(title) + '</div>';
+            html += '<div class="class-care-subtitle">' + escapeHtml(message) + '</div></div>';
+            if (pillText) html += '<div class="class-care-pill">' + escapeHtml(pillText) + '</div>';
+            html += '</div>';
+            html += '<div class="empty-state"><strong>' + escapeHtml(title) + '</strong>' + escapeHtml(message) + '</div>';
+            section.innerHTML = html;
+        }
+
+        function renderBoard(payload) {
+            var section = document.getElementById('classCareSection');
+            var html = '';
+            html += '<div class="class-care-head">';
+            html += '<div><div class="class-care-title">🤝 Teman Sekelas yang Sudah Join</div>';
+            html += '<div class="class-care-subtitle">Pantau progres profil dan refleksi teman di ' + escapeHtml(payload.className) + '.</div></div>';
+            html += '<div class="class-care-pill">Kelas ' + escapeHtml(payload.className) + '</div>';
+            html += '</div>';
+
+            html += '<div class="class-care-stats">';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Sudah Join</div><div class="class-care-stat-value">' + payload.stats.joined + '</div></div>';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Profil Lengkap</div><div class="class-care-stat-value">' + payload.stats.completeProfiles + '</div></div>';
+            html += '<div class="class-care-stat"><div class="class-care-stat-label">Refleksi Terkirim</div><div class="class-care-stat-value">' + payload.stats.totalReflections + '</div></div>';
+            html += '</div>';
+
+            html += '<div class="class-care-list">';
+            payload.members.forEach(function (member) {
+                var latestTitle = member.latestReflection
+                    ? 'Refleksi terbaru • Sesi ' + member.latestReflection.sesi + ' · ' + getSessionTitleByNum(member.latestReflection.sesi)
+                    : 'Belum ada refleksi terbaru';
+                var latestMeta = member.latestReflection
+                    ? ('Dikirim ' + escapeHtml(formatShortDate(member.latestReflection.submittedAt)))
+                    : 'Belum ada isi refleksi yang terkirim.';
+                var avatarHtml = member.picture
+                    ? '<img src="' + escapeHtml(member.picture) + '" alt="' + escapeHtml(member.displayName) + '" loading="lazy" referrerpolicy="no-referrer">'
+                    : escapeHtml(getMemberInitials(member.displayName));
+
+                html += '<article class="classmate-card">';
+                html += '<div class="classmate-top">';
+                html += '<div class="classmate-avatar">' + avatarHtml + '</div>';
+                html += '<div class="classmate-info">';
+                html += '<div class="classmate-name-row">';
+                html += '<div class="classmate-name">' + escapeHtml(member.displayName) + '</div>';
+                if (member.isSelf) html += '<span class="classmate-self">Kamu</span>';
+                html += '</div>';
+                html += '<div class="classmate-meta">' + escapeHtml(member.className) + (member.absen ? ' • Absen ' + escapeHtml(member.absen) : '') + '</div>';
+                html += '<div class="classmate-join">Bergabung ' + escapeHtml(formatShortDate(member.firstLogin)) + '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="classmate-tags">';
+                html += '<span class="classmate-tag ' + (member.isProfileComplete ? 'good' : 'warn') + '">' + (member.isProfileComplete ? 'Profil OK' : 'Profil !') + '</span>';
+                html += '<span class="classmate-tag info">' + member.reflectionCount + '/6 Sesi</span>';
+                html += '<span class="classmate-tag ' + (member.reflectionCount > 0 ? 'good' : 'warn') + '">' + (member.latestReflection ? 'S' + member.latestReflection.sesi : 'Belum Ada') + '</span>';
+                html += '</div>';
+                html += '<div class="classmate-reflection">';
+                html += '<div class="classmate-reflection-title">' + escapeHtml(latestTitle) + '</div>';
+                html += '<div class="classmate-reflection-text">' + latestMeta + '</div>';
+                html += '</div>';
+                html += '</article>';
+            });
+            html += '</div>';
+
+            section.innerHTML = html;
+        }
+
+        /* ── Load ── */
+        function load() {
+            var rawUser = null;
+            try { rawUser = JSON.parse(localStorage.getItem('molesh_user') || 'null'); } catch (e) {}
+            if (!rawUser || !rawUser.email || rawUser.email === 'Mode pratinjau') {
+                var section = document.getElementById('classCareSection');
+                section.innerHTML = '<div class="empty-state"><strong>🔐 Login Dulu Yuk</strong>Login dengan akun Google di halaman utama supaya kami bisa menampilkan teman sekelasmu.<br><a class="empty-cta" href="index.html">→ Ke Halaman Login</a></div>';
+                return;
+            }
+
+            var profile = {};
+            try { profile = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch (e) {}
+            var activeClass = String(profile.kelas || '').trim();
+            if (!activeClass) {
+                var s = document.getElementById('classCareSection');
+                s.innerHTML = '<div class="empty-state"><strong>🧭 Lengkapi Kelasmu</strong>Isi kelas di profil supaya daftar teman sekelas bisa muncul di sini.<br><a class="empty-cta" href="profil.html">→ Lengkapi Profil</a></div>';
+                return;
+            }
+
+            var apiUrl = getApiUrl();
+            if (!apiUrl) {
+                renderEmpty('⚙️ Board Kelas Belum Aktif', 'Konfigurasi backend belum aktif, daftar teman sekelas belum bisa dimuat.', activeClass);
+                return;
+            }
+
+            Promise.all([
+                fetch(apiUrl + '?type=students', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+                fetch(apiUrl + '?type=reflections', { cache: 'no-store' }).then(function (r) { return r.json(); })
+            ]).then(function (results) {
+                var students = Array.isArray(results[0]) ? results[0] : [];
+                var reflections = Array.isArray(results[1]) ? results[1] : [];
+                var reflectionMap = {};
+                var classKey = normalizeText(activeClass);
+
+                reflections.forEach(function (entry) {
+                    var emailKey = normalizeText(entry.email);
+                    if (!emailKey) return;
+                    if (!reflectionMap[emailKey]) reflectionMap[emailKey] = [];
+                    reflectionMap[emailKey].push(entry);
+                });
+                Object.keys(reflectionMap).forEach(function (k) {
+                    reflectionMap[k].sort(function (a, b) {
+                        return new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0);
+                    });
+                });
+
+                var members = [];
+                students.forEach(function (student) {
+                    var studentClass = String(student.kelas || '').trim();
+                    if (!studentClass || normalizeText(studentClass) !== classKey) return;
+                    var emailKey = normalizeText(student.email);
+                    var studentReflections = reflectionMap[emailKey] || [];
+                    var displayName = String(student.nama || student.googleName || student.email || 'Mokleter').trim();
+                    members.push({
+                        email: student.email || '',
+                        displayName: displayName,
+                        picture: student.picture || '',
+                        className: studentClass,
+                        absen: student.absen || '',
+                        firstLogin: student.firstLogin || student.lastLogin || '',
+                        isProfileComplete: !!(student.nama && student.kelas && student.absen),
+                        reflectionCount: studentReflections.length,
+                        latestReflection: studentReflections.length ? studentReflections[0] : null,
+                        isSelf: normalizeText(student.email) === normalizeText(rawUser.email)
+                    });
+                });
+
+                members.sort(function (a, b) {
+                    if (a.isSelf && !b.isSelf) return -1;
+                    if (!a.isSelf && b.isSelf) return 1;
+                    var aa = parseInt(a.absen, 10), bb = parseInt(b.absen, 10);
+                    if ((isNaN(aa) ? 9999 : aa) !== (isNaN(bb) ? 9999 : bb)) {
+                        return (isNaN(aa) ? 9999 : aa) - (isNaN(bb) ? 9999 : bb);
+                    }
+                    return a.displayName.localeCompare(b.displayName, 'id');
+                });
+
+                if (!members.length) {
+                    renderEmpty('🤝 Teman Sekelas Belum Terdeteksi', 'Belum ada teman dengan kelas yang sama dan profil lengkap. Ajak teman sekelas login dan lengkapi profil.', activeClass);
+                    return;
+                }
+
+                renderBoard({
+                    className: activeClass,
+                    stats: {
+                        joined: members.length,
+                        completeProfiles: members.filter(function (m) { return m.isProfileComplete; }).length,
+                        totalReflections: members.reduce(function (t, m) { return t + m.reflectionCount; }, 0)
+                    },
+                    members: members
+                });
+            }).catch(function () {
+                renderEmpty('📡 Data Kelas Belum Bisa Dimuat', 'Terjadi kendala saat mengambil data. Coba refresh sebentar lagi.', activeClass);
+            });
+        }
+
+        load();
+    </script>
+</body>
+</html>

@@ -153,19 +153,17 @@
         'sesi4.html': 'materi',
         'sesi5.html': 'materi',
         'sesi6.html': 'materi',
+        'teman.html': 'teman',
         'mentor.html': 'mentor',
         'profil.html': 'profil',
         'survey.html': 'profil',
         'manajemen.html': 'profil'
     };
 
-    /* Pages where the "Teman" link goes to the dashboard's class-care anchor. */
-    var TEMAN_HREF = 'index.html#classCareSection';
-
     var items = [
         { page: 'beranda', href: 'index.html',      icon: '🏠', label: 'Beranda' },
         { page: 'materi',  href: 'presentasi.html', icon: '📚', label: 'Materi'  },
-        { page: 'teman',   href: TEMAN_HREF,        icon: '🤝', label: 'Teman'   },
+        { page: 'teman',   href: 'teman.html',      icon: '🤝', label: 'Teman'   },
         { page: 'mentor',  href: 'mentor.html',     icon: '🤖', label: 'Mentor'  },
         { page: 'profil',  href: 'profil.html',     icon: '👤', label: 'Profil'  }
     ];
@@ -182,7 +180,6 @@
 
         var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
         var current = pageMap[path] || '';
-        if (path === 'index.html' && location.hash === '#classCareSection') current = 'teman';
 
         /* Top bar */
         if (!document.getElementById(TOP_ID)) {
