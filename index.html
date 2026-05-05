@@ -2803,6 +2803,107 @@
             }
         }
 
+        /* ── Mobile Bottom Navigation ── */
+        .dash-anchor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            body.has-bottom-nav {
+                padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+                z-index: 200;
+                justify-content: space-around;
+                align-items: stretch;
+                gap: 4px;
+                padding: 8px 6px;
+                background: rgba(15, 23, 42, .82);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                border: 1px solid rgba(255, 255, 255, .08);
+                border-radius: 22px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .35), 0 2px 8px rgba(124, 58, 237, .12);
+                animation: navSlideUp .35s cubic-bezier(.22, 1, .36, 1) both;
+            }
+
+            .mbn-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                padding: 8px 4px;
+                color: rgba(226, 232, 240, .6);
+                text-decoration: none;
+                font-family: inherit;
+                font-size: .68rem;
+                font-weight: 600;
+                background: transparent;
+                border: 0;
+                border-radius: 16px;
+                cursor: pointer;
+                transition: color .2s ease, background .2s ease, transform .15s ease;
+                min-height: 56px;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .mbn-item:active {
+                transform: scale(.94);
+            }
+
+            .mbn-icon {
+                font-size: 1.25rem;
+                line-height: 1;
+            }
+
+            .mbn-label {
+                line-height: 1;
+                letter-spacing: .2px;
+            }
+
+            .mbn-item.active {
+                color: #7dd3fc;
+                background: linear-gradient(135deg, rgba(124, 58, 237, .22), rgba(6, 182, 212, .18));
+            }
+
+            html.theme-light .mobile-bottom-nav {
+                background: rgba(255, 255, 255, .92);
+                border-color: rgba(15, 23, 42, .08);
+                box-shadow: 0 10px 30px rgba(15, 23, 42, .12), 0 2px 8px rgba(124, 58, 237, .08);
+            }
+
+            html.theme-light .mbn-item {
+                color: rgba(31, 41, 55, .58);
+            }
+
+            html.theme-light .mbn-item.active {
+                color: #0e7490;
+                background: linear-gradient(135deg, rgba(124, 58, 237, .14), rgba(6, 182, 212, .14));
+            }
+        }
+
+        @keyframes navSlideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         html.theme-light body {
             background: #f4f7fb;
             color: #111827
@@ -3780,6 +3881,7 @@
 
     <!-- ═══════════ DASHBOARD (after login) ═══════════ -->
     <section class="dashboard hidden" id="dashboard">
+        <span id="berandaTop" class="dash-anchor" aria-hidden="true"></span>
         <div class="dashboard-brand" aria-label="Identitas Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia">
             <div class="landing-brand__shell">
                 <img class="landing-brand__logo landing-brand__logo--dark" src="assets/moklet-partners-logo-dark.png" alt="Logo Yayasan Pendidikan Telkom, SMK Telkom Malang, dan Telkom Indonesia versi putih">
@@ -3926,6 +4028,25 @@
                 </svg>
             </a>
         </div>
+
+        <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navigasi cepat">
+            <button type="button" class="mbn-item active" data-target="berandaTop" aria-label="Beranda">
+                <span class="mbn-icon" aria-hidden="true">🏠</span>
+                <span class="mbn-label">Beranda</span>
+            </button>
+            <button type="button" class="mbn-item" data-target="sessionsContainer" aria-label="Materi">
+                <span class="mbn-icon" aria-hidden="true">📚</span>
+                <span class="mbn-label">Materi</span>
+            </button>
+            <button type="button" class="mbn-item" data-target="classCareSection" aria-label="Teman Sekelas">
+                <span class="mbn-icon" aria-hidden="true">🤝</span>
+                <span class="mbn-label">Teman</span>
+            </button>
+            <a class="mbn-item" href="profil.html" aria-label="Profil">
+                <span class="mbn-icon" aria-hidden="true">👤</span>
+                <span class="mbn-label">Profil</span>
+            </a>
+        </nav>
     </section>
 
     <p class="footer">© 2026 Moklet Leadership &bull; SMK Telkom Malang</p>
@@ -4200,11 +4321,56 @@
             }
         });
 
+        /* ── Mobile bottom nav: smooth scroll + scroll-spy ── */
+        (function setupMobileBottomNav() {
+            var nav = document.getElementById('mobileBottomNav');
+            if (!nav) return;
+            var items = Array.prototype.slice.call(nav.querySelectorAll('.mbn-item[data-target]'));
+            if (!items.length) return;
+
+            function setActiveById(id) {
+                items.forEach(function (it) {
+                    it.classList.toggle('active', it.getAttribute('data-target') === id);
+                });
+            }
+
+            items.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    var id = item.getAttribute('data-target');
+                    var target = document.getElementById(id);
+                    if (!target) return;
+                    setActiveById(id);
+                    var rect = target.getBoundingClientRect();
+                    var offset = window.pageYOffset + rect.top - 16;
+                    window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+                });
+            });
+
+            var spyTimer = null;
+            window.addEventListener('scroll', function () {
+                if (dashboard.classList.contains('hidden')) return;
+                if (spyTimer) return;
+                spyTimer = window.requestAnimationFrame(function () {
+                    spyTimer = null;
+                    var probe = window.innerHeight * 0.35;
+                    var currentId = items[0].getAttribute('data-target');
+                    items.forEach(function (it) {
+                        var el = document.getElementById(it.getAttribute('data-target'));
+                        if (!el) return;
+                        var top = el.getBoundingClientRect().top;
+                        if (top - probe <= 0) currentId = it.getAttribute('data-target');
+                    });
+                    setActiveById(currentId);
+                });
+            }, { passive: true });
+        })();
+
         /* ── Show dashboard ── */
         function showDashboard(user) {
             heroSection.style.display = 'none';
             authSection.style.display = 'none';
             dashboard.classList.remove('hidden');
+            document.body.classList.add('has-bottom-nav');
             SESSION_LIKES_STATE.liked = {};
             SESSION_LIKES_STATE.pending = {};
             var fallbackSvg = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#7c3aed"/><text x="50" y="62" text-anchor="middle" fill="white" font-size="40" font-family="sans-serif">' + (user.name ? user.name[0].toUpperCase() : '?') + '</text></svg>');
@@ -5259,6 +5425,7 @@
             heroSection.style.display = '';
             authSection.style.display = '';
             dashboard.classList.add('hidden');
+            document.body.classList.remove('has-bottom-nav');
             SESSION_LIKES_STATE.counts = {};
             SESSION_LIKES_STATE.liked = {};
             SESSION_LIKES_STATE.pending = {};
