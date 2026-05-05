@@ -8,7 +8,7 @@
 
     var css = '' +
         '@media (max-width: 480px) {' +
-        '  body { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; }' +
+        '  body { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important; }' +
         '  #' + NAV_ID + ' { display: flex !important; }' +
         '}' +
         '#' + NAV_ID + ' {' +
@@ -18,10 +18,10 @@
         '  right: 10px;' +
         '  bottom: calc(10px + env(safe-area-inset-bottom, 0px));' +
         '  z-index: 9000;' +
-        '  justify-content: space-around;' +
+        '  flex-direction: column;' +
         '  align-items: stretch;' +
-        '  gap: 4px;' +
-        '  padding: 8px 6px;' +
+        '  gap: 2px;' +
+        '  padding: 6px 6px 8px;' +
         '  background: rgba(15, 23, 42, .82);' +
         '  -webkit-backdrop-filter: blur(18px);' +
         '  backdrop-filter: blur(18px);' +
@@ -29,6 +29,35 @@
         '  border-radius: 22px;' +
         '  box-shadow: 0 10px 30px rgba(0, 0, 0, .35), 0 2px 8px rgba(124, 58, 237, .12);' +
         '  font-family: "Plus Jakarta Sans", system-ui, sans-serif;' +
+        '}' +
+        '#' + NAV_ID + ' .mbn-brand {' +
+        '  display: flex;' +
+        '  align-items: center;' +
+        '  justify-content: center;' +
+        '  gap: 6px;' +
+        '  font-size: .62rem;' +
+        '  font-weight: 700;' +
+        '  letter-spacing: .6px;' +
+        '  text-transform: uppercase;' +
+        '  color: rgba(226, 232, 240, .55);' +
+        '  padding: 2px 0 4px;' +
+        '  border-bottom: 1px solid rgba(255, 255, 255, .06);' +
+        '  margin-bottom: 4px;' +
+        '}' +
+        '#' + NAV_ID + ' .mbn-brand-dot {' +
+        '  width: 6px; height: 6px; border-radius: 50%;' +
+        '  background: linear-gradient(135deg, #7c3aed, #06b6d4);' +
+        '  box-shadow: 0 0 6px rgba(125, 211, 252, .6);' +
+        '}' +
+        'html.theme-light #' + NAV_ID + ' .mbn-brand {' +
+        '  color: rgba(31, 41, 55, .58);' +
+        '  border-bottom-color: rgba(15, 23, 42, .08);' +
+        '}' +
+        '#' + NAV_ID + ' .mbn-row {' +
+        '  display: flex;' +
+        '  justify-content: space-around;' +
+        '  align-items: stretch;' +
+        '  gap: 4px;' +
         '}' +
         '#' + NAV_ID + ' .mbn-item {' +
         '  flex: 1;' +
@@ -107,6 +136,15 @@
         nav.id = NAV_ID;
         nav.setAttribute('aria-label', 'Navigasi utama');
 
+        var brand = document.createElement('div');
+        brand.className = 'mbn-brand';
+        brand.setAttribute('aria-hidden', 'true');
+        brand.innerHTML = '<span class="mbn-brand-dot"></span><span>Moklet Leadership</span>';
+        nav.appendChild(brand);
+
+        var row = document.createElement('div');
+        row.className = 'mbn-row';
+
         items.forEach(function (it) {
             var a = document.createElement('a');
             a.className = 'mbn-item' + (it.page === current ? ' active' : '');
@@ -116,9 +154,10 @@
             a.innerHTML =
                 '<span class="mbn-icon" aria-hidden="true">' + it.icon + '</span>' +
                 '<span class="mbn-label">' + it.label + '</span>';
-            nav.appendChild(a);
+            row.appendChild(a);
         });
 
+        nav.appendChild(row);
         document.body.appendChild(nav);
     }
 
