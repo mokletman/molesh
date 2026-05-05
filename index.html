@@ -938,7 +938,7 @@
         .dashboard-brand {
             display: flex;
             justify-content: center;
-            margin: 0 auto 10px;
+            margin: 0 auto 6px;
         }
 
         .dashboard-brand .landing-brand__shell {
@@ -956,9 +956,9 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 16px;
-            padding: 16px 18px;
-            margin-bottom: 18px;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
         }
 
         .user-bar-top {
@@ -1380,22 +1380,22 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 22px;
-            padding: 32px 28px;
+            border-radius: 20px;
+            padding: 20px 18px;
             text-align: center;
         }
 
         .dash-card h2 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #c4b5fd;
-            margin-bottom: 6px
+            margin-bottom: 4px
         }
 
         .dash-subtitle {
-            font-size: .85rem;
+            font-size: .8rem;
             color: rgba(255, 255, 255, .45);
-            margin-bottom: 22px
+            margin-bottom: 14px
         }
 
         .sessions {
@@ -1652,15 +1652,15 @@
 
         /* Overall progress */
         .overall-progress {
-            margin-bottom: 22px;
+            margin-bottom: 14px;
             text-align: center
         }
 
         .commitment-history {
             display: none;
-            margin-bottom: 20px;
-            padding: 18px;
-            border-radius: 24px;
+            margin-bottom: 14px;
+            padding: 14px;
+            border-radius: 18px;
             text-align: left;
             background:
                 radial-gradient(circle at top right, rgba(255, 255, 255, .08), transparent 34%),
@@ -2180,7 +2180,7 @@
 
         /* Achievement badges */
         .badges-section {
-            margin: 0 0 24px;
+            margin: 0 0 16px;
             width: 100%
         }
 
@@ -2370,9 +2370,9 @@
         .mentors-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            margin-bottom: 20px
+            margin-bottom: 12px
         }
 
         .mentors-row .mentor-feature {
@@ -3827,8 +3827,6 @@
 
             <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
 
-            <div id="classCareSection" class="class-care-section" aria-live="polite"></div>
-
             <div class="overall-progress" id="overallProgress">
                 <div style="display:flex;align-items:center;justify-content:space-between">
                     <span class="op-label">Progress Keseluruhan</span>
@@ -4273,9 +4271,6 @@
 
             /* Render commitment history */
             loadCommitmentHistory(user.email);
-
-            /* Render classmate care board */
-            loadClassCareBoard(user);
 
             /* Render achievement badges */
             renderBadges(user.email);
@@ -5090,7 +5085,6 @@
                     saveBtn.textContent = 'Perbaiki dan Simpan';
                     renderSessionProgress(user.email);
                     renderBadges(user.email);
-                    loadClassCareBoard(user);
                 };
 
                 if (!apiUrl || apiUrl === 'YOUR_APPS_SCRIPT_URL') {
