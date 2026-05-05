@@ -1670,37 +1670,6 @@
             animation: fadein .35s ease both;
         }
 
-        /* ── Commitment FAB (floating trigger above bottom nav) ── */
-        .commitment-fab {
-            position: fixed;
-            right: 14px;
-            bottom: calc(108px + env(safe-area-inset-bottom, 0px));
-            z-index: 8500;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px 10px 14px;
-            border-radius: 999px;
-            border: 1px solid rgba(251, 191, 36, .35);
-            background: linear-gradient(135deg, rgba(127, 29, 29, .85), rgba(30, 64, 175, .82));
-            color: #fef3c7;
-            font-family: inherit;
-            font-size: .78rem;
-            font-weight: 800;
-            letter-spacing: .3px;
-            cursor: pointer;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            box-shadow: 0 12px 28px rgba(127, 29, 29, .35), 0 4px 10px rgba(15, 23, 42, .35);
-            transition: transform .18s ease, box-shadow .18s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .commitment-fab.show { display: inline-flex; animation: popUp .35s cubic-bezier(.22, 1, .36, 1) both; }
-        .commitment-fab:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(127, 29, 29, .45), 0 6px 12px rgba(15, 23, 42, .38); }
-        .commitment-fab:active { transform: translateY(0) scale(.96); }
-        .commitment-fab-icon { font-size: 1.05rem; line-height: 1; }
-        .commitment-fab-label { line-height: 1; }
         @keyframes popUp { from { opacity: 0; transform: translateY(12px) scale(.92); } to { opacity: 1; transform: none; } }
 
         /* ── Modal backdrop & body ── */
@@ -1766,12 +1735,6 @@
         .commitment-empty p { font-size: .82rem; line-height: 1.55; color: rgba(226, 232, 240, .65); margin: 0 auto; max-width: 320px; }
         .commitment-empty[hidden] { display: none; }
 
-        html.theme-light .commitment-fab {
-            background: linear-gradient(135deg, #fed7aa, #fcd34d);
-            color: #7c2d12;
-            border-color: rgba(127, 29, 29, .25);
-            box-shadow: 0 12px 28px rgba(251, 191, 36, .4), 0 4px 10px rgba(15, 23, 42, .15);
-        }
         html.theme-light .commitment-modal {
             background:
                 radial-gradient(circle at top right, rgba(255, 255, 255, .9), transparent 38%),
@@ -1785,7 +1748,6 @@
 
         @media (max-width: 480px) {
             .commitment-modal { padding: 22px 18px 16px; max-height: calc(100dvh - 100px); }
-            .commitment-fab { right: 12px; padding: 9px 14px 9px 12px; font-size: .74rem; }
         }
 
         .commitment-history.collapsed .commitment-list {
@@ -4036,11 +3998,6 @@
             </a>
         </div>
 
-        <button id="commitmentFab" class="commitment-fab" type="button" aria-label="Lihat Catatan Komitmen Kehadiran" onclick="openCommitmentModal()">
-            <span class="commitment-fab-icon" aria-hidden="true">🔥</span>
-            <span class="commitment-fab-label">Kehadiran</span>
-        </button>
-
         <div id="commitmentBackdrop" class="commitment-backdrop" onclick="closeCommitmentModal(event)" role="dialog" aria-modal="true" aria-labelledby="commitmentModalTitle" hidden>
             <div class="commitment-modal" onclick="event.stopPropagation()">
                 <button class="commitment-close" type="button" aria-label="Tutup" onclick="closeCommitmentModal()">×</button>
@@ -4400,6 +4357,11 @@
 
             /* Render achievement badges */
             renderBadges(user.email);
+
+            /* Auto-open Kehadiran modal when navigated via #kehadiran */
+            if (location.hash === '#kehadiran') {
+                setTimeout(openCommitmentModal, 200);
+            }
         }
 
         /* ── Session progress renderer ── */
@@ -4993,12 +4955,10 @@
 
         function renderCommitmentHistory(items) {
             var wrap = document.getElementById('commitmentHistory');
-            var fab = document.getElementById('commitmentFab');
             var emptyEl = document.getElementById('commitmentEmpty');
             if (!wrap) return;
 
             var hasItems = items && items.length;
-            if (fab) fab.classList.toggle('show', !!hasItems);
             if (emptyEl) emptyEl.hidden = !!hasItems;
 
             if (!hasItems) {
@@ -5034,16 +4994,23 @@
 
         function openCommitmentModal() {
             var raw = localStorage.getItem('molesh_user');
-            if (!raw) return;
+            if (!raw) {
+                alert('Login dulu yuk untuk melihat catatan kehadiranmu.');
+                return;
+            }
             try {
                 var user = JSON.parse(raw);
-                if (!user.email || user.email === 'Mode pratinjau') return;
+                if (!user.email || user.email === 'Mode pratinjau') {
+                    alert('Login dengan akun Google untuk melihat catatan kehadiranmu.');
+                    return;
+                }
             } catch (e) { return; }
             var bd = document.getElementById('commitmentBackdrop');
             if (!bd) return;
             bd.hidden = false;
             document.body.style.overflow = 'hidden';
         }
+        window.openCommitmentModal = openCommitmentModal;
 
         function closeCommitmentModal(ev) {
             if (ev && ev.target && ev.target.id !== 'commitmentBackdrop' && ev.currentTarget && ev.currentTarget.id !== 'commitmentBackdrop' && ev.type !== 'click') return;
@@ -5051,7 +5018,11 @@
             if (!bd) return;
             bd.hidden = true;
             document.body.style.overflow = '';
+            if (location.hash === '#kehadiran') {
+                history.replaceState(null, '', location.pathname + location.search);
+            }
         }
+        window.closeCommitmentModal = closeCommitmentModal;
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeCommitmentModal();
@@ -5409,8 +5380,6 @@
             heroSection.style.display = '';
             authSection.style.display = '';
             dashboard.classList.add('hidden');
-            var fab = document.getElementById('commitmentFab');
-            if (fab) fab.classList.remove('show');
             closeCommitmentModal();
             SESSION_LIKES_STATE.counts = {};
             SESSION_LIKES_STATE.liked = {};

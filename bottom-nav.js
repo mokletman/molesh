@@ -86,14 +86,14 @@
         '#' + NAV_ID + ' {' +
         '  display: none;' +
         '  position: fixed;' +
-        '  left: 8px;' +
-        '  right: 8px;' +
-        '  bottom: calc(8px + env(safe-area-inset-bottom, 0px));' +
+        '  left: 6px;' +
+        '  right: 6px;' +
+        '  bottom: calc(6px + env(safe-area-inset-bottom, 0px));' +
         '  z-index: 9000;' +
         '  justify-content: space-around;' +
         '  align-items: stretch;' +
-        '  gap: 2px;' +
-        '  padding: 6px 4px;' +
+        '  gap: 1px;' +
+        '  padding: 5px 3px;' +
         '  background: rgba(15, 23, 42, .82);' +
         '  -webkit-backdrop-filter: blur(18px);' +
         '  backdrop-filter: blur(18px);' +
@@ -108,25 +108,26 @@
         '  flex-direction: column;' +
         '  align-items: center;' +
         '  justify-content: center;' +
-        '  gap: 3px;' +
-        '  padding: 6px 2px;' +
+        '  gap: 2px;' +
+        '  padding: 6px 1px;' +
         '  color: rgba(226, 232, 240, .6);' +
         '  text-decoration: none;' +
-        '  font-size: .6rem;' +
+        '  font-size: .56rem;' +
         '  font-weight: 600;' +
         '  background: transparent;' +
         '  border: 0;' +
-        '  border-radius: 14px;' +
+        '  border-radius: 12px;' +
         '  cursor: pointer;' +
         '  transition: color .2s ease, background .2s ease, transform .15s ease;' +
-        '  min-height: 52px;' +
+        '  min-height: 50px;' +
         '  -webkit-tap-highlight-color: transparent;' +
         '  min-width: 0;' +
+        '  font-family: inherit;' +
         '}' +
         '#' + NAV_ID + ' .mbn-item:active { transform: scale(.94); }' +
-        '#' + NAV_ID + ' .mbn-icon { font-size: 1.15rem; line-height: 1; }' +
+        '#' + NAV_ID + ' .mbn-icon { font-size: 1.05rem; line-height: 1; }' +
         '#' + NAV_ID + ' .mbn-label {' +
-        '  line-height: 1; letter-spacing: .1px;' +
+        '  line-height: 1; letter-spacing: 0;' +
         '  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' +
         '  max-width: 100%;' +
         '}' +
@@ -171,11 +172,12 @@
     };
 
     var items = [
-        { page: 'beranda', href: 'index.html',  icon: '🏠', label: 'Beranda' },
-        { page: 'materi',  href: 'materi.html', icon: '📚', label: 'Materi'  },
-        { page: 'teman',   href: 'teman.html',  icon: '🤝', label: 'Teman'   },
-        { page: 'mentor',  href: 'mentor.html', icon: '🤖', label: 'Mentor'  },
-        { page: 'profil',  href: 'profil.html', icon: '👤', label: 'Profil'  }
+        { page: 'beranda',   href: 'index.html',           icon: '🏠', label: 'Beranda'   },
+        { page: 'materi',    href: 'materi.html',          icon: '📚', label: 'Materi'    },
+        { page: 'teman',     href: 'teman.html',           icon: '🤝', label: 'Teman'     },
+        { page: 'kehadiran', href: 'index.html#kehadiran', icon: '🔥', label: 'Kehadiran', action: 'kehadiran' },
+        { page: 'mentor',    href: 'mentor.html',          icon: '🤖', label: 'Mentor'    },
+        { page: 'profil',    href: 'profil.html',          icon: '👤', label: 'Profil'    }
     ];
 
     function inject() {
@@ -212,6 +214,7 @@
             var nav = document.createElement('nav');
             nav.id = NAV_ID;
             nav.setAttribute('aria-label', 'Navigasi utama');
+            var onIndex = (path === '' || path === 'index.html');
             items.forEach(function (it) {
                 var a = document.createElement('a');
                 a.className = 'mbn-item' + (it.page === current ? ' active' : '');
@@ -221,6 +224,16 @@
                 a.innerHTML =
                     '<span class="mbn-icon" aria-hidden="true">' + it.icon + '</span>' +
                     '<span class="mbn-label">' + it.label + '</span>';
+
+                if (it.action === 'kehadiran' && onIndex) {
+                    a.addEventListener('click', function (ev) {
+                        if (typeof window.openCommitmentModal === 'function') {
+                            ev.preventDefault();
+                            window.openCommitmentModal();
+                        }
+                    });
+                }
+
                 nav.appendChild(a);
             });
             document.body.appendChild(nav);
