@@ -1735,6 +1735,163 @@
         .commitment-empty p { font-size: .82rem; line-height: 1.55; color: rgba(226, 232, 240, .65); margin: 0 auto; max-width: 320px; }
         .commitment-empty[hidden] { display: none; }
 
+        /* Active check-in area inside modal */
+        .cm-active-area {
+            margin-bottom: 16px;
+        }
+        .cm-active-card {
+            padding: 16px 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, .16), rgba(6, 182, 212, .12));
+            border: 1px solid rgba(34, 197, 94, .3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: fadeUp .35s ease both;
+        }
+        .cm-active-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .cm-active-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .cm-active-title {
+            font-size: .88rem;
+            font-weight: 800;
+            color: #4ade80;
+            margin-bottom: 2px;
+        }
+        .cm-active-meta {
+            font-size: .74rem;
+            color: rgba(226, 232, 240, .65);
+            line-height: 1.45;
+        }
+        .cm-active-btn {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #22c55e, #06b6d4);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: .82rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+            box-shadow: 0 4px 14px rgba(34, 197, 94, .28);
+        }
+        .cm-active-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, .38);
+        }
+        .cm-active-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .cm-active-done {
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(34, 197, 94, .08);
+            border: 1px solid rgba(34, 197, 94, .18);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .84rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+        .cm-active-done-icon {
+            font-size: 1.2rem;
+        }
+        .cm-profile-warn {
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(251, 113, 133, .1);
+            border: 1px solid rgba(251, 113, 133, .25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cm-profile-warn-info {
+            flex: 1;
+        }
+        .cm-profile-warn-title {
+            font-size: .84rem;
+            font-weight: 700;
+            color: #fb7185;
+            margin-bottom: 2px;
+        }
+        .cm-profile-warn-meta {
+            font-size: .72rem;
+            color: rgba(226, 232, 240, .6);
+        }
+        .cm-profile-warn-btn {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #fb7185, #f43f5e);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            transition: all .2s;
+        }
+        .cm-profile-warn-btn:hover { transform: translateY(-1px); }
+        .cm-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .12), transparent);
+            margin: 14px 0;
+        }
+        .cm-section-label {
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, .5);
+            margin-bottom: 10px;
+        }
+        .cm-loading {
+            text-align: center;
+            padding: 28px 16px;
+            color: rgba(226, 232, 240, .6);
+            font-size: .84rem;
+        }
+        .cm-loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, .15);
+            border-top-color: #7dd3fc;
+            border-radius: 50%;
+            animation: cm-spin .7s linear infinite;
+            margin-bottom: 8px;
+        }
+        @keyframes cm-spin { to { transform: rotate(360deg); } }
+        .cm-no-active {
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px dashed rgba(255, 255, 255, .12);
+            text-align: center;
+            font-size: .8rem;
+            color: rgba(226, 232, 240, .5);
+        }
+        html.theme-light .cm-active-title { color: #15803d; }
+        html.theme-light .cm-active-meta { color: rgba(30, 41, 59, .6); }
+        html.theme-light .cm-active-card { background: linear-gradient(135deg, rgba(34, 197, 94, .12), rgba(6, 182, 212, .08)); border-color: rgba(34, 197, 94, .22); }
+        html.theme-light .cm-active-done { background: rgba(34, 197, 94, .06); border-color: rgba(34, 197, 94, .15); color: #15803d; }
+        html.theme-light .cm-profile-warn { background: rgba(251, 113, 133, .06); border-color: rgba(251, 113, 133, .18); }
+        html.theme-light .cm-profile-warn-title { color: #e11d48; }
+        html.theme-light .cm-profile-warn-meta { color: rgba(30, 41, 59, .5); }
+        html.theme-light .cm-section-label { color: rgba(30, 41, 59, .45); }
+        html.theme-light .cm-no-active { background: rgba(15, 23, 42, .03); border-color: rgba(15, 23, 42, .1); color: rgba(30, 41, 59, .45); }
+
         html.theme-light .commitment-modal {
             background:
                 radial-gradient(circle at top right, rgba(255, 255, 255, .9), transparent 38%),
@@ -4001,11 +4158,19 @@
         <div id="commitmentBackdrop" class="commitment-backdrop" onclick="closeCommitmentModal(event)" role="dialog" aria-modal="true" aria-labelledby="commitmentModalTitle" hidden>
             <div class="commitment-modal" onclick="event.stopPropagation()">
                 <button class="commitment-close" type="button" aria-label="Tutup" onclick="closeCommitmentModal()">×</button>
+                <div style="text-align:center;margin-bottom:14px">
+                    <div style="font-size:1.5rem;margin-bottom:4px">🔥</div>
+                    <strong id="commitmentModalTitle" style="font-size:1.05rem;color:#fef2f2;display:block">Kehadiran Saya</strong>
+                    <p style="font-size:.76rem;color:rgba(226,232,240,.6);margin-top:4px" id="cmUserInfo"></p>
+                </div>
+                <div id="cmActiveSection" class="cm-active-area"></div>
+                <div class="cm-divider"></div>
+                <div class="cm-section-label">📋 Riwayat Kehadiran</div>
                 <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
                 <div id="commitmentEmpty" class="commitment-empty" hidden>
-                    <div class="commitment-empty-emoji">🔥</div>
-                    <strong id="commitmentModalTitle">Belum Ada Catatan Kehadiran</strong>
-                    <p>Tandai kehadiran kamu lewat tombol di beranda saat sesi aktif. Riwayatnya akan muncul di sini.</p>
+                    <div class="commitment-empty-emoji">📭</div>
+                    <strong>Belum Ada Riwayat</strong>
+                    <p>Tandai kehadiran kamu lewat tombol di atas saat sesi aktif. Riwayatnya akan muncul di sini.</p>
                 </div>
             </div>
         </div>
@@ -5005,12 +5170,148 @@
                     return;
                 }
             } catch (e) { return; }
+
             var bd = document.getElementById('commitmentBackdrop');
             if (!bd) return;
             bd.hidden = false;
             document.body.style.overflow = 'hidden';
+
+            /* Show user info */
+            var cmUserInfo = document.getElementById('cmUserInfo');
+            if (cmUserInfo) {
+                var prof = {};
+                try { prof = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch(e){}
+                var displayName = prof.nama || user.name || 'Pengguna';
+                var displayClass = prof.kelas ? ' • ' + prof.kelas : '';
+                cmUserInfo.textContent = displayName + displayClass;
+            }
+
+            /* Render active check-in section */
+            var activeEl = document.getElementById('cmActiveSection');
+            if (activeEl) {
+                activeEl.innerHTML = '<div class="cm-loading"><div class="cm-loading-spinner"></div><div>Memuat data kehadiran...</div></div>';
+            }
+
+            /* Fetch active check-ins for this user */
+            var profileRaw = localStorage.getItem('molesh_profile');
+            var isProfileComplete = false;
+            try {
+                var prof2 = profileRaw ? JSON.parse(profileRaw) : {};
+                isProfileComplete = !!(prof2.nama && prof2.kelas && prof2.absen);
+            } catch(e){}
+
+            var doneIds = getCheckedInIds();
+
+            if (typeof MOLESH_CONFIG !== 'undefined' && MOLESH_CONFIG.APPS_SCRIPT_URL && MOLESH_CONFIG.APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
+                fetch(MOLESH_CONFIG.APPS_SCRIPT_URL + '?type=activeCheckin')
+                    .then(function(r){ return r.json(); })
+                    .then(function(data){
+                        if (!activeEl) return;
+                        if (!data || !data.length) {
+                            activeEl.innerHTML = '<div class="cm-no-active">Tidak ada sesi kehadiran aktif saat ini</div>';
+                            return;
+                        }
+                        var html = '';
+                        data.forEach(function(ci){
+                            var tanggal = ci.tanggal;
+                            try {
+                                var parts = tanggal.split('-');
+                                var d = new Date(parts[0], parts[1] - 1, parts[2]);
+                                tanggal = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                            } catch(e){}
+
+                            var alreadyDone = doneIds.indexOf(ci.id) > -1;
+
+                            if (alreadyDone) {
+                                html += '<div class="cm-active-done"><span class="cm-active-done-icon">✅</span><div><strong>Sudah Hadir</strong> — ' + tanggal + '</div></div>';
+                            } else if (!isProfileComplete) {
+                                html += '<div class="cm-profile-warn">';
+                                html += '<div style="font-size:1.3rem;flex-shrink:0">🔒</div>';
+                                html += '<div class="cm-profile-warn-info"><div class="cm-profile-warn-title">Profil Belum Lengkap</div><div class="cm-profile-warn-meta">Lengkapi Nama, Kelas, & Absen untuk bisa absen.</div></div>';
+                                html += '<a class="cm-profile-warn-btn" href="profil.html">Isi Profil</a>';
+                                html += '</div>';
+                            } else {
+                                html += '<div class="cm-active-card">';
+                                html += '<div class="cm-active-icon">📍</div>';
+                                html += '<div class="cm-active-info"><div class="cm-active-title">Kehadiran Tersedia!</div><div class="cm-active-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div></div>';
+                                html += '<button class="cm-active-btn" id="cmBtn_' + ci.id + '" onclick="doCheckinFromModal(\'' + ci.id + '\',\'' + (ci.tanggal || '') + '\',\'' + (ci.deskripsi || '').replace(/'/g, "\\'") + '\')">✋ Hadir</button>';
+                                html += '</div>';
+                            }
+                        });
+                        activeEl.innerHTML = html;
+                    })
+                    .catch(function(){
+                        if (activeEl) activeEl.innerHTML = '<div class="cm-no-active">Gagal memuat data. Coba lagi nanti.</div>';
+                    });
+            } else {
+                if (activeEl) activeEl.innerHTML = '<div class="cm-no-active">Tidak ada sesi kehadiran aktif saat ini</div>';
+            }
         }
         window.openCommitmentModal = openCommitmentModal;
+
+        /* Hadir button inside the modal */
+        function doCheckinFromModal(ciId, tanggal, deskripsi) {
+            var raw = localStorage.getItem('molesh_user');
+            var profile = localStorage.getItem('molesh_profile');
+            if (!raw) return;
+            try {
+                var user = JSON.parse(raw);
+                var prof = profile ? JSON.parse(profile) : {};
+            } catch(e){ return; }
+
+            if (!prof.nama || !prof.kelas || !prof.absen) {
+                alert('Silakan lengkapi profil (Nama, Kelas, & No. Absen) terlebih dahulu.');
+                window.location.href = 'profil.html';
+                return;
+            }
+
+            var btn = document.getElementById('cmBtn_' + ciId);
+            if (btn) { btn.disabled = true; btn.textContent = '⏳ Mengirim...'; }
+
+            var payload = JSON.stringify({
+                action: 'doCheckin',
+                checkinId: ciId,
+                tanggal: tanggal,
+                deskripsi: deskripsi,
+                email: user.email,
+                googleName: user.name || '',
+                nama: prof.nama || '',
+                kelas: prof.kelas || '',
+                absen: prof.absen || ''
+            });
+
+            fetch(MOLESH_CONFIG.APPS_SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: payload
+            }).then(function(){
+                markCheckedIn(ciId);
+                addCommitmentHistoryEntry(user, tanggal, deskripsi, ciId);
+
+                /* Update the active section to show done */
+                var tanggalFormatted = tanggal;
+                try {
+                    var parts = tanggal.split('-');
+                    var d = new Date(parts[0], parts[1] - 1, parts[2]);
+                    tanggalFormatted = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                } catch(e){}
+
+                var activeEl = document.getElementById('cmActiveSection');
+                if (activeEl) {
+                    activeEl.innerHTML = '<div class="cm-active-done"><span class="cm-active-done-icon">✅</span><div><strong>Kehadiran Tercatat!</strong> — ' + tanggalFormatted + '</div></div>';
+                }
+
+                /* Also update the beranda check-in bar if exists */
+                var card = document.getElementById('ci_' + ciId);
+                if (card) {
+                    card.innerHTML = '<div class="cb-icon">✅</div><div class="cb-info"><div class="cb-title">Kehadiran tercatat</div></div><button class="cb-close" onclick="dismissCheckin(\'' + ciId + '\')" title="Tutup">×</button>';
+                }
+            }).catch(function(){
+                if (btn) { btn.disabled = false; btn.textContent = '✋ Hadir'; }
+                alert('Gagal menandai kehadiran. Coba lagi.');
+            });
+        }
+        window.doCheckinFromModal = doCheckinFromModal;
 
         function closeCommitmentModal(ev) {
             if (ev && ev.target && ev.target.id !== 'commitmentBackdrop' && ev.currentTarget && ev.currentTarget.id !== 'commitmentBackdrop' && ev.type !== 'click') return;
