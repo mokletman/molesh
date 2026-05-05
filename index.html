@@ -3917,7 +3917,7 @@
                 </a>
             </div>
 
-            <a class="cta" id="ctaBtn" href="presentasi.html">
+            <a class="cta" id="ctaBtn" href="sesi1.html">
                 MULAI SESI 1
                 <svg viewBox="0 0 20 20">
                     <path
@@ -4284,7 +4284,7 @@
         };
 
         var SESSION_DATA = [
-            { num: 1, href: 'presentasi.html', title: 'Fondasi MOLESH', desc: 'Sadar Diri, Peduli Kasih, Beraksi dan Melayani & neuroscience' },
+            { num: 1, href: 'sesi1.html', title: 'Fondasi MOLESH', desc: 'Sadar Diri, Peduli Kasih, Beraksi dan Melayani & neuroscience' },
             { num: 2, href: 'sesi2.html', title: 'Deep Dive Sadar Diri', desc: 'Growth mindset & personal branding' },
             { num: 3, href: 'sesi3.html', title: 'Deep Dive Peduli Kasih', desc: 'Kolaborasi tim & peer review' },
             { num: 4, href: 'sesi4.html', title: 'Deep Dive Beraksi dan Melayani', desc: 'Etika digital, pengambilan keputusan, dan aksi pelayanan' },
@@ -4510,7 +4510,7 @@
                 ctaBtn.href = nextSesi.href;
                 if (totalDone === SESSION_DATA.length) {
                     ctaBtn.innerHTML = '🎉 SEMUA SELESAI! REVIEW SESI 1 <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>';
-                    ctaBtn.href = 'presentasi.html';
+                    ctaBtn.href = 'sesi1.html';
                 } else {
                     var label = nextSesi.num === 1 ? 'MULAI SESI 1' : 'LANJUTKAN SESI ' + nextSesi.num;
                     ctaBtn.innerHTML = label + ' <svg viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>';

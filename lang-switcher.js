@@ -16,6 +16,7 @@
         '/molesh/manajemen.html': { id: 'About Manajemen Sekolah | Moklet Leadership', en: 'About School Management | Moklet Leadership' },
         '/molesh/survey.html': { id: 'Survey Karakter Pemimpin | Moklet Leadership', en: 'Leadership Character Survey | Moklet Leadership' },
         '/molesh/presentasi.html': { id: 'MOLESH Sesi 1', en: 'MOLESH Session 1' },
+        '/molesh/sesi1.html': { id: 'MOLESH Sesi 1', en: 'MOLESH Session 1' },
         '/molesh/sesi2.html': { id: 'MOLESH Sesi 2', en: 'MOLESH Session 2' },
         '/molesh/sesi3.html': { id: 'MOLESH Sesi 3', en: 'MOLESH Session 3' },
         '/molesh/sesi4.html': { id: 'MOLESH Sesi 4', en: 'MOLESH Session 4' },

@@ -150,6 +150,7 @@
         'index.html': 'beranda',
         'materi.html': 'materi',
         'presentasi.html': 'materi',
+        'sesi1.html': 'materi',
         'sesi2.html': 'materi',
         'sesi3.html': 'materi',
         'sesi4.html': 'materi',

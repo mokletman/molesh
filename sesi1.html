@@ -5,29 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <title>MOLESH Sesi 2 &ndash; Sadar Diri, Personal Branding & Growth Mindset</title>
+    <title>Moklet Leadership - Sadar Diri, Peduli Kasih, Beraksi dan Melayani</title>
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
+
         body{
             min-height:100vh;
             font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-            background:#0b0b1a;color:#e2e8f0;
-            overflow:hidden;position:relative;
-            transition:background .25s ease,color .25s ease;
+            background:#0b0b1a;
+            color:#e2e8f0;
+            overflow:hidden;
+            position:relative;
         }
-        .theme-toggle{
-            position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1000;
-            border:1px solid rgba(255,255,255,.15);
-            background:rgba(15,23,42,.58);
-            color:#f8fafc;
-            border-radius:999px;
-            font-family:inherit;font-size:.74rem;font-weight:700;
-            padding:8px 12px;
-            cursor:pointer;
-            backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-            transition:all .2s ease;
-        }
-        .theme-toggle:hover{transform:translateX(-50%) translateY(-1px);background:rgba(30,41,59,.76)}
+
         .blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.35;z-index:0;will-change:transform;pointer-events:none}
         .blob-1{width:480px;height:480px;background:#7c3aed;top:-15%;left:-10%;animation:drift 10s ease-in-out infinite alternate}
         .blob-2{width:360px;height:360px;background:#06b6d4;bottom:-10%;right:-8%;animation:drift 12s ease-in-out infinite alternate-reverse}
@@ -54,48 +44,73 @@
         .presentation-container{
             position:relative;z-index:1;
             display:flex;align-items:center;justify-content:center;
-            width:100%;height:100vh;height:100dvh;
+            width:100%;
+            height:100vh;height:100dvh;
             padding:60px 20px 90px;
         }
+
         .slide{
-            display:none;flex-direction:column;justify-content:center;
+            display:none;
+            flex-direction:column;
+            justify-content:center;
             width:100%;max-width:700px;
             background:rgba(255,255,255,.06);
             backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
             border:1px solid rgba(255,255,255,.1);
-            border-radius:28px;padding:44px 38px;
-            overflow-y:auto;max-height:calc(100dvh - 160px);
+            border-radius:28px;
+            padding:44px 38px;
+            overflow-y:auto;
+            max-height:calc(100dvh - 160px);
             animation:pop .5s cubic-bezier(.22,1,.36,1) both;
         }
         .slide.active{display:flex}
         @keyframes pop{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
 
         h1{
-            font-size:2.2rem;font-weight:800;line-height:1.15;margin-bottom:12px;
+            font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:12px;
             background:linear-gradient(90deg,#fff 30%,#7dd3fc);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-            background-clip:text;text-align:center;
+            background-clip:text;
+            text-align:center;
         }
-        h2{font-size:1.6rem;font-weight:700;margin-bottom:14px;color:#c4b5fd}
-        h3{font-size:1.15rem;font-weight:700;margin:14px 0 8px;color:#7dd3fc}
-        p{font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,.65);margin-bottom:10px}
-        em{color:rgba(255,255,255,.5);font-style:italic}
-        strong{color:#e2e8f0}
-        ul{list-style:none;padding:0;margin:8px 0 0}
+
+        h2{
+            font-size:1.65rem;font-weight:700;margin-bottom:14px;
+            color:#c4b5fd;
+        }
+
+        p{
+            font-size:1.05rem;line-height:1.75;
+            color:rgba(255,255,255,.65);
+            margin-bottom:10px;
+        }
+
+        ul{
+            list-style:none;
+            padding:0;margin:8px 0 0;
+        }
+
         li{
-            position:relative;padding-left:22px;
+            position:relative;
+            padding-left:22px;
             font-size:1.02rem;line-height:1.75;
-            color:rgba(255,255,255,.6);margin-bottom:8px;
+            color:rgba(255,255,255,.6);
+            margin-bottom:8px;
         }
         li::before{
             content:'';position:absolute;left:0;top:10px;
             width:8px;height:8px;border-radius:50%;
             background:linear-gradient(135deg,#7c3aed,#06b6d4);
         }
-        .emoji{font-size:3rem;text-align:center;margin-bottom:14px}
-        .highlight{color:#c4b5fd;font-weight:700}
-        .cyan{color:#7dd3fc;font-weight:700}
-        .rose{color:#fb7185;font-weight:700}
+
+        .emoji{
+            font-size:3rem;text-align:center;margin-bottom:14px;
+        }
+
+        .highlight{
+            color:#c4b5fd;font-weight:700;
+        }
+
         .center-text{text-align:center}
         .session-brand{
             display:inline-flex;align-items:center;gap:8px;
@@ -140,62 +155,64 @@
         .flow-body strong{display:block;font-size:.92rem;color:#f8fafc;line-height:1.3}
         .flow-body small{display:block;font-size:.76rem;color:rgba(226,232,240,.7);line-height:1.45;margin-top:2px}
 
-        /* quote / callout box */
-        .callout{
-            background:rgba(124,58,237,.12);border-left:3px solid #7c3aed;
-            border-radius:0 14px 14px 0;padding:14px 18px;margin:12px 0;
-            font-size:.98rem;line-height:1.7;color:rgba(255,255,255,.7);
-        }
-        .callout strong{color:#c4b5fd}
-
-        /* activity card */
-        .activity{
-            background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.18);
-            border-radius:16px;padding:18px 20px;margin:14px 0;
-        }
-        .activity-label{
-            display:inline-block;font-size:.72rem;font-weight:700;
-            text-transform:uppercase;letter-spacing:1.6px;color:#06b6d4;margin-bottom:8px;
-        }
-
-        /* numbered list inside activity */
-        ol{padding-left:20px;margin:6px 0 0}
-        ol li{padding-left:4px;margin-bottom:6px}
-        ol li::before{display:none}
-
         .navigation{
-            position:fixed;bottom:max(16px, env(safe-area-inset-bottom));
+            position:fixed;
+            bottom:max(16px, env(safe-area-inset-bottom));
             left:50%;transform:translateX(-50%);
-            display:flex;gap:12px;z-index:999;
+            display:flex;gap:12px;
+            z-index:999;
             width:min(520px, calc(100vw - 24px));
         }
+
         .nav-button{
             border:none;border-radius:16px;
             background:linear-gradient(135deg,#7c3aed,#06b6d4);
-            color:#fff;font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-            font-size:.95rem;font-weight:700;padding:12px 20px;
-            cursor:pointer;box-shadow:0 6px 28px rgba(124,58,237,.4);
+            color:#fff;
+            font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+            font-size:.95rem;font-weight:700;
+            padding:12px 20px;
+            cursor:pointer;
+            box-shadow:0 6px 28px rgba(124,58,237,.4);
             white-space:nowrap;flex:1;
-            transition:transform .18s,box-shadow .18s;letter-spacing:.3px;
+            transition:transform .18s,box-shadow .18s;
+            letter-spacing:.3px;
         }
         .nav-button:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(124,58,237,.5)}
         .nav-button:active{transform:translateY(0)}
-        .nav-button:disabled{opacity:.3;cursor:not-allowed;transform:none!important;box-shadow:0 4px 16px rgba(124,58,237,.2)!important}
+        .nav-button:disabled{
+            opacity:.3;cursor:not-allowed;
+            transform:none!important;
+            box-shadow:0 4px 16px rgba(124,58,237,.2)!important;
+        }
 
         .slide-counter{
-            position:fixed;top:20px;right:20px;
-            background:rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-            border:1px solid rgba(255,255,255,.1);color:#c4b5fd;
-            border-radius:999px;padding:8px 16px;font-weight:700;font-size:.9rem;
-            box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:999;
+            position:fixed;
+            top:20px;right:20px;
+            background:rgba(255,255,255,.08);
+            backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            border:1px solid rgba(255,255,255,.1);
+            color:#c4b5fd;
+            border-radius:999px;
+            padding:8px 16px;
+            font-weight:700;font-size:.9rem;
+            box-shadow:0 4px 16px rgba(0,0,0,.3);
+            z-index:999;
         }
+
         .back-link{
-            position:fixed;top:20px;left:20px;
-            background:rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-            border:1px solid rgba(255,255,255,.1);color:#7dd3fc;
-            border-radius:999px;padding:8px 16px;
-            font-weight:600;font-size:.85rem;text-decoration:none;
-            box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:999;transition:background .2s;
+            position:fixed;
+            top:20px;left:20px;
+            background:rgba(255,255,255,.08);
+            backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            border:1px solid rgba(255,255,255,.1);
+            color:#7dd3fc;
+            border-radius:999px;
+            padding:8px 16px;
+            font-weight:600;font-size:.85rem;
+            text-decoration:none;
+            box-shadow:0 4px 16px rgba(0,0,0,.3);
+            z-index:999;
+            transition:background .2s;
         }
         .back-link:hover{background:rgba(255,255,255,.14)}
 
@@ -232,17 +249,9 @@
         .ref-success{text-align:center;padding:12px;font-size:.85rem;font-weight:600;color:#4ade80;background:rgba(34,197,94,.08);border-radius:12px;margin-top:10px;display:none}
 
         /* Check-in notification bar */
-        #checkinArea{
-            position:fixed;left:50%;transform:translateX(-50%);
-            bottom:max(104px, calc(92px + env(safe-area-inset-bottom)));
-            z-index:997;
-            width:min(560px, calc(100vw - 24px));
-            display:flex;flex-direction:column;gap:10px;
-            pointer-events:none;
-        }
-        #checkinArea > *{pointer-events:auto}
-        @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-        .checkin-bar{background:rgba(11,11,26,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(34,197,94,.28);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;animation:slideUp .35s cubic-bezier(.22,1,.36,1) both;box-shadow:0 10px 26px rgba(0,0,0,.32)}
+        #checkinArea{position:fixed;top:0;left:0;right:0;z-index:200}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
+        .checkin-bar{background:rgba(11,11,26,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(34,197,94,.28);padding:8px 14px;display:flex;align-items:center;gap:10px;animation:slideDown .35s cubic-bezier(.22,1,.36,1) both}
         .cb-icon{font-size:1rem;flex-shrink:0}
         .cb-info{flex:1;min-width:0}
         .cb-title{font-size:.8rem;font-weight:700;color:#4ade80;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -254,24 +263,42 @@
         .cb-close:hover{color:rgba(255,255,255,.65)}
 
         @media(max-width:768px){
-            .presentation-container{align-items:flex-start;padding:56px 12px calc(100px + env(safe-area-inset-bottom))}
-            .slide{margin-top:6px;max-height:calc(100dvh - 170px - env(safe-area-inset-bottom));padding:28px 24px;border-radius:20px;justify-content:flex-start}
-            h1{font-size:1.85rem}h2{font-size:1.4rem}h3{font-size:1.05rem}
-            p,li{font-size:.97rem;line-height:1.65}.emoji{font-size:2.5rem}
+            .presentation-container{
+                align-items:flex-start;
+                padding:56px 12px calc(100px + env(safe-area-inset-bottom));
+            }
+
+            .slide{
+                margin-top:6px;
+                max-height:calc(100dvh - 170px - env(safe-area-inset-bottom));
+                padding:28px 24px;
+                border-radius:20px;
+                justify-content:flex-start;
+            }
+
+            h1{font-size:2rem}
+            h2{font-size:1.5rem}
+            p,li{font-size:.97rem;line-height:1.65}
+            .emoji{font-size:2.5rem}
+
             .navigation{width:calc(100vw - 24px);gap:10px}
             .nav-button{font-size:.9rem;padding:11px 14px}
+
             .slide-counter{top:12px;right:12px;font-size:.85rem;padding:7px 13px}
             .back-link{top:12px;left:12px;font-size:.8rem;padding:7px 13px}
-            #checkinArea{width:calc(100vw - 24px);bottom:max(98px, calc(86px + env(safe-area-inset-bottom)))}
         }
+
         @media(max-width:420px){
-            .slide{padding:22px 18px;max-height:calc(100dvh - 155px - env(safe-area-inset-bottom))}
-            h1{font-size:1.6rem}h2{font-size:1.25rem}
+            .slide{
+                padding:22px 18px;
+                max-height:calc(100dvh - 155px - env(safe-area-inset-bottom));
+            }
+            h1{font-size:1.7rem}
+            h2{font-size:1.35rem}
             .nav-button{font-size:.85rem;padding:10px 10px;border-radius:14px}
         }
         @media(max-width:768px){.kawung-orb{opacity:.45}.session-flow{padding:14px 13px}}
         @media(max-width:420px){.session-brand{font-size:.65rem;letter-spacing:.6px}}
-
 
         /* === Attitude Table === */
         .att-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:16px auto;max-width:420px}
@@ -289,7 +316,6 @@
         .att-hundred{font-size:2.8rem;font-weight:800;text-align:center;margin-top:10px;background:linear-gradient(90deg,#c4b5fd,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
         .att-hundred small{font-size:.45em;-webkit-text-fill-color:#c4b5fd;display:block;letter-spacing:2px;font-weight:600}
         @media(max-width:420px){.att-grid{gap:4px}.att-letter{font-size:1rem}.att-num{font-size:.75rem}.att-bar-label{min-width:85px;font-size:.8rem}}
-
 
         /* === Global Digitalent === */
         .gdt-tagline{font-size:1.6rem;font-weight:800;text-align:center;line-height:1.25;margin:8px 0 4px;color:rgba(255,255,255,.85)}
@@ -338,148 +364,120 @@
         .quiz-retry:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.45)}
         @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
         .quiz-fade{animation:fadeUp .35s ease both}
-        html.theme-light body{background:#f4f7fb;color:#111827}
-        html.theme-light .blob{opacity:.18}
-        html.theme-light .kawung-layer{opacity:.2}
-        html.theme-light .theme-toggle{background:rgba(255,255,255,.92);color:#0f172a;border-color:rgba(15,23,42,.12)}
-        html.theme-light .slide{background:rgba(255,255,255,.9);border-color:rgba(15,23,42,.12)}
-        html.theme-light h1{background:linear-gradient(90deg,#1f2937 30%,#0e7490);-webkit-background-clip:text;background-clip:text}
-        html.theme-light .att-hundred{background:linear-gradient(90deg,#6d28d9,#0e7490);-webkit-background-clip:text;background-clip:text}
-        html.theme-light .att-hundred small{-webkit-text-fill-color:#6d28d9}
-        html.theme-light .gdt-tagline em{background:linear-gradient(90deg,#6d28d9,#0e7490);-webkit-background-clip:text;background-clip:text}
-        html.theme-light .quiz-result-score{background:linear-gradient(90deg,#6d28d9,#0e7490);-webkit-background-clip:text;background-clip:text}
-        html.theme-light h2{color:#6d28d9}
-        html.theme-light h3{color:#0e7490}
-        html.theme-light p,html.theme-light li,html.theme-light em{color:rgba(31,41,55,.75)}
-        html.theme-light strong{color:#111827}
-        html.theme-light .flow-body strong{color:#111827}
-        html.theme-light .flow-body small{color:rgba(31,41,55,.65)}
-        html.theme-light .session-flow{background:linear-gradient(145deg,rgba(255,255,255,.95),rgba(241,245,249,.92));border-color:rgba(14,116,144,.22)}
-        html.theme-light .flow-step{background:rgba(14,116,144,.08);border-color:rgba(14,116,144,.2)}
-        html.theme-light .callout{background:rgba(124,58,237,.08);color:rgba(31,41,55,.78)}
-        html.theme-light .activity,html.theme-light .refleksi-box,html.theme-light .checkin-bar,html.theme-light .checkin-card{background:rgba(255,255,255,.88);border-color:rgba(15,23,42,.13)}
-        html.theme-light .slide-counter,html.theme-light .back-link{background:rgba(255,255,255,.88);border-color:rgba(15,23,42,.12)}
-        html.theme-light .watermark{color:rgba(31,41,55,.45)}
-        html.theme-light .refleksi-box .ref-instruksi,html.theme-light .cb-meta,html.theme-light .ci-meta{color:rgba(31,41,55,.6)}
-        html.theme-light .refleksi-box textarea{background:#fff;border-color:rgba(15,23,42,.16);color:#1f2937}
-        html.theme-light .refleksi-box textarea::placeholder{color:rgba(31,41,55,.35)}
     </style>
 </head>
 <body>
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Aktifkan tema terang">☀️ Light</button>
     <div class="kawung-layer"></div>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
     <div class="kawung-orb kawung-orb-left" aria-hidden="true"></div>
     <div class="kawung-orb kawung-orb-right" aria-hidden="true"></div>
-    <a href="index.html" class="back-link">&larr; Beranda</a>
+
+    <a href="index.html" class="back-link">&#8592; Beranda</a>
     <div class="watermark">Moklet Leadership &bull; SMK Telkom Malang</div>
     <div id="checkinArea"></div>
-    <div class="presentation-container">
 
+    <div class="presentation-container">
         <section class="slide active">
-            <div class="emoji">&#128161;</div>
-            <h1>Sesi 2: Deep Dive &ldquo;Sadar Diri&rdquo;</h1>
-            <p class="center-text" style="font-size:1.2rem;color:#c4b5fd;">Personal Branding &amp; Growth Mindset</p>
-            <p class="center-text">Memetakan potensi diri dan mengelola hambatan mental dalam belajar teknologi.</p>
-            <p class="center-text" style="font-size:.85rem;color:rgba(255,255,255,.35);margin-top:8px;">MOLESH &bull; Sesi 2 dari 6 &bull; 30&ndash;45 menit</p>
-            <div class="session-brand">Kawung x Future Mindset</div>
-            <div class="session-flow" role="img" aria-label="Alur sesi 2: kenali diri, ubah mindset, susun SWOT, dan buat roadmap pribadi">
-                <div class="session-flow-title">Infografis Alur Sesi 2</div>
+            <div class="emoji">&#127919;</div>
+            <h1>Moklet Leadership</h1>
+            <p class="center-text" style="font-size:1.25rem;color:#c4b5fd;">Sadar Diri, Peduli Kasih, Beraksi dan Melayani</p>
+            <p class="center-text">Membangun kepemimpinan yang dimulai dari mengenal diri, tumbuh lewat kasih pada sesama, dan nyata dalam aksi pelayanan.</p>
+            <div class="session-brand">Batik Futuristik MOLESH</div>
+            <div class="session-flow" role="img" aria-label="Alur sesi 1: sadar diri, peduli kasih pada tim, beraksi dan melayani, lalu jalankan praktik harian">
+                <div class="session-flow-title">Infografis Alur Sesi 1</div>
                 <div class="session-flow-track">
                     <div class="flow-step">
                         <span class="flow-no">1</span>
-                        <div class="flow-body"><strong>Kenali Diri</strong><small>Audit potensi dan hambatan pribadi</small></div>
+                        <div class="flow-body"><strong>Sadar Diri</strong><small>Kenali emosi, nilai, dan arah tujuan pribadi</small></div>
                     </div>
                     <div class="flow-step">
                         <span class="flow-no">2</span>
-                        <div class="flow-body"><strong>Ubah Mindset</strong><small>Ganti "tidak bisa" menjadi "belum bisa"</small></div>
+                        <div class="flow-body"><strong>Peduli Kasih</strong><small>Latih empati aktif dalam komunikasi dan kerja tim</small></div>
                     </div>
                     <div class="flow-step">
                         <span class="flow-no">3</span>
-                        <div class="flow-body"><strong>Susun SWOT</strong><small>Petakan strength, weakness, opportunity, threat</small></div>
+                        <div class="flow-body"><strong>Beraksi dan Melayani</strong><small>Ambil tindakan kecil yang membantu tim dan sekitar</small></div>
                     </div>
                     <div class="flow-step">
                         <span class="flow-no">4</span>
-                        <div class="flow-body"><strong>Roadmap Diri</strong><small>Tulis aksi 3 bulan ke depan</small></div>
+                        <div class="flow-body"><strong>Ritme Harian</strong><small>Ulangi refleksi, dukungan, dan tindakan nyata</small></div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="slide">
-            <h2>Review Sesi 1</h2>
-            <div class="emoji">&#128257;</div>
-            <p>Di sesi sebelumnya kita belajar bahwa otak kita bisa berubah (<span class="highlight">neuroplastisitas</span>). Sekarang kita terapkan ke dunia IT.</p>
-            <div class="callout">
-                <strong>Recap:</strong> Prefrontal cortex mengatur kontrol diri, amigdala mengatur alarm emosi, dan jurnal harian memicu koneksi saraf baru.
-            </div>
-            <p>Pertanyaan: <em>&ldquo;Apakah kamu sudah menulis refleksi 5 menit kemarin?&rdquo;</em></p>
-        </section>
-
-        <section class="slide">
-            <h2>The Debugging Mindset</h2>
-            <div class="emoji">&#128027;</div>
-            <p>Di dunia coding, game dev, dan networking &mdash; <span class="highlight">error bukan musuh</span>, error adalah <strong>data</strong>.</p>
+            <h2>Tujuan Materi</h2>
+            <div class="emoji">&#127775;</div>
             <ul>
-                <li>Setiap <code style="color:#7dd3fc;background:rgba(6,182,212,.12);padding:2px 6px;border-radius:6px">error message</code> berisi petunjuk untuk solusi &mdash; sama seperti <em>bug report</em> di playtesting game.</li>
-                <li>Developer &amp; game designer hebat bukan yang tidak pernah error, tapi yang <span class="cyan">paling cepat belajar dari error</span>.</li>
-                <li>Kegagalan = iterasi. Sama seperti proses <code style="color:#7dd3fc;background:rgba(6,182,212,.12);padding:2px 6px;border-radius:6px">git commit</code> atau siklus <em>playtest &rarr; fix &rarr; playtest</em> &mdash; setiap langkah kecil menumpuk menjadi proyek besar.</li>
+                <li>Menumbuhkan sadar diri sebagai fondasi kepemimpinan</li>
+                <li>Menguatkan peduli kasih terhadap tim dan lingkungan</li>
+                <li>Mendorong kebiasaan beraksi dan melayani lewat tindakan positif</li>
             </ul>
-            <div class="callout">
-                <strong>Mindset shift:</strong> &ldquo;Kode saya error&rdquo; &#8800; &ldquo;Saya gagal&rdquo;. Error adalah <em>feedback</em>, bukan identitas.
-            </div>
         </section>
 
         <section class="slide">
-            <h2>Fixed vs Growth Mindset di IT</h2>
+            <div class="emoji">&#127758;</div>
+            <p class="gdt-tagline">Get Ready to Become<br><em>A Global Digitalent!</em></p>
+            <p style="text-align:center;font-size:.95rem;color:rgba(255,255,255,.55);margin-top:12px">Ini bukan sekadar slogan. Ini adalah <span class="highlight">arah</span> yang harus kita tuju bersama sebagai siswa SMK Telkom Malang.</p>
+            <p style="text-align:center;font-size:.95rem;color:rgba(255,255,255,.55)">Untuk menjadi <strong style="color:#7dd3fc">Global Digitalent</strong>, kamu perlu lebih dari sekadar skill teknis:</p>
+            <div class="gdt-pills">
+                <span class="gdt-pill s">&#129504; Sadar diri atas potensimu</span>
+                <span class="gdt-pill p">&#129309; Peduli kasih pada tim</span>
+                <span class="gdt-pill b">&#128640; Beraksi dan melayani nyata</span>
+            </div>
+            <p style="text-align:center;font-size:.88rem;color:rgba(255,255,255,.4);margin-top:10px">MOLESH adalah jembatan antara <em>skill teknis</em> dan <em>karakter pemimpin digital global</em>.</p>
+        </section>
+
+        <section class="slide">
+            <h2>Pilar 1: Sadar Diri</h2>
             <div class="emoji">&#129504;</div>
+            <p><span class="highlight">Sadar Diri</span> diperkuat oleh prefrontal cortex (bagian otak depan yang mengatur perencanaan dan kontrol diri).</p>
             <ul>
-                <li><span class="rose">Fixed:</span> &ldquo;Saya tidak bakat coding/networking/game dev.&rdquo;</li>
-                <li><span class="cyan">Growth:</span> &ldquo;Saya <strong>belum</strong> bisa, tapi saya sedang belajar.&rdquo;</li>
+                <li>Latihan refleksi menebalkan koneksi sinaptik prefrontal sehingga arah tujuan pribadi makin jelas.</li>
+                <li>Menamai emosi menurunkan aktivitas amigdala (pusat alarm emosi) lewat riset <em>affect labeling</em>, membuat respons lebih tenang.</li>
+                <li>Jurnal 5 menit setiap hari memicu neuroplastisitas&#8212;kemampuan otak membentuk koneksi baru dari pengalaman.</li>
             </ul>
-            <p>Neuroscience menunjukkan: saat kita bilang &ldquo;belum bisa&rdquo;, prefrontal cortex tetap aktif mencari solusi. Saat bilang &ldquo;tidak bisa&rdquo;, amigdala menyala dan otak masuk mode <em>shutdown</em>.</p>
-            <div class="callout">
-                <strong>Kata kunci:</strong> Tambahkan kata <span class="highlight">&ldquo;belum&rdquo;</span> di setiap kalimat ketidakmampuan. &ldquo;Saya belum paham Unity/Docker&rdquo; lebih baik dari &ldquo;Saya tidak mengerti Unity/Docker&rdquo;.
-            </div>
         </section>
 
         <section class="slide">
-            <h2>Personal SWOT untuk Siswa SMK</h2>
-            <div class="emoji">&#128202;</div>
-            <p>Pinjam framework bisnis untuk pemetaan diri:</p>
+            <h2>Pilar 2: Peduli Kasih</h2>
+            <div class="emoji">&#129309;</div>
+            <p><span class="highlight">Peduli Kasih</span> memakai sistem mirror neuron (jaringan saraf peniru ekspresi) sehingga empati yang hangat dan aktif dapat dilatih.</p>
             <ul>
-                <li><span class="highlight">Strength:</span> Apa skill terbaikmu saat ini? (Coding, Networking, Game Design, 3D Modeling?)</li>
-                <li><span class="rose">Weakness:</span> Apa yang masih sulit? (Algoritma, Subnetting, Game Physics, Public Speaking?)</li>
-                <li><span class="cyan">Opportunity:</span> Peluang apa yang tersedia? (Lomba, magang, sertifikasi, komunitas?)</li>
-                <li><strong>Threat:</strong> Hambatan apa yang mengancam? (Malas, distraksi, lingkungan negatif?)</li>
+                <li>Mendengar aktif sambil kontak mata mengaktifkan mirror neuron dan membuat lawan bicara merasa dilihat.</li>
+                <li>Napas sinkron + nada suara hangat menstimulasi saraf vagus (jaringan yang menenangkan tubuh), menurunkan detak jantung tim.</li>
+                <li>Ritual apresiasi harian menekan kortisol (hormon stres) dan meningkatkan rasa aman psikologis.</li>
             </ul>
-            <p style="font-size:.9rem;color:rgba(255,255,255,.4)">Jujurlah pada diri sendiri&mdash;ini <em>private repo</em>, bukan <em>public repo</em>.</p>
         </section>
 
         <section class="slide">
-            <h2>Aktivitas: Readme.md Diri Sendiri</h2>
-            <div class="emoji">&#128221;</div>
-            <div class="activity">
-                <span class="activity-label">&#9997;&#65039; Aktivitas &bull; 15 menit</span>
-                <p>Buat file imajiner <code style="color:#7dd3fc;background:rgba(6,182,212,.12);padding:2px 6px;border-radius:6px">README.md</code> tentang dirimu:</p>
-                <ol>
-                    <li><strong># Nama Lengkap</strong> &mdash; siapa kamu?</li>
-                    <li><strong>## Skills</strong> &mdash; keahlian yang sudah dikuasai.</li>
-                    <li><strong>## Learning</strong> &mdash; apa yang ingin dipelajari semester ini.</li>
-                    <li><strong>## Bug Report</strong> &mdash; satu kelemahan yang ingin diperbaiki.</li>
-                    <li><strong>## Roadmap</strong> &mdash; target 3 bulan ke depan.</li>
-                </ol>
-            </div>
-            <p style="font-size:.9rem;color:rgba(255,255,255,.4)">Boleh ditulis di kertas, Notion, atau langsung di GitHub!</p>
+            <h2>Pilar 3: Beraksi dan Melayani</h2>
+            <div class="emoji">&#128640;</div>
+            <p><span class="highlight">Beraksi dan Melayani</span> lahir saat prefrontal cortex memimpin sistem limbik (area emosional)&#8212;ketakutan terukur, keputusan tetap maju, dieksekusi, lalu diarahkan untuk memberi manfaat.</p>
+            <ul>
+                <li>Visualisasi sukses menenangkan amigdala sehingga tubuh siap menghadapi panggung atau tantangan baru.</li>
+                <li>Kerangka keputusan &#8220;jika-maka&#8221; melibatkan basal ganglia (pusat kebiasaan) sehingga aksi positif jadi otomatis.</li>
+                <li>Evaluasi setelah bertindak melepaskan dopamin (neurotransmiter rasa puas), memberi otak alasan kimiawi untuk terus beraksi dan melayani dengan konsisten.</li>
+            </ul>
         </section>
 
+        <section class="slide">
+            <h2>Alur Praktik Harian</h2>
+            <div class="emoji">&#128204;</div>
+            <ul>
+                <li><span class="highlight">Sadar Diri:</span> refleksi diri 5 menit setiap hari</li>
+                <li><span class="highlight">Peduli Kasih:</span> lakukan satu aksi dukungan nyata untuk teman atau tim</li>
+                <li><span class="highlight">Beraksi dan Melayani:</span> ambil satu keputusan kecil yang bermanfaat bagi orang lain</li>
+            </ul>
+        </section>
 
         <section class="slide" id="attSlide">
             <h2>Attitude is Everything</h2>
             <div class="emoji">&#128175;</div>
-            <p>Ingat! Jika setiap huruf alfabet = angka (A=1 &#8230; Z=26):</p>
+            <p>Jika setiap huruf alfabet diberi nilai (A=1, B=2 &#8230; Z=26), berapa nilai kata-kata ini?</p>
             <div class="att-grid">
                 <div class="att-cell"><div class="att-letter">A</div><div class="att-num">1</div></div>
                 <div class="att-cell"><div class="att-letter">T</div><div class="att-num">20</div></div>
@@ -496,7 +494,7 @@
                 <div class="att-bar-row"><span class="att-bar-label" style="color:#c4b5fd">Attitude</span><div class="att-bar-track"><div class="att-bar-fill att">100%</div></div></div>
             </div>
             <div class="att-hundred">= 100%<small>ATTITUDE IS EVERYTHING</small></div>
-            <p style="font-size:.9rem;color:rgba(255,255,255,.45);text-align:center;margin-top:8px">Growth mindset dimulai dari <span class="highlight">attitude</span>: percaya bahwa kamu &ldquo;belum&rdquo; bisa, bukan &ldquo;tidak&rdquo; bisa.</p>
+            <p style="font-size:.9rem;color:rgba(255,255,255,.45);text-align:center;margin-top:8px">Knowledge &amp; hardwork penting&#8212;tapi tanpa <span class="highlight">attitude</span> yang benar, keduanya tidak akan mencapai potensi penuh.</p>
         </section>
 
         <section class="slide quiz-slide">
@@ -510,98 +508,81 @@
 
         <section class="slide">
             <div class="emoji">&#10024;</div>
-            <h2 style="text-align:center">Penutup Sesi 2</h2>
-            <p class="center-text" style="font-size:1.15rem;color:#c4b5fd;">Kejujuran pada diri sendiri adalah <code style="color:#7dd3fc;background:rgba(6,182,212,.12);padding:2px 6px;border-radius:6px">commit</code> pertama menuju versi terbaik dirimu.</p>
-            <p class="center-text">Error tidak mendefinisikan siapa kamu&mdash;cara kamu <span class="highlight">merespons</span> error itulah yang membentukmu.</p>
-            <div class="callout" style="text-align:center">
-                <strong>Refleksi:</strong> Apakah kamu sudah jujur dengan SWOT dirimu hari ini?
-            </div>
+            <h2 style="text-align:center">Penutup</h2>
+            <p class="center-text" style="font-size:1.25rem;color:#c4b5fd;">Pemimpin hebat tidak lahir instan.</p>
+            <p class="center-text">Ia <span class="highlight">sadar diri</span>, <span class="highlight">peduli kasih</span> pada sesama, dan <span class="highlight">beraksi dan melayani</span> secara nyata.</p>
+            <p class="center-text" style="margin-top:10px;">Mulai hari ini: <span class="highlight">Sadar Diri, Peduli Kasih, Beraksi dan Melayani</span>.</p>
             <p class="center-text" style="margin-top:12px"><span class="gdt-badge">&#127758; Get Ready to Become A Global Digitalent!</span></p>
+            <p class="center-text" style="margin-top:16px;font-size:.9rem;color:rgba(255,255,255,.35);">Catatan: materi ini adalah <strong>Sesi 1</strong>. Lanjutan strategi kepemimpinan akan dibahas pada pertemuan berikutnya.</p>
 
             <div class="refleksi-box" id="refleksiBox">
-                <h4>&#9997;&#65039; Refleksi Sesi 2</h4>
-                <p class="ref-instruksi">Setelah mempelajari <strong>growth mindset</strong> dan <strong>personal branding</strong>, apa 1 kebiasaan yang ingin kamu ubah mulai hari ini? Jelaskan alasanmu.</p>
+                <h4>&#9997;&#65039; Refleksi Sesi 1</h4>
+                <p class="ref-instruksi">Apa 1 hal dari konsep <strong>&ldquo;Sadar Diri, Peduli Kasih, Beraksi dan Melayani&rdquo;</strong> yang paling relevan dengan situasi kamu saat ini? Jelaskan mengapa.</p>
                 <textarea id="refleksiText" placeholder="Tulis refleksimu di sini..." maxlength="1000"></textarea>
                 <button class="ref-submit" id="refSubmitBtn" onclick="submitRefleksi()">&#128640; Kirim Refleksi</button>
                 <div class="ref-success" id="refSuccess">&#10004;&#65039; Refleksi berhasil dikirim! Terima kasih.</div>
             </div>
 
             <div class="session-nav">
-                <a href="sesi1.html" class="session-nav-link prev">&larr; Sesi 1</a>
-                <a href="sesi3.html" class="session-nav-link next">Sesi 3 &rarr;</a>
+                <a href="sesi2.html" class="session-nav-link">Sesi 2: Deep Dive Sadar Diri &rarr;</a>
             </div>
         </section>
-
     </div>
 
     <div class="navigation">
-        <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&larr; Sebelumnya</button>
-        <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">Selanjutnya &rarr;</button>
+        <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&#8592; Sebelumnya</button>
+        <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">Selanjutnya &#8594;</button>
     </div>
+
     <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">7</span></div>
 
     <script src="config.js"></script>
     <script>
-        var currentSlide=0;
-        var slides=document.querySelectorAll('.slide');
-        var totalSlides=slides.length;
-        var currentSlideEl=document.getElementById('currentSlide');
-        var totalSlidesEl=document.getElementById('totalSlides');
-        var prevBtn=document.getElementById('prevBtn');
-        var nextBtn=document.getElementById('nextBtn');
-        var themeToggle=document.getElementById('themeToggle');
+        var currentSlide = 0;
+        var slides = document.querySelectorAll('.slide');
+        var totalSlides = slides.length;
+        var currentSlideEl = document.getElementById('currentSlide');
+        var totalSlidesEl = document.getElementById('totalSlides');
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
 
-        function applyTheme(theme) {
-            var isLight = theme === 'light';
-            document.documentElement.classList.toggle('theme-light', isLight);
-            try { localStorage.setItem('molesh_theme', isLight ? 'light' : 'dark'); } catch (e) {}
-            if (themeToggle) {
-                themeToggle.textContent = isLight ? '🌙 Dark' : '☀️ Light';
-                themeToggle.setAttribute('aria-label', isLight ? 'Aktifkan tema gelap' : 'Aktifkan tema terang');
-            }
-        }
+        totalSlidesEl.textContent = totalSlides;
 
-        function initThemeToggle() {
-            var storedTheme = 'dark';
-            try { storedTheme = localStorage.getItem('molesh_theme') || 'dark'; } catch (e) {}
-            applyTheme(storedTheme === 'light' ? 'light' : 'dark');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    var nextTheme = document.documentElement.classList.contains('theme-light') ? 'dark' : 'light';
-                    applyTheme(nextTheme);
-                });
+        function showSlide(index) {
+            for (var i = 0; i < slides.length; i++) {
+                if (i === index) {
+                    slides[i].classList.add('active');
+                    slides[i].scrollTop = 0;
+                } else {
+                    slides[i].classList.remove('active');
+                }
             }
+            currentSlideEl.textContent = index + 1;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalSlides - 1;
         }
 
-        totalSlidesEl.textContent=totalSlides;
-        initThemeToggle();
-        function showSlide(index){
-            for(var i=0;i<slides.length;i++){
-                if(i===index){slides[i].classList.add('active');slides[i].scrollTop=0}
-                else{slides[i].classList.remove('active')}
-            }
-            currentSlideEl.textContent=index+1;
-            prevBtn.disabled=index===0;
-            nextBtn.disabled=index===totalSlides-1;
+        function changeSlide(direction) {
+            var nextIndex = currentSlide + direction;
+            if (nextIndex < 0 || nextIndex >= totalSlides) return;
+            currentSlide = nextIndex;
+            showSlide(currentSlide);
         }
-        function changeSlide(d){
-            var n=currentSlide+d;
-            if(n<0||n>=totalSlides)return;
-            currentSlide=n;showSlide(currentSlide);
-        }
-        document.addEventListener('keydown',function(e){
-            if(e.key==='ArrowRight')changeSlide(1);
-            if(e.key==='ArrowLeft')changeSlide(-1);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
         });
+
         showSlide(currentSlide);
 
         var quizData=[
-            {q:"Dalam <em>debugging mindset</em>, error seharusnya dilihat sebagai\u2026",
-             opts:["Kegagalan pribadi","Bukti tidak berbakat","Data dan feedback","Alasan untuk menyerah"],ans:2},
-            {q:"Kata kunci apa yang membuat prefrontal cortex tetap aktif mencari solusi?",
-             opts:["\u201cTidak bisa\u201d","\u201cBelum\u201d","\u201cMungkin\u201d","\u201cNanti saja\u201d"],ans:1},
-            {q:"Apa kepanjangan huruf S dalam analisis SWOT?",
-             opts:["Strategy","Solution","Strength","Skill"],ans:2}
+            {q:"Bagian otak mana yang mengatur perencanaan dan kontrol diri?",
+             opts:["Amigdala","Prefrontal cortex","Basal ganglia","Hippocampus"],ans:1},
+            {q:"Apa efek dari menamai emosi (<em>affect labeling</em>) menurut riset neuroscience?",
+             opts:["Amigdala makin aktif","Dopamin melonjak drastis","Aktivitas amigdala menurun","Kortisol meningkat tajam"],ans:2},
+            {q:"Apa tiga pilar utama MOLESH?",
+             opts:["Sadar Diri, Peduli Kasih, Beraksi dan Melayani","Jujur, Disiplin, Kreatif","Berpikir, Berempati, Bertindak","Fokus, Tekun, Beraksi"],ans:0}
         ];
 
         var quizState={current:0,score:0,answered:false};
@@ -772,7 +753,7 @@
             if (card) {
                 card.style.transition = 'opacity 0.3s, transform 0.3s';
                 card.style.opacity = '0';
-                card.style.transform = 'translateY(16px)';
+                card.style.transform = 'translateY(-100%)';
                 setTimeout(function(){ card.remove(); }, 300);
                 /* Save to localStorage so it won't appear again */
                 markCheckinDismissed(ciId);
@@ -811,7 +792,7 @@
         loadActiveCheckin();
 
         /* ── Reflection submission ── */
-        var SESI_NUM = 2;
+        var SESI_NUM = 1;
         function submitRefleksi() {
             var text = document.getElementById('refleksiText').value.trim();
             if (!text) { alert('Tulis refleksimu dulu ya!'); return; }
