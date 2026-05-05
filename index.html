@@ -1658,22 +1658,134 @@
 
         .commitment-history {
             display: none;
-            margin-bottom: 14px;
-            padding: 14px;
-            border-radius: 18px;
+            padding: 0;
             text-align: left;
-            background:
-                radial-gradient(circle at top right, rgba(255, 255, 255, .08), transparent 34%),
-                linear-gradient(145deg, rgba(127, 29, 29, .24), rgba(30, 64, 175, .18));
-            border: 1px solid rgba(125, 211, 252, .16);
-            box-shadow:
-                inset 0 0 0 1px rgba(254, 226, 226, .04),
-                0 18px 34px rgba(15, 23, 42, .14);
+            background: transparent;
+            border: 0;
+            box-shadow: none;
         }
 
         .commitment-history.show {
             display: block;
             animation: fadein .35s ease both;
+        }
+
+        /* ── Commitment FAB (floating trigger above bottom nav) ── */
+        .commitment-fab {
+            position: fixed;
+            right: 14px;
+            bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+            z-index: 8500;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(251, 191, 36, .35);
+            background: linear-gradient(135deg, rgba(127, 29, 29, .85), rgba(30, 64, 175, .82));
+            color: #fef3c7;
+            font-family: inherit;
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .3px;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 12px 28px rgba(127, 29, 29, .35), 0 4px 10px rgba(15, 23, 42, .35);
+            transition: transform .18s ease, box-shadow .18s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .commitment-fab.show { display: inline-flex; animation: popUp .35s cubic-bezier(.22, 1, .36, 1) both; }
+        .commitment-fab:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(127, 29, 29, .45), 0 6px 12px rgba(15, 23, 42, .38); }
+        .commitment-fab:active { transform: translateY(0) scale(.96); }
+        .commitment-fab-icon { font-size: 1.05rem; line-height: 1; }
+        .commitment-fab-label { line-height: 1; }
+        @keyframes popUp { from { opacity: 0; transform: translateY(12px) scale(.92); } to { opacity: 1; transform: none; } }
+
+        /* ── Modal backdrop & body ── */
+        .commitment-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 9500;
+            background: rgba(2, 6, 23, .62);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadein .18s ease both;
+        }
+        .commitment-backdrop[hidden] { display: none; }
+
+        .commitment-modal {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            max-height: calc(100dvh - 80px);
+            overflow-y: auto;
+            padding: 22px 22px 18px;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, .08), transparent 34%),
+                linear-gradient(145deg, rgba(127, 29, 29, .55), rgba(30, 64, 175, .55)),
+                rgba(15, 23, 42, .94);
+            border: 1px solid rgba(251, 191, 36, .25);
+            box-shadow: 0 30px 60px rgba(2, 8, 23, .55), inset 0 1px 0 rgba(255, 255, 255, .05);
+            animation: popUp .25s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        .commitment-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, .8);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, transform .18s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .commitment-close:hover { background: rgba(255, 255, 255, .14); transform: rotate(90deg); }
+
+        .commitment-empty {
+            text-align: center;
+            padding: 30px 16px 12px;
+            color: rgba(226, 232, 240, .82);
+        }
+        .commitment-empty-emoji { font-size: 2.6rem; margin-bottom: 10px; }
+        .commitment-empty strong { display: block; font-size: 1rem; margin-bottom: 6px; color: #fff; }
+        .commitment-empty p { font-size: .82rem; line-height: 1.55; color: rgba(226, 232, 240, .65); margin: 0 auto; max-width: 320px; }
+        .commitment-empty[hidden] { display: none; }
+
+        html.theme-light .commitment-fab {
+            background: linear-gradient(135deg, #fed7aa, #fcd34d);
+            color: #7c2d12;
+            border-color: rgba(127, 29, 29, .25);
+            box-shadow: 0 12px 28px rgba(251, 191, 36, .4), 0 4px 10px rgba(15, 23, 42, .15);
+        }
+        html.theme-light .commitment-modal {
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, .9), transparent 38%),
+                linear-gradient(145deg, rgba(254, 215, 170, .9), rgba(219, 234, 254, .9)),
+                #fff;
+            border-color: rgba(251, 191, 36, .35);
+        }
+        html.theme-light .commitment-close { background: rgba(15, 23, 42, .08); border-color: rgba(15, 23, 42, .12); color: #0f172a; }
+        html.theme-light .commitment-empty strong { color: #0f172a; }
+        html.theme-light .commitment-empty p { color: rgba(15, 23, 42, .65); }
+
+        @media (max-width: 480px) {
+            .commitment-modal { padding: 22px 18px 16px; max-height: calc(100dvh - 100px); }
+            .commitment-fab { right: 12px; padding: 9px 14px 9px 12px; font-size: .74rem; }
         }
 
         .commitment-history.collapsed .commitment-list {
@@ -3825,8 +3937,6 @@
             <h2>📚 Menu Pembelajaran</h2>
             <p class="dash-subtitle">Pilih sesi untuk memulai. Selesaikan secara berurutan untuk hasil terbaik.</p>
 
-            <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
-
             <div class="overall-progress" id="overallProgress">
                 <div style="display:flex;align-items:center;justify-content:space-between">
                     <span class="op-label">Progress Keseluruhan</span>
@@ -3926,6 +4036,22 @@
             </a>
         </div>
 
+        <button id="commitmentFab" class="commitment-fab" type="button" aria-label="Lihat Catatan Komitmen Kehadiran" onclick="openCommitmentModal()">
+            <span class="commitment-fab-icon" aria-hidden="true">🔥</span>
+            <span class="commitment-fab-label">Kehadiran</span>
+        </button>
+
+        <div id="commitmentBackdrop" class="commitment-backdrop" onclick="closeCommitmentModal(event)" role="dialog" aria-modal="true" aria-labelledby="commitmentModalTitle" hidden>
+            <div class="commitment-modal" onclick="event.stopPropagation()">
+                <button class="commitment-close" type="button" aria-label="Tutup" onclick="closeCommitmentModal()">×</button>
+                <div id="commitmentHistory" class="commitment-history" aria-live="polite"></div>
+                <div id="commitmentEmpty" class="commitment-empty" hidden>
+                    <div class="commitment-empty-emoji">🔥</div>
+                    <strong id="commitmentModalTitle">Belum Ada Catatan Kehadiran</strong>
+                    <p>Tandai kehadiran kamu lewat tombol di beranda saat sesi aktif. Riwayatnya akan muncul di sini.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
 
@@ -4867,28 +4993,28 @@
 
         function renderCommitmentHistory(items) {
             var wrap = document.getElementById('commitmentHistory');
+            var fab = document.getElementById('commitmentFab');
+            var emptyEl = document.getElementById('commitmentEmpty');
             if (!wrap) return;
 
-            if (!items || !items.length) {
+            var hasItems = items && items.length;
+            if (fab) fab.classList.toggle('show', !!hasItems);
+            if (emptyEl) emptyEl.hidden = !!hasItems;
+
+            if (!hasItems) {
                 wrap.classList.remove('show');
                 wrap.innerHTML = '';
                 return;
             }
 
-            var raw = localStorage.getItem('molesh_user');
-            var email = '';
-            try {
-                email = raw ? JSON.parse(raw).email || '' : '';
-            } catch (e) { }
-            var collapsed = isCommitmentCollapsed(email);
             var html = '';
             html += '<div class="commitment-header">';
             html += '<div><div class="commitment-title">🔥 Catatan Komitmen Kehadiran</div><div class="commitment-subtitle">Riwayat kehadiran yang sudah kamu tandai dari beranda.</div></div>';
-            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Hadir</span><button class="commitment-toggle" type="button" onclick="toggleCommitmentHistory()"><span id="commitmentToggleText">' + (collapsed ? 'Buka' : 'Tutup') + '</span></button></div>';
+            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Hadir</span></div>';
             html += '</div>';
             html += '<div class="commitment-list">';
 
-            items.slice(0, 3).forEach(function (item) {
+            items.slice(0, 10).forEach(function (item) {
                 var title = item.tanggal ? 'Kehadiran ' + item.tanggal : 'Kehadiran Tercatat';
                 var metaText = item.deskripsi || 'Komitmen harian sudah dicatat di beranda.';
                 html += '<div class="commitment-item">';
@@ -4902,9 +5028,34 @@
 
             html += '</div>';
             wrap.innerHTML = html;
+            wrap.classList.remove('collapsed');
             wrap.classList.add('show');
-            wrap.classList.toggle('collapsed', collapsed);
         }
+
+        function openCommitmentModal() {
+            var raw = localStorage.getItem('molesh_user');
+            if (!raw) return;
+            try {
+                var user = JSON.parse(raw);
+                if (!user.email || user.email === 'Mode pratinjau') return;
+            } catch (e) { return; }
+            var bd = document.getElementById('commitmentBackdrop');
+            if (!bd) return;
+            bd.hidden = false;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCommitmentModal(ev) {
+            if (ev && ev.target && ev.target.id !== 'commitmentBackdrop' && ev.currentTarget && ev.currentTarget.id !== 'commitmentBackdrop' && ev.type !== 'click') return;
+            var bd = document.getElementById('commitmentBackdrop');
+            if (!bd) return;
+            bd.hidden = true;
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeCommitmentModal();
+        });
 
         function loadCommitmentHistory(email) {
             if (!email || email === 'Mode pratinjau') return;
@@ -5258,6 +5409,9 @@
             heroSection.style.display = '';
             authSection.style.display = '';
             dashboard.classList.add('hidden');
+            var fab = document.getElementById('commitmentFab');
+            if (fab) fab.classList.remove('show');
+            closeCommitmentModal();
             SESSION_LIKES_STATE.counts = {};
             SESSION_LIKES_STATE.liked = {};
             SESSION_LIKES_STATE.pending = {};
