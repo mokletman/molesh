@@ -1852,6 +1852,69 @@
             font-size: .8rem;
             color: rgba(226, 232, 240, .5);
         }
+        /* Premium User Box in Modal */
+        .cm-user-box {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .cm-user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, .3);
+        }
+        .cm-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .cm-user-name {
+            font-size: .95rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+        }
+        .cm-user-meta {
+            font-size: .74rem;
+            color: rgba(226, 232, 240, .5);
+            margin-top: 2px;
+        }
+        .cm-user-stats {
+            text-align: right;
+            border-left: 1px solid rgba(255, 255, 255, .1);
+            padding-left: 14px;
+        }
+        .cm-stat-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #7dd3fc;
+            line-height: 1;
+        }
+        .cm-stat-label {
+            font-size: .55rem;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: rgba(226, 232, 240, .4);
+            margin-top: 2px;
+        }
+
+        html.theme-light .cm-user-box { background: rgba(15, 23, 42, .03); border-color: rgba(15, 23, 42, .08); }
+        html.theme-light .cm-user-name { color: #0f172a; }
+        html.theme-light .cm-user-meta { color: rgba(15, 23, 42, .5); }
+        html.theme-light .cm-stat-val { color: #0369a1; }
+        html.theme-light .cm-stat-label { color: rgba(15, 23, 42, .45); }
+        html.theme-light .cm-user-stats { border-left-color: rgba(15, 23, 42, .1); }
+
         html.theme-light .cm-active-title { color: #15803d; }
         html.theme-light .cm-active-meta { color: rgba(30, 41, 59, .6); }
         html.theme-light .cm-active-card { background: linear-gradient(135deg, rgba(34, 197, 94, .12), rgba(6, 182, 212, .08)); border-color: rgba(34, 197, 94, .22); }
@@ -4129,11 +4192,19 @@
         <div id="commitmentBackdrop" class="commitment-backdrop" onclick="closeCommitmentModal(event)" role="dialog" aria-modal="true" aria-labelledby="commitmentModalTitle" hidden>
             <div class="commitment-modal" onclick="event.stopPropagation()">
                 <button class="commitment-close" type="button" aria-label="Tutup" onclick="closeCommitmentModal()">×</button>
-                <div style="text-align:center;margin-bottom:14px">
-                    <div style="font-size:1.5rem;margin-bottom:4px">🔥</div>
-                    <strong id="commitmentModalTitle" style="font-size:1.05rem;color:#fef2f2;display:block">Kehadiran Saya</strong>
-                    <p style="font-size:.76rem;color:rgba(226,232,240,.6);margin-top:4px" id="cmUserInfo"></p>
+                
+                <div class="cm-user-box">
+                    <div class="cm-user-avatar">👤</div>
+                    <div class="cm-user-info">
+                        <div class="cm-user-name" id="cmUserName">Memuat...</div>
+                        <div class="cm-user-meta" id="cmUserMeta">...</div>
+                    </div>
+                    <div class="cm-user-stats">
+                        <div class="cm-stat-val" id="cmPresenceCount">0</div>
+                        <div class="cm-stat-label">Kehadiran</div>
+                    </div>
                 </div>
+
                 <div id="cmActiveSection" class="cm-active-area"></div>
                 <div class="cm-divider"></div>
                 <div class="cm-section-label">📋 Riwayat Kehadiran</div>
@@ -5086,10 +5157,12 @@
         function renderCommitmentHistory(items) {
             var wrap = document.getElementById('commitmentHistory');
             var emptyEl = document.getElementById('commitmentEmpty');
+            var countEl = document.getElementById('cmPresenceCount');
             if (!wrap) return;
 
             var hasItems = items && items.length;
             if (emptyEl) emptyEl.hidden = !!hasItems;
+            if (countEl) countEl.textContent = items ? items.length : 0;
 
             if (!hasItems) {
                 wrap.classList.remove('show');
@@ -5098,21 +5171,19 @@
             }
 
             var html = '';
-            html += '<div class="commitment-header">';
-            html += '<div><div class="commitment-title">🔥 Catatan Komitmen Kehadiran</div><div class="commitment-subtitle">Riwayat kehadiran yang sudah kamu tandai dari beranda.</div></div>';
-            html += '<div class="commitment-summary"><span class="commitment-pill">Sudah Hadir</span></div>';
-            html += '</div>';
             html += '<div class="commitment-list">';
 
-            items.slice(0, 10).forEach(function (item) {
+            items.slice(0, 15).forEach(function (item) {
                 var title = item.tanggal ? 'Kehadiran ' + item.tanggal : 'Kehadiran Tercatat';
-                var metaText = item.deskripsi || 'Komitmen harian sudah dicatat di beranda.';
+                var metaText = item.deskripsi || 'Komitmen harian tercatat.';
                 html += '<div class="commitment-item">';
                 html += '<div class="commitment-item-top">';
-                html += '<div><div class="commitment-item-title">' + escapeHtml(title) + '</div><div class="commitment-item-meta">' + escapeHtml(metaText) + '</div></div>';
+                html += '<div class="commitment-item-info">';
+                html += '<div class="commitment-item-title">' + escapeHtml(title) + '</div>';
+                html += '<div class="commitment-item-meta">' + escapeHtml(metaText) + '</div>';
+                html += '</div>';
                 html += '<div class="commitment-item-time">' + formatCommitmentDate(item.checkinTime || item.tanggal) + '</div>';
                 html += '</div>';
-                html += '<div class="commitment-note"><strong>Komitmen:</strong> ' + escapeHtml(item.note) + '</div>';
                 html += '</div>';
             });
 
@@ -5141,14 +5212,22 @@
             bd.hidden = false;
             document.body.style.overflow = 'hidden';
 
-            /* Show user info */
-            var cmUserInfo = document.getElementById('cmUserInfo');
-            if (cmUserInfo) {
+            /* Show user info box */
+            var cmNameEl = document.getElementById('cmUserName');
+            var cmMetaEl = document.getElementById('cmUserMeta');
+            var cmCountEl = document.getElementById('cmPresenceCount');
+            
+            if (cmNameEl && cmMetaEl) {
                 var prof = {};
                 try { prof = JSON.parse(localStorage.getItem('molesh_profile') || '{}'); } catch(e){}
-                var displayName = prof.nama || user.name || 'Pengguna';
-                var displayClass = prof.kelas ? ' • ' + prof.kelas : '';
-                cmUserInfo.textContent = displayName + displayClass;
+                cmNameEl.textContent = prof.nama || user.name || 'Pengguna';
+                cmMetaEl.textContent = (prof.kelas || 'Kelas Belum Diisi') + (prof.absen ? ' • No. ' + prof.absen : '');
+            }
+
+            /* Initialize count from cache */
+            if (cmCountEl) {
+                var cachedHistory = getCommitmentHistoryCache(user.email);
+                cmCountEl.textContent = cachedHistory.length || 0;
             }
 
             /* Render active check-in section */
@@ -5312,8 +5391,12 @@
             fetch(MOLESH_CONFIG.APPS_SCRIPT_URL + '?type=checkinLog')
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
+                    var targetEmail = email.toLowerCase().trim();
                     var items = (data || [])
-                        .filter(function (entry) { return entry.email === email; })
+                        .filter(function (entry) { 
+                            var entryEmail = (entry.email || '').toLowerCase().trim();
+                            return entryEmail === targetEmail; 
+                        })
                         .map(normalizeCommitmentEntry)
                         .sort(function (a, b) {
                             return new Date(b.checkinTime || b.tanggal || 0) - new Date(a.checkinTime || a.tanggal || 0);
