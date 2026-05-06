@@ -1883,6 +1883,9 @@
             font-weight: 800;
             color: #fff;
             line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .cm-user-meta {
             font-size: .74rem;
@@ -1908,12 +1911,48 @@
             margin-top: 2px;
         }
 
+        /* Active Status Card (matching checkin-bar) */
+        .cm-status-box {
+            padding: 14px 16px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: fadeUp .35s ease both;
+        }
+        .cm-status-box.done {
+            background: rgba(34, 197, 94, .1);
+            border: 1px solid rgba(34, 197, 94, .25);
+            color: #4ade80;
+        }
+        .cm-status-box.active {
+            background: rgba(124, 58, 237, .1);
+            border: 1px solid rgba(124, 58, 237, .25);
+        }
+        .cm-status-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .cm-status-info { flex: 1; min-width: 0; }
+        .cm-status-title { font-size: .85rem; font-weight: 700; }
+        .cm-status-meta { font-size: .7rem; opacity: .7; }
+        .cm-status-btn {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff;
+            border: 0;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: .8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         html.theme-light .cm-user-box { background: rgba(15, 23, 42, .03); border-color: rgba(15, 23, 42, .08); }
         html.theme-light .cm-user-name { color: #0f172a; }
         html.theme-light .cm-user-meta { color: rgba(15, 23, 42, .5); }
         html.theme-light .cm-stat-val { color: #0369a1; }
         html.theme-light .cm-stat-label { color: rgba(15, 23, 42, .45); }
         html.theme-light .cm-user-stats { border-left-color: rgba(15, 23, 42, .1); }
+        html.theme-light .cm-status-box.done { background: rgba(34, 197, 94, .08); color: #15803d; }
+        html.theme-light .cm-status-box.active { background: rgba(124, 58, 237, .06); border-color: rgba(124, 58, 237, .15); }
 
         html.theme-light .cm-active-title { color: #15803d; }
         html.theme-light .cm-active-meta { color: rgba(30, 41, 59, .6); }
@@ -5267,18 +5306,21 @@
                             var alreadyDone = doneIds.indexOf(ci.id) > -1;
 
                             if (alreadyDone) {
-                                html += '<div class="cm-active-done"><span class="cm-active-done-icon">✅</span><div><strong>Sudah Hadir</strong> — ' + tanggal + '</div></div>';
+                                html += '<div class="cm-status-box done">';
+                                html += '<div class="cm-status-icon">✅</div>';
+                                html += '<div class="cm-status-info"><div class="cm-status-title">Kehadiran tercatat</div><div class="cm-status-meta">' + tanggal + '</div></div>';
+                                html += '</div>';
                             } else if (!isProfileComplete) {
-                                html += '<div class="cm-profile-warn">';
-                                html += '<div style="font-size:1.3rem;flex-shrink:0">🔒</div>';
-                                html += '<div class="cm-profile-warn-info"><div class="cm-profile-warn-title">Profil Belum Lengkap</div><div class="cm-profile-warn-meta">Lengkapi Nama, Kelas, & Absen untuk bisa absen.</div></div>';
-                                html += '<a class="cm-profile-warn-btn" href="profil.html">Isi Profil</a>';
+                                html += '<div class="cm-status-box active" style="background:rgba(244,63,94,.1); border-color:rgba(244,63,94,.2)">';
+                                html += '<div class="cm-status-icon">🔒</div>';
+                                html += '<div class="cm-status-info"><div class="cm-status-title" style="color:#fb7185">Profil Belum Lengkap</div><div class="cm-status-meta">Lengkapi Profil untuk absen.</div></div>';
+                                html += '<a class="cm-status-btn" href="profil.html" style="background:#f43f5e">Isi Profil</a>';
                                 html += '</div>';
                             } else {
-                                html += '<div class="cm-active-card">';
-                                html += '<div class="cm-active-icon">📍</div>';
-                                html += '<div class="cm-active-info"><div class="cm-active-title">Kehadiran Tersedia!</div><div class="cm-active-meta">' + tanggal + (ci.deskripsi ? ' — ' + ci.deskripsi : '') + '</div></div>';
-                                html += '<button class="cm-active-btn" id="cmBtn_' + ci.id + '" onclick="doCheckinFromModal(\'' + ci.id + '\',\'' + (ci.tanggal || '') + '\',\'' + (ci.deskripsi || '').replace(/'/g, "\\'") + '\')">✋ Hadir</button>';
+                                html += '<div class="cm-status-box active">';
+                                html += '<div class="cm-status-icon">📍</div>';
+                                html += '<div class="cm-status-info"><div class="cm-status-title">Kehadiran Tersedia!</div><div class="cm-status-meta">' + tanggal + '</div></div>';
+                                html += '<button class="cm-status-btn" id="cmBtn_' + ci.id + '" onclick="doCheckinFromModal(\'' + ci.id + '\',\'' + (ci.tanggal || '') + '\',\'' + (ci.deskripsi || '').replace(/'/g, "\\'") + '\')">Hadir</button>';
                                 html += '</div>';
                             }
                         });
