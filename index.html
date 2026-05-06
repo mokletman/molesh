@@ -4571,16 +4571,8 @@
             renderSessionProgress(user.email);
             loadSessionLikes(user.email === 'Mode pratinjau' ? '' : user.email);
 
-            /* Render commitment history */
-            loadCommitmentHistory(user.email);
-
             /* Render achievement badges */
             renderBadges(user.email);
-
-            /* Auto-open Kehadiran modal when navigated via #kehadiran */
-            if (location.hash === '#kehadiran') {
-                setTimeout(openCommitmentModal, 200);
-            }
         }
 
         /* ── Session progress renderer ── */
