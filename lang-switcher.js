@@ -88,117 +88,140 @@
         }
     }
 
+    function createOrGetFabGroup() {
+        var g = document.getElementById('ml-fab-group');
+        if (g) return g;
+
+        g = document.createElement('div');
+        g.id = 'ml-fab-group';
+        g.style.cssText = [
+            'position:fixed', 'top:14px', 'right:14px', 'z-index:10002',
+            'display:flex', 'flex-direction:column', 'align-items:center', 'gap:3px',
+            'padding:5px',
+            'border-radius:999px',
+            'background:rgba(13,20,40,.72)',
+            'border:1px solid rgba(255,255,255,.10)',
+            'backdrop-filter:blur(18px)', '-webkit-backdrop-filter:blur(18px)',
+            'box-shadow:0 6px 28px rgba(0,0,0,.32)',
+            'transition:background .25s,border-color .25s'
+        ].join(';');
+        document.body.appendChild(g);
+
+        // Absorb .theme-toggle into the group
+        var toggle = document.querySelector('.theme-toggle');
+        if (toggle) {
+            toggle.style.cssText = [
+                'position:static', 'top:auto', 'right:auto', 'z-index:auto',
+                'width:38px', 'height:38px', 'min-width:0', 'min-height:0',
+                'padding:0', 'border:none', 'background:transparent',
+                'box-shadow:none', 'backdrop-filter:none', '-webkit-backdrop-filter:none',
+                'border-radius:999px', 'font-family:inherit', 'font-size:.88rem',
+                'font-weight:700', 'cursor:pointer', 'line-height:1',
+                'transition:transform .18s ease,background .18s ease',
+                'display:flex', 'align-items:center', 'justify-content:center'
+            ].join(';');
+            g.appendChild(toggle);
+        }
+
+        syncGroupTheme(g);
+        var obs = new MutationObserver(function () { syncGroupTheme(g); });
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        return g;
+    }
+
+    function syncGroupTheme(g) {
+        if (!g) return;
+        if (document.documentElement.classList.contains('theme-light')) {
+            g.style.background = 'rgba(255,255,255,.92)';
+            g.style.borderColor = 'rgba(15,23,42,.10)';
+            g.style.boxShadow = '0 4px 20px rgba(15,23,42,.14)';
+        } else {
+            g.style.background = 'rgba(13,20,40,.72)';
+            g.style.borderColor = 'rgba(255,255,255,.10)';
+            g.style.boxShadow = '0 6px 28px rgba(0,0,0,.32)';
+        }
+    }
+
+    function fabBtnStyle() {
+        return [
+            'width:38px', 'height:38px', 'padding:0',
+            'border-radius:999px', 'border:none', 'background:transparent',
+            'font-family:inherit', 'font-size:.88rem', 'font-weight:800',
+            'line-height:1', 'cursor:pointer',
+            'transition:transform .18s ease,background .18s ease',
+            'display:inline-flex', 'align-items:center', 'justify-content:center'
+        ].join(';');
+    }
+
     function placeButton() {
+        if (document.querySelector('.ml-lang-toggle')) return;
+        var g = createOrGetFabGroup();
+
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'ml-lang-toggle notranslate';
         btn.setAttribute('translate', 'no');
         btn.setAttribute('aria-label', 'Toggle language');
+        btn.textContent = '🌐';
+        btn.title = getLang() === 'en' ? 'Switch to Indonesian' : 'Switch to English';
+        btn.style.cssText = fabBtnStyle();
+        syncButtonTheme(btn);
+
         btn.addEventListener('click', function () {
             var next = getLang() === 'en' ? 'id' : 'en';
             setLang(next);
             applyTitle(next);
-            btn.textContent = '🌐';
             btn.title = next === 'en' ? 'Switch to Indonesian' : 'Switch to English';
             location.reload();
         });
-
-        var hasThemeToggle = !!document.querySelector('.theme-toggle');
-        btn.style.position = 'fixed';
-        btn.style.zIndex = '10001';
-        btn.style.right = '16px';
-        btn.style.top = hasThemeToggle ? '64px' : '16px';
-        btn.style.width = '52px';
-        btn.style.height = '52px';
-        btn.style.padding = '0';
-        btn.style.borderRadius = '999px';
-        btn.style.border = '1px solid rgba(125, 211, 252, .22)';
-        btn.style.background = 'rgba(15, 23, 42, .74)';
-        btn.style.color = '#e2e8f0';
-        btn.style.backdropFilter = 'blur(14px)';
-        btn.style.webkitBackdropFilter = 'blur(14px)';
-        btn.style.fontFamily = "'Plus Jakarta Sans', system-ui, sans-serif";
-        btn.style.fontSize = '1.05rem';
-        btn.style.fontWeight = '800';
-        btn.style.lineHeight = '1';
-        btn.style.cursor = 'pointer';
-        btn.style.boxShadow = '0 8px 24px rgba(0,0,0,.18)';
-        btn.style.transition = 'transform .18s ease, background .18s ease, border-color .18s ease';
-        btn.textContent = '🌐';
-        btn.title = getLang() === 'en' ? 'Switch to Indonesian' : 'Switch to English';
         btn.addEventListener('mouseenter', function () {
-            btn.style.transform = 'translateY(-1px)';
-            btn.style.background = 'rgba(30, 41, 59, .86)';
+            btn.style.transform = 'scale(1.12)';
+            btn.style.background = 'rgba(255,255,255,.12)';
         });
         btn.addEventListener('mouseleave', function () {
-            btn.style.transform = 'translateY(0)';
-            syncButtonTheme(btn);
+            btn.style.transform = 'scale(1)';
+            btn.style.background = 'transparent';
         });
-        document.body.appendChild(btn);
-        syncButtonTheme(btn);
 
-        var observer = new MutationObserver(function () {
-            syncButtonTheme(btn);
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        g.appendChild(btn);
+
+        var obs = new MutationObserver(function () { syncButtonTheme(btn); });
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     }
 
     function placeManagementButton() {
         if (!isHomePage()) return;
         if (document.querySelector('.ml-management-link')) return;
+        var g = createOrGetFabGroup();
 
         var link = document.createElement('a');
         link.href = 'manajemen.html';
-        link.className = 'ml-management-link';
+        link.className = 'ml-management-link notranslate';
+        link.setAttribute('translate', 'no');
         link.setAttribute('aria-label', 'Buka About Manajemen');
         link.title = 'Buka About Manajemen';
         link.textContent = '🏫';
-        link.style.position = 'fixed';
-        link.style.zIndex = '10000';
-        link.style.right = '16px';
-        link.style.top = document.querySelector('.theme-toggle') ? '108px' : '60px';
-        link.style.width = '52px';
-        link.style.height = '52px';
-        link.style.padding = '0';
-        link.style.display = 'inline-flex';
-        link.style.alignItems = 'center';
-        link.style.justifyContent = 'center';
-        link.style.borderRadius = '999px';
-        link.style.border = '1px solid rgba(255, 255, 255, .16)';
-        link.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, .92), rgba(37, 99, 235, .92))';
-        link.style.color = '#f8fafc';
-        link.style.backdropFilter = 'blur(14px)';
-        link.style.webkitBackdropFilter = 'blur(14px)';
-        link.style.fontFamily = "'Plus Jakarta Sans', system-ui, sans-serif";
-        link.style.fontSize = '1rem';
-        link.style.fontWeight = '800';
-        link.style.lineHeight = '1';
-        link.style.textDecoration = 'none';
-        link.style.boxShadow = '0 8px 24px rgba(0,0,0,.2)';
-        link.style.transition = 'transform .18s ease, filter .18s ease, box-shadow .18s ease';
+        link.style.cssText = fabBtnStyle() + ';text-decoration:none;color:#f8fafc';
+
         link.addEventListener('mouseenter', function () {
-            link.style.transform = 'translateY(-1px)';
-            link.style.filter = 'saturate(1.08) brightness(1.03)';
-            link.style.boxShadow = '0 12px 30px rgba(0,0,0,.26)';
+            link.style.transform = 'scale(1.12)';
+            link.style.background = 'rgba(255,255,255,.12)';
         });
         link.addEventListener('mouseleave', function () {
-            link.style.transform = 'translateY(0)';
-            link.style.filter = 'none';
-            link.style.boxShadow = '0 8px 24px rgba(0,0,0,.2)';
+            link.style.transform = 'scale(1)';
+            link.style.background = 'transparent';
         });
-        document.body.appendChild(link);
+
+        g.appendChild(link);
     }
 
     function syncButtonTheme(btn) {
         if (!btn) return;
         if (document.documentElement.classList.contains('theme-light')) {
-            btn.style.background = 'rgba(255, 255, 255, .88)';
             btn.style.color = '#0f172a';
-            btn.style.borderColor = 'rgba(15, 23, 42, .1)';
         } else {
-            btn.style.background = 'rgba(15, 23, 42, .74)';
             btn.style.color = '#e2e8f0';
-            btn.style.borderColor = 'rgba(125, 211, 252, .22)';
         }
     }
 
