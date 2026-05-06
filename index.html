@@ -5211,6 +5211,9 @@
             } else {
                 if (activeEl) activeEl.innerHTML = '<div class="cm-no-active">Tidak ada sesi kehadiran aktif saat ini</div>';
             }
+
+            /* Load history list */
+            loadCommitmentHistory(user.email);
         }
         window.openCommitmentModal = openCommitmentModal;
 
