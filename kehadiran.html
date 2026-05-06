@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kehadiran Saya — Moklet Leadership</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            background: #0b0b1a; color: #e2e8f0;
+            padding: 24px 24px 100px; overflow-x: hidden; position: relative;
+            transition: background .25s ease, color .25s ease;
+        }
+
+        .blob { position: fixed; border-radius: 50%; filter: blur(100px); opacity: .4; z-index: 0; will-change: transform; pointer-events: none }
+        .blob-1 { width: 480px; height: 480px; background: #7c3aed; top: -15%; left: -10%; animation: drift 10s ease-in-out infinite alternate }
+        .blob-2 { width: 360px; height: 360px; background: #06b6d4; bottom: -10%; right: -8%; animation: drift 12s ease-in-out infinite alternate-reverse }
+        
+        @keyframes drift { 0% { transform: translate(0, 0) scale(1) } 100% { transform: translate(30px, 20px) scale(1.08) } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+        .back-btn {
+            position: relative; z-index: 2;
+            align-self: flex-start;
+            display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; color: rgba(255, 255, 255, .5);
+            font-size: .82rem; font-weight: 600;
+            padding: 8px 14px; border-radius: 10px;
+            background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .08);
+            transition: all .2s; margin-bottom: 24px;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, .1); color: #e2e8f0 }
+
+        .page-container {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 500px;
+            animation: fadeUp .5s ease both;
+        }
+
+        .page-title {
+            font-size: 1.5rem; font-weight: 800; color: #fff;
+            margin-bottom: 20px; text-align: left;
+        }
+
+        /* Premium User Box */
+        .cm-user-box {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .cm-user-avatar {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            display: grid; place-items: center;
+            font-size: 1.8rem; flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, .3);
+        }
+        .cm-user-info { flex: 1; min-width: 0; }
+        .cm-user-name {
+            font-size: 1rem; font-weight: 800; color: #fff;
+            line-height: 1.2; margin-bottom: 4px;
+        }
+        .cm-user-meta { font-size: .78rem; color: rgba(226, 232, 240, .5); }
+        .cm-user-stats {
+            text-align: right; border-left: 1px solid rgba(255, 255, 255, .1);
+            padding-left: 16px;
+        }
+        .cm-stat-val { font-size: 1.3rem; font-weight: 800; color: #7dd3fc; line-height: 1; }
+        .cm-stat-label {
+            font-size: .6rem; text-transform: uppercase;
+            letter-spacing: .5px; color: rgba(226, 232, 240, .4);
+            margin-top: 4px;
+        }
+
+        /* Status Section */
+        .section-label {
+            font-size: .75rem; font-weight: 700; color: rgba(255, 255, 255, .4);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 12px; display: block;
+        }
+
+        .cm-status-box {
+            padding: 16px 20px; border-radius: 20px;
+            margin-bottom: 24px; display: flex;
+            align-items: center; gap: 14px;
+            animation: fadeUp .4s ease both;
+        }
+        .cm-status-box.done {
+            background: rgba(34, 197, 94, .1);
+            border: 1px solid rgba(34, 197, 94, .2);
+            color: #4ade80;
+        }
+        .cm-status-box.active {
+            background: rgba(124, 58, 237, .1);
+            border: 1px solid rgba(124, 58, 237, .2);
+        }
+        .cm-status-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .cm-status-info { flex: 1; min-width: 0; }
+        .cm-status-title { font-size: .95rem; font-weight: 700; }
+        .cm-status-meta { font-size: .78rem; opacity: .7; margin-top: 2px; }
+        .cm-status-btn {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff; border: 0; padding: 10px 18px;
+            border-radius: 12px; font-size: .85rem;
+            font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, .3);
+        }
+
+        /* History List */
+        .commitment-list { display: flex; flex-direction: column; gap: 12px; }
+        .commitment-item {
+            padding: 16px 18px; border-radius: 18px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: all .2s;
+        }
+        .commitment-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .commitment-item-title { font-size: .88rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+        .commitment-item-meta { font-size: .74rem; color: rgba(226, 232, 240, .4); }
+        .commitment-item-time { font-size: .7rem; color: rgba(226, 232, 240, .3); font-weight: 600; }
+
+        .cm-loading {
+            padding: 40px; text-align: center; color: rgba(255, 255, 255, .3);
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .cm-loading-spinner {
+            width: 24px; height: 24px; border: 3px solid rgba(255, 255, 255, .1);
+            border-top-color: #06b6d4; border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .cm-no-active {
+            padding: 16px; border-radius: 16px;
+            background: rgba(255, 255, 255, .02);
+            border: 1px dashed rgba(255, 255, 255, .1);
+            text-align: center; color: rgba(255, 255, 255, .3); font-size: .85rem;
+        }
+
+        .commitment-empty {
+            padding: 60px 20px; text-align: center;
+            color: rgba(255, 255, 255, .3);
+        }
+        .commitment-empty-emoji { font-size: 3rem; margin-bottom: 16px; opacity: .5; }
+
+        html.theme-light body { background: #f4f7fb; color: #111827; }
+        html.theme-light .page-title { color: #0f172a; }
+        html.theme-light .cm-user-box { background: #fff; border-color: rgba(15, 23, 42, .1); box-shadow: 0 4px 20px rgba(15, 23, 42, .05); }
+        html.theme-light .cm-user-name { color: #0f172a; }
+        html.theme-light .cm-user-meta { color: rgba(31, 41, 55, .6); }
+        html.theme-light .cm-stat-val { color: #0369a1; }
+        html.theme-light .cm-status-box.done { background: rgba(34, 197, 94, .08); color: #15803d; border-color: rgba(34, 197, 94, .15); }
+        html.theme-light .cm-status-box.active { background: rgba(124, 58, 237, .05); border-color: rgba(124, 58, 237, .12); }
+        html.theme-light .commitment-item { background: #fff; border-color: rgba(15, 23, 42, .08); }
+        html.theme-light .commitment-item-title { color: #1f2937; }
+
+        @media (max-width: 480px) {
+            body { padding: 16px 16px 100px; }
+            .cm-user-box { padding: 16px; gap: 12px; }
+            .cm-stat-val { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="page-container">
+        <a class="back-btn" href="index.html">
+            <svg viewBox="0 0 20 20"><path d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"/></svg>
+            Kembali
+        </a>
+
+        <h1 class="page-title">Kehadiran Saya</h1>
+
+        <div class="cm-user-box">
+            <div class="cm-user-avatar" id="cmUserAvatar">👤</div>
+            <div class="cm-user-info">
+                <div class="cm-user-name" id="cmUserName">Memuat...</div>
+                <div class="cm-user-meta" id="cmUserMeta">Memuat profil...</div>
+            </div>
+            <div class="cm-user-stats">
+                <div class="cm-stat-val" id="cmPresenceCount">0</div>
+                <div class="cm-stat-label">Total Hadir</div>
+            </div>
+        </div>
+
+        <span class="section-label">📍 Sesi Aktif</span>
+        <div id="cmActiveSection">
+            <div class="cm-loading">
+                <div class="cm-loading-spinner"></div>
+                <div>Mengecek sesi kehadiran...</div>
+            </div>
+        </div>
+
+        <div style="margin: 32px 0 12px; display: flex; align-items: center; gap: 10px;">
+            <span class="section-label" style="margin:0">📋 Riwayat Terbaru</span>
+            <div style="flex:1; height:1px; background:rgba(255,255,255,.05)"></div>
+        </div>
+        
+        <div id="commitmentHistory"></div>
+        <div id="commitmentEmpty" class="commitment-empty" style="display:none">
+            <div class="commitment-empty-emoji">📭</div>
+            <strong>Belum Ada Riwayat</strong>
+            <p style="font-size:.8rem; margin-top:8px; opacity:.7">Riwayat kehadiran kamu akan muncul di sini setelah kamu melakukan absen.</p>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        var USER_KEY = 'molesh_user';
+        var PROF_KEY = 'molesh_profile';
+        var CACHE_KEY = 'molesh_commitment_cache';
+
+        function getCommitmentHistoryCache(email) {
+            try {
+                var all = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                return all[email] || [];
+            } catch(e) { return []; }
+        }
+
+        function saveCommitmentHistoryCache(email, items) {
+            try {
+                var all = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+                all[email] = items;
+                localStorage.setItem(CACHE_KEY, JSON.stringify(all));
+            } catch(e) {}
+        }
+
+        function getCheckedInIds() {
+            try {
+                var user = JSON.parse(localStorage.getItem(USER_KEY) || '{}');
+                var all = JSON.parse(localStorage.getItem('molesh_checkins') || '{}');
+                return all[user.email] || [];
+            } catch(e) { return []; }
+        }
+
+        function markCheckedIn(id) {
+            try {
+                var user = JSON.parse(localStorage.getItem(USER_KEY) || '{}');
+                var all = JSON.parse(localStorage.getItem('molesh_checkins') || '{}');
+                if (!all[user.email]) all[user.email] = [];
+                if (all[user.email].indexOf(id) === -1) all[user.email].push(id);
+                localStorage.setItem('molesh_checkins', JSON.stringify(all));
+            } catch(e) {}
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatCommitmentDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                var d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' +
+                       d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            } catch(e) { return dateStr; }
+        }
+
+        function renderHistory(items) {
+            var wrap = document.getElementById('commitmentHistory');
+            var empty = document.getElementById('commitmentEmpty');
+            var countEl = document.getElementById('cmPresenceCount');
+            
+            if (countEl) countEl.textContent = items ? items.length : 0;
+            
+            if (!items || !items.length) {
+                wrap.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            var html = '<div class="commitment-list">';
+            items.slice(0, 20).forEach(function(item) {
+                var title = item.tanggal ? 'Kehadiran ' + item.tanggal : 'Kehadiran Tercatat';
+                var meta = item.deskripsi || 'Sesi kepemimpinan harian.';
+                html += '<div class="commitment-item">';
+                html += '<div class="commitment-item-top">';
+                html += '<div><div class="commitment-item-title">' + escapeHtml(title) + '</div><div class="commitment-item-meta">' + escapeHtml(meta) + '</div></div>';
+                html += '<div class="commitment-item-time">' + formatCommitmentDate(item.checkinTime || item.tanggal) + '</div>';
+                html += '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            wrap.innerHTML = html;
+        }
+
+        function loadHistory(email) {
+            var cached = getCommitmentHistoryCache(email);
+            renderHistory(cached);
+
+            if (typeof MOLESH_CONFIG === 'undefined' || !MOLESH_CONFIG.APPS_SCRIPT_URL) return;
+
+            fetch(MOLESH_CONFIG.APPS_SCRIPT_URL + '?type=checkinLog')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var targetEmail = email.toLowerCase().trim();
+                    var items = (data || []).filter(function(entry) {
+                        return (entry.email || '').toLowerCase().trim() === targetEmail;
+                    }).sort(function(a,b) {
+                        return new Date(b.checkinTime || b.tanggal || 0) - new Date(a.checkinTime || a.tanggal || 0);
+                    });
+                    saveCommitmentHistoryCache(email, items);
+                    renderHistory(items);
+                }).catch(function(e) { console.error('History error:', e); });
+        }
+
+        function loadActive(user, prof) {
+            var activeEl = document.getElementById('cmActiveSection');
+            var isProfileComplete = !!(prof.nama && prof.kelas && prof.absen);
+            var doneIds = getCheckedInIds();
+
+            if (typeof MOLESH_CONFIG === 'undefined' || !MOLESH_CONFIG.APPS_SCRIPT_URL) {
+                activeEl.innerHTML = '<div class="cm-no-active">Konfigurasi tidak tersedia</div>';
+                return;
+            }
+
+            fetch(MOLESH_CONFIG.APPS_SCRIPT_URL + '?type=activeCheckin')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (!data || !data.length) {
+                        activeEl.innerHTML = '<div class="cm-no-active">Tidak ada sesi kehadiran aktif saat ini</div>';
+                        return;
+                    }
+                    var html = '';
+                    data.forEach(function(ci) {
+                        var tgl = ci.tanggal;
+                        try {
+                            var p = tgl.split('-');
+                            tgl = new Date(p[0], p[1]-1, p[2]).toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+                        } catch(e){}
+
+                        if (doneIds.indexOf(ci.id) > -1) {
+                            html += '<div class="cm-status-box done"><div class="cm-status-icon">✅</div><div class="cm-status-info"><div class="cm-status-title">Kehadiran tercatat</div><div class="cm-status-meta">' + tgl + '</div></div></div>';
+                        } else if (!isProfileComplete) {
+                            html += '<div class="cm-status-box active" style="background:rgba(244,63,94,.1); border-color:rgba(244,63,94,.2)"><div class="cm-status-icon">🔒</div><div class="cm-status-info"><div class="cm-status-title" style="color:#fb7185">Profil Belum Lengkap</div><div class="cm-status-meta">Lengkapi Profil untuk absen.</div></div><a class="cm-status-btn" href="profil.html" style="background:#f43f5e">Isi Profil</a></div>';
+                        } else {
+                            html += '<div class="cm-status-box active"><div class="cm-status-icon">📍</div><div class="cm-status-info"><div class="cm-status-title">Kehadiran Tersedia!</div><div class="cm-status-meta">' + tgl + '</div></div><button class="cm-status-btn" id="btn_' + ci.id + '" onclick="doCheckin(\'' + ci.id + '\',\'' + (ci.tanggal||'') + '\',\'' + (ci.deskripsi||'').replace(/'/g,"\\'") + '\')">Hadir</button></div>';
+                        }
+                    });
+                    activeEl.innerHTML = html;
+                }).catch(function() { activeEl.innerHTML = '<div class="cm-no-active">Gagal memuat data.</div>'; });
+        }
+
+        function doCheckin(ciId, tanggal, deskripsi) {
+            var raw = localStorage.getItem(USER_KEY);
+            var profRaw = localStorage.getItem(PROF_KEY);
+            if (!raw) return;
+            var user = JSON.parse(raw);
+            var prof = JSON.parse(profRaw || '{}');
+
+            var btn = document.getElementById('btn_' + ciId);
+            if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+            fetch(MOLESH_CONFIG.APPS_SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    action: 'doCheckin', checkinId: ciId, tanggal: tanggal, deskripsi: deskripsi,
+                    email: user.email, googleName: user.name||'', nama: prof.nama||'', kelas: prof.kelas||'', absen: prof.absen||''
+                })
+            }).then(function() {
+                markCheckedIn(ciId);
+                loadActive(user, prof);
+                loadHistory(user.email);
+            }).catch(function() { if (btn) { btn.disabled = false; btn.textContent = 'Hadir'; } });
+        }
+
+        function init() {
+            var raw = localStorage.getItem(USER_KEY);
+            if (!raw) { window.location.href = 'index.html'; return; }
+            var user = JSON.parse(raw);
+            var prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
+
+            document.getElementById('cmUserName').textContent = prof.nama || user.name || 'Pengguna';
+            document.getElementById('cmUserMeta').textContent = (prof.kelas || 'Profil belum lengkap') + (prof.absen ? ' • No. ' + prof.absen : '');
+            
+            if (user.picture) {
+                document.getElementById('cmUserAvatar').innerHTML = '<img src="' + user.picture + '" style="width:100%; height:100%; border-radius:inherit; object-fit:cover;">';
+            } else {
+                document.getElementById('cmUserAvatar').textContent = (prof.nama || user.name || '?')[0].toUpperCase();
+            }
+
+            var storedTheme = localStorage.getItem('molesh_theme') || 'dark';
+            document.documentElement.classList.toggle('theme-light', storedTheme === 'light');
+
+            loadActive(user, prof);
+            loadHistory(user.email);
+        }
+
+        init();
+    </script>
+    <script src="bottom-nav.js" defer></script>
+</body>
+</html>

@@ -153,6 +153,7 @@
         'teman.html': 'teman',
         'mentor.html': 'mentor',
         'profil.html': 'profil',
+        'kehadiran.html': 'kehadiran',
         'survey.html': 'profil',
         'manajemen.html': 'profil'
     };
@@ -175,7 +176,7 @@
         { page: 'beranda',   href: 'index.html',           icon: '🏠', label: 'Beranda'   },
         { page: 'materi',    href: 'materi.html',          icon: '📚', label: 'Materi'    },
         { page: 'teman',     href: 'teman.html',           icon: '🤝', label: 'Teman'     },
-        { page: 'kehadiran', href: 'index.html#kehadiran', icon: '🔥', label: 'Kehadiran', action: 'kehadiran' },
+        { page: 'kehadiran', href: 'kehadiran.html',       icon: '🔥', label: 'Kehadiran' },
         { page: 'mentor',    href: 'mentor.html',          icon: '🤖', label: 'Mentor'    },
         { page: 'profil',    href: 'profil.html',          icon: '👤', label: 'Profil'    }
     ];
@@ -225,14 +226,7 @@
                     '<span class="mbn-icon" aria-hidden="true">' + it.icon + '</span>' +
                     '<span class="mbn-label">' + it.label + '</span>';
 
-                if (it.action === 'kehadiran' && onIndex) {
-                    a.addEventListener('click', function (ev) {
-                        if (typeof window.openCommitmentModal === 'function') {
-                            ev.preventDefault();
-                            window.openCommitmentModal();
-                        }
-                    });
-                }
+                /* No longer using special action for kehadiran modal */
 
                 nav.appendChild(a);
             });
